@@ -36,10 +36,6 @@ public class AtomicManager {
     }
   }
 
-  public void delete(String name) {
-    deleteById(name);
-  }
-
   public void deleteAll() {
     this.atomicMap.clear();
   }
@@ -71,6 +67,11 @@ public class AtomicManager {
   public long addAndGet(String name, long delta) {
     AtomicLong atomic = this.getById(name);
     return atomic.addAndGet(delta);
+  }
+
+  public Boolean compareAndSet(String name, long expect, long update) {
+    AtomicLong atomic = this.getById(name);
+    return atomic.compareAndSet(expect, update);
   }
 
 }

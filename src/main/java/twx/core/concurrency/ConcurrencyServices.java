@@ -1,13 +1,11 @@
 package twx.core.concurrency;
 
-import com.thingworx.logging.LogUtilities;
+// import com.thingworx.logging.LogUtilities;
+// import org.slf4j.Logger;
 import com.thingworx.metadata.annotations.ThingworxServiceDefinition;
 import com.thingworx.metadata.annotations.ThingworxServiceParameter;
 import com.thingworx.metadata.annotations.ThingworxServiceResult;
 import com.thingworx.resources.Resource;
-import com.thingworx.things.Thing;
-
-import org.slf4j.Logger;
 
 import twx.core.concurrency.imp.AtomicManager;
 import twx.core.concurrency.imp.MutexManager;
@@ -18,16 +16,7 @@ import org.json.JSONObject;
 public class ConcurrencyServices extends Resource {
     private static final long serialVersionUID = -3506034524403520608L;
 
-    private static Logger _logger = LogUtilities.getInstance().getApplicationLogger(ConcurrencyServices.class);
-
-    private static String getThingID(Thing thing, String id/* optional */) {
-        String mutexId = thing.getName();
-        if (id != null) {
-            if (!id.equals(""))
-                mutexId = mutexId + "/" + id;
-        }
-        return mutexId;
-    }
+    // private static Logger _logger = LogUtilities.getInstance().getApplicationLogger(ConcurrencyServices.class);
 
     // region queue Services Thingworx
     @ThingworxServiceDefinition(name = "queue_deleteAll", description = "Deletes all registered queues.", category = "Queue", isAllowOverride = false, aspects = {"isAsync:false" })
@@ -41,7 +30,7 @@ public class ConcurrencyServices extends Resource {
     public void queue_delete(
             @ThingworxServiceParameter(name = "name", description = "", baseType = "STRING", aspects = {"isRequired:true" }) String name
     ) {
-        QueueManager.getInstance().delete(name);
+        QueueManager.getInstance().deleteById(name);
     }
 
     @ThingworxServiceDefinition(name = "queue_exists", description = "Checks if a named queue is created.", category = "Queue", isAllowOverride = false, aspects = {"isAsync:false" })
@@ -105,7 +94,7 @@ public class ConcurrencyServices extends Resource {
     @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
     public void mtx_delete(
             @ThingworxServiceParameter(name = "name", description = "", baseType = "STRING", aspects = {"isRequired:true" }) String name ) {
-        MutexManager.getInstance().delete(name);
+        MutexManager.getInstance().deleteById(name);
     }
 
     @ThingworxServiceDefinition(name = "mtx_exists", description = "Checks if a named mutex is created.", category = "Mutex", isAllowOverride = false, aspects = {"isAsync:false" })
@@ -168,28 +157,35 @@ public class ConcurrencyServices extends Resource {
 
     // region atomic Services Thingworx
 
- /*
+    /*
      * Atomic Services
      */
-    @ThingworxServiceDefinition(name = "atomic_deleteAll", description = "", category = "", isAllowOverride = true, aspects = {"isAsync:false" })
+    @ThingworxServiceDefinition(name = "atomic_deleteAll", description = "", category = "Atomic", isAllowOverride = true, aspects = {"isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
     public void atomic_deleteAll() {
         AtomicManager.getInstance().deleteAll();
     }
 
-    @ThingworxServiceDefinition(name = "atomic_delete", description = "", category = "", isAllowOverride = false, aspects = {"isAsync:false" })
+    @ThingworxServiceDefinition(name = "atomic_delete", description = "", category = "Atomic", isAllowOverride = false, aspects = {"isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
     public void atomic_delete( @ThingworxServiceParameter(name = "name", description = "", baseType = "STRING") String name) {
-        AtomicManager.getInstance().delete(name);
+        AtomicManager.getInstance().deleteById(name);
     }
 
-    @ThingworxServiceDefinition(name = "atomic_get", description = "", category = "", isAllowOverride = false, aspects = {"isAsync:false" })
+    @ThingworxServiceDefinition(name = "atomic_exists", description = "Checks if a named atomic is created.", category = "Atomic", isAllowOverride = false, aspects = {"isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "BOOLEAN", aspects = {})
+    public Boolean atomic_exists(
+            @ThingworxServiceParameter(name = "name", description = "", baseType = "STRING", aspects = {"isRequired:true" }) String name) {
+        return AtomicManager.getInstance().exists(name);
+    }
+
+    @ThingworxServiceDefinition(name = "atomic_get", description = "", category = "Atomic", isAllowOverride = false, aspects = {"isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "LONG", aspects = {})
     public Long atomic_get(@ThingworxServiceParameter(name = "name", description = "", baseType = "STRING") String name) {
         return AtomicManager.getInstance().get(name);
     }
 
-    @ThingworxServiceDefinition(name = "atomic_set", description = "", category = "", isAllowOverride = false, aspects = {"isAsync:false" })
+    @ThingworxServiceDefinition(name = "atomic_set", description = "", category = "Atomic", isAllowOverride = false, aspects = {"isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
     public void atomic_set(
         @ThingworxServiceParameter(name = "name", description = "", baseType = "STRING") String name,
@@ -198,25 +194,35 @@ public class ConcurrencyServices extends Resource {
         AtomicManager.getInstance().set(name,value);
     }
 
-    @ThingworxServiceDefinition(name = "atomic_incrementAndGet", description = "", category = "", isAllowOverride = false, aspects = {"isAsync:false" })
+    @ThingworxServiceDefinition(name = "atomic_incrementAndGet", description = "", category = "Atomic", isAllowOverride = false, aspects = {"isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "LONG", aspects = {})
     public Long atomic_incrementAndGet(@ThingworxServiceParameter(name = "name", description = "", baseType = "STRING") String name ) {
         return AtomicManager.getInstance().incrementAndGet(name);
     }
 
-    @ThingworxServiceDefinition(name = "atomic_decrementAndGet", description = "", category = "", isAllowOverride = false, aspects = {"isAsync:false" })
+    @ThingworxServiceDefinition(name = "atomic_decrementAndGet", description = "", category = "Atomic", isAllowOverride = false, aspects = {"isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "LONG", aspects = {})
     public Long atomic_decrementAndGet(@ThingworxServiceParameter(name = "name", description = "", baseType = "STRING") String name ) {
         return AtomicManager.getInstance().decrementAndGet(name);
     }
 
-    @ThingworxServiceDefinition(name = "atomic_addAndGet", description = "", category = "", isAllowOverride = false, aspects = {"isAsync:false" })
+    @ThingworxServiceDefinition(name = "atomic_addAndGet", description = "", category = "Atomic", isAllowOverride = false, aspects = {"isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "LONG", aspects = {})
     public Long atomic_addAndGet(
             @ThingworxServiceParameter(name = "name", description = "", baseType = "STRING") String name,
             @ThingworxServiceParameter(name = "delta", description = "", baseType = "LONG") Long delta
     ) {
         return AtomicManager.getInstance().addAndGet(name,delta);
+    }
+
+    @ThingworxServiceDefinition(name = "atomic_addAndGet", description = "", category = "Atomic", isAllowOverride = false, aspects = {"isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "BOOLEAN", aspects = {})
+    public Boolean atomic_addAndGet(
+            @ThingworxServiceParameter(name = "name", description = "", baseType = "STRING") String name,
+            @ThingworxServiceParameter(name = "expect", description = "", baseType = "LONG") Long expect,
+            @ThingworxServiceParameter(name = "update", description = "", baseType = "LONG") Long update
+    ) {
+        return AtomicManager.getInstance().compareAndSet(name, expect, update);
     }
     // endregion
 }

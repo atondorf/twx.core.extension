@@ -6,7 +6,10 @@ import com.thingworx.dsl.utils.ValueConverter;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeObject;
+import org.mozilla.javascript.NativeFunction;
 import org.mozilla.javascript.Scriptable;
+
+import java.util.concurrent.locks.ReentrantLock;
 
 import twx.core.concurrency.imp.MutexManager;
 import twx.core.concurrency.imp.QueueManager;
@@ -14,7 +17,34 @@ import twx.core.concurrency.imp.AtomicManager;
 
 public class ConcurrencyScriptLibrary {
 
+    protected static Long argToLong(Object arg) throws Exception {
+        if( arg instanceof Double )
+            return ((Double)arg).longValue();
+        if( arg instanceof Integer )
+            return Long.valueOf((Integer)arg);
+        throw new Exception("Invalid arg is not an Number: Type is: " + arg.getClass().getName() );
+    }
+
     // region queue Services Thingworx
+
+    public static Boolean queue_exists(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
+        if (args.length != 1)
+            throw new Exception("Invalid Number of Arguments in queue_exists");
+        if (!(args[0] instanceof String))
+            throw new Exception("The first queue_exists argument must be a string with queue name");
+        String name = (String) args[0];
+        return QueueManager.getInstance().exists(name);
+    }
+
+    public static void queue_delete(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
+        if (args.length != 1)
+            throw new Exception("Invalid Number of Arguments in queue_delete");
+        if (!(args[0] instanceof String))
+            throw new Exception("The first queue_delete argument must be a string with queue name");
+        String name = (String) args[0];
+        QueueManager.getInstance().deleteById(name);    
+    }
+
     public static void queue_push(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
         if (args.length != 2)
             throw new Exception("Invalid Number of Arguments in queue_push");
@@ -53,8 +83,7 @@ public class ConcurrencyScriptLibrary {
         if (!(args[0] instanceof String))
             throw new Exception("The first queue_isEmtpy argument must be a string with queue name");
         String queueName = (String) args[0];
-        Boolean empty = QueueManager.getInstance().emtpy(queueName);
-        return empty;
+        return QueueManager.getInstance().emtpy(queueName);
     }
 
     public static Object queue_size(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
@@ -63,8 +92,7 @@ public class ConcurrencyScriptLibrary {
         if (!(args[0] instanceof String))
             throw new Exception("The first queue_size argument must be a string with queue name");
         String queueName = (String) args[0];
-        Integer size = QueueManager.getInstance().size(queueName);
-        return size;
+        return QueueManager.getInstance().size(queueName);
     }
 
     public static void queue_clear(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
@@ -78,47 +106,135 @@ public class ConcurrencyScriptLibrary {
     // endregion
 
     // region Lock Services Thingworx
+
+    public static Object mtx_getTotalActiveLocks(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
+        return MutexManager.getInstance().getTotalActiveLocks();
+    }
+
+    public static Object mtx_getTotalActiveWaiting(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
+        return MutexManager.getInstance().getTotalActiveWaiting();
+    }
+    
+    public static Object mtx_getTotalThingsLocksUsage(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
+        return MutexManager.getInstance().getTotalThingsLocksUsage();
+    }
+
+    public static Boolean mtx_exists(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
+        if (args.length != 1)
+            throw new Exception("Invalid Number of Arguments in mtx_exists");
+        if (!(args[0] instanceof String))
+            throw new Exception("The first mtx_exists argument must be a string with mutex name");
+        String name = (String) args[0];
+        return MutexManager.getInstance().exists(name);
+    }
+
+    public static void mtx_delete(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
+        if (args.length != 1)
+            throw new Exception("Invalid Number of Arguments in mtx_delete");
+        if (!(args[0] instanceof String))
+            throw new Exception("The first mtx_delete argument must be a string with mutex name");
+        String name = (String) args[0];
+        MutexManager.getInstance().deleteById(name);    
+    }
+
     public static void mtx_lock(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
         if (args.length != 1)
-            throw new Exception("Invalid Number of Arguments in lock_lock");
+            throw new Exception("Invalid Number of Arguments in mtx_lock");
         if (!(args[0] instanceof String))
             throw new Exception("The first mtx_lock argument must be a string with mutex name");
         String name = (String) args[0];
         MutexManager.getInstance().lock(name);
     }
 
-    public static Object mtx_trylock(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
+    public static Object mtx_tryLock(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
         if (args.length != 2)
-            throw new Exception("Invalid Number of Arguments in lock_lock");
+            throw new Exception("Invalid Number of Arguments in mtx_tryLock");
         if (!(args[0] instanceof String))
-            throw new Exception("The first queue_push argument must be a string with queue name");
-        if (!(args[1] instanceof Long))
-            throw new Exception("Invalid Argument Type (not an Integer) in mtx_trylock");
+            throw new Exception("The first mtx_tryLock argument must be a string with mutex name");
         String name = (String) args[0];
-        Long timeOut = (Long) args[1];
+        Long timeOut = argToLong(args[1]);
         return MutexManager.getInstance().tryLock(name, timeOut);
     }
 
     public static void mtx_unlock(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
         if (args.length != 1)
-            throw new Exception("Invalid Number of Arguments in lock_lock");
+            throw new Exception("Invalid Number of Arguments in mtx_unlock");
         if (!(args[0] instanceof String))
-            throw new Exception("The first queue_push argument must be a string with queue name");
+            throw new Exception("The first mtx_unlock argument must be a string with mutex name");
         String name = (String) args[0];
-        MutexManager.getInstance().lock(name);;
+        MutexManager.getInstance().unlock(name);
     }
 
     public static Object mtx_isLocked(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
         if (args.length != 1)
-            throw new Exception("Invalid Number of Arguments in lock_lock");
+            throw new Exception("Invalid Number of Arguments in mtx_isLocked");
         if (!(args[0] instanceof String))
-            throw new Exception("The first queue_push argument must be a string with queue name");
+            throw new Exception("The first mtx_isLocked argument must be a string with mutex name");
         String name = (String) args[0];
         return MutexManager.getInstance().isLocked(name);    
+    }
+
+    public static void mtx_callLocked(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
+        if (args.length != 2) 
+            throw new Exception("Invalid number of arguments in mtx_callLocked");
+        if (!(args[0] instanceof String))
+            throw new Exception("The first mtx_callLocked argument must be a string with mutex name");
+        if (!(args[1] instanceof NativeFunction)) 
+            throw new Exception("The second mtx_callLocked argument must be a function");
+        ReentrantLock mtx = MutexManager.getInstance().getById( (String) args[0] );
+        mtx.lock();
+        try {
+            MutexManager.getInstance().incrementLocks();
+            ((NativeFunction) args[1]).call(cx, func.getParentScope(), me, new Object[] {});
+        } 
+        finally {
+            mtx.unlock();
+            MutexManager.getInstance().decrementLocks();
+        } 
+    }
+
+    public static Boolean mtx_callTryLocked(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
+        if (args.length != 3) 
+            throw new Exception("Invalid number of arguments in mtx_callLocked");
+        if (!(args[0] instanceof String))
+            throw new Exception("The first mtx_callLocked argument must be a string with mutex name");
+        if (!(args[2] instanceof NativeFunction)) 
+            throw new Exception("The second mtx_callLocked argument must be a function");
+        ReentrantLock mtx = MutexManager.getInstance().getById( (String) args[0] );
+        Boolean locked = mtx.tryLock();
+        {
+            try {
+                MutexManager.getInstance().incrementLocks();
+                ((NativeFunction) args[1]).call(cx, func.getParentScope(), me, new Object[] {});
+            } 
+            finally {
+                mtx.unlock();
+                MutexManager.getInstance().decrementLocks();
+            } 
+        }
+        return locked;
     }
     // endregion
 
     // region atomic Services Thingworx
+    public static Boolean atomic_exists(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
+        if (args.length != 1)
+            throw new Exception("Invalid Number of Arguments in atomic_get");
+        if (!(args[0] instanceof String))
+            throw new Exception("The first atomic_get argument must be a string with atomic name");
+        String name = (String) args[0];
+        return AtomicManager.getInstance().exists(name);
+    }
+
+    public static void atomic_delete(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
+        if (args.length != 1)
+            throw new Exception("Invalid Number of Arguments in atomic_get");
+        if (!(args[0] instanceof String))
+            throw new Exception("The first atomic_get argument must be a string with atomic name");
+        String name = (String) args[0];
+        AtomicManager.getInstance().deleteById(name);    
+    }
+
     public static Object atomic_get(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
         if (args.length != 1)
             throw new Exception("Invalid Number of Arguments in atomic_get");
@@ -130,13 +246,13 @@ public class ConcurrencyScriptLibrary {
 
     public static void atomic_set(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
         if (args.length != 2)
-            throw new Exception("Invalid Number of Arguments in atomic_get");
+            throw new Exception("Invalid Number of Arguments in atomic_set");
         if (!(args[0] instanceof String))
             throw new Exception("The first atomic_set argument must be a string with atomic name");
-        if (!(args[1] instanceof Long))
-            throw new Exception("The second atomic_set argument must be a long");
+        if (!(args[1] instanceof Integer) && !(args[1] instanceof Double) )
+            throw new Exception("Invalid Argument Type (not a Number) in atomic_set");
         String name = (String) args[0];
-        Long value = (Long) args[1];
+        Long value = argToLong(args[1]);
         AtomicManager.getInstance().set(name,value);    
     }
 
@@ -162,12 +278,23 @@ public class ConcurrencyScriptLibrary {
         if (args.length != 2)
             throw new Exception("Invalid Number of Arguments in atomic_addAndGet");
         if (!(args[0] instanceof String))
-            throw new Exception("The first atomic_addAndGet argument must be a string with atomic name");
-        if (!(args[1] instanceof Long))
-            throw new Exception("The second atomic_addAndGet argument must be a long");
+            throw new Exception("The first atomic_addAndGet argument must be a string with atomic name.");
+        if (!(args[1] instanceof Integer) && !(args[1] instanceof Double) )
+            throw new Exception("Invalid Argument Type (not a Number) in atomic_addAndGet");
         String name = (String) args[0];
-        Long delta = (Long) args[1];
+        Long delta = argToLong(args[1]);
         return AtomicManager.getInstance().addAndGet(name,delta);    
+    }
+
+    public static Object atomic_compareAndSet(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
+        if (args.length != 3)
+            throw new Exception("Invalid Number of Arguments in atomic_compareAndSet");
+        if (!(args[0] instanceof String))
+            throw new Exception("The first atomic_compareAndSet argument must be a string with atomic name");
+        String name = (String) args[0];
+        Long expected = argToLong(args[1]);
+        Long update = argToLong(args[2]);
+        return AtomicManager.getInstance().compareAndSet(name,expected,update);    
     }
     // endregion
 }

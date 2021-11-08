@@ -7,7 +7,27 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LibraryTest {
+
+    public static Long toLong(Object arg) throws Exception {
+        if( arg instanceof Integer ) 
+            return Long.valueOf( (Integer) arg );
+        if( arg instanceof Double )
+            return ((Double)arg).longValue();
+            
+        throw new Exception("Unable to convert to Long");
+        return 0L;
+    }
+
     @Test void testSomeLibraryMethod() {
-        
+        Double  d = 129.1;
+        Integer i = 129;
+        Long l = Long.valueOf(0);
+
+        try {
+            l = LibraryTest.toLong( d );
+            l = LibraryTest.toLong( i );
+        }
+        catch(Exception ex ) {
+        }
     }
 }

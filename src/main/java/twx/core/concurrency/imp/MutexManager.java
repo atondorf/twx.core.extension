@@ -22,7 +22,7 @@ public class MutexManager {
   private AtomicInteger activeWaiting = new AtomicInteger(0);
 
   // region Lock helpers
-  private void incrementLocks() {
+  public void incrementLocks() {
     while (true) {
       int existingValue = activeLocks.get();
       int newValue = existingValue + 1;
@@ -32,7 +32,7 @@ public class MutexManager {
     }
   }
 
-  private void decrementLocks() {
+  public void decrementLocks() {
     while (true) {
       int existingValue = activeLocks.get();
       int newValue = existingValue - 1;
@@ -42,7 +42,7 @@ public class MutexManager {
     }
   }
 
-  private void incrementWaiting() {
+  public void incrementWaiting() {
     while (true) {
       int existingValue = activeWaiting.get();
       int newValue = existingValue + 1;
@@ -52,7 +52,7 @@ public class MutexManager {
     }
   }
 
-  private void decrementWaiting() {
+  public void decrementWaiting() {
     while (true) {
       int existingValue = activeWaiting.get();
       int newValue = existingValue - 1;
@@ -90,10 +90,6 @@ public class MutexManager {
         keys.remove();
       }
     }
-  }
-
-  public void delete(String name) {
-    deleteById(name);
   }
 
   public void deleteAll() {
@@ -143,8 +139,7 @@ public class MutexManager {
           this.incrementLocks();
         } catch (Exception e) {
           mutex.unlock();
-          throw new Exception(
-              "TryLock_ConcurrentServices/Failed to do additional steps, waiting counter maybe corrupted.");
+          throw new Exception("TryLock_ConcurrentServices/Failed to do additional steps, waiting counter maybe corrupted.");
         }
       }
       return result;

@@ -20,7 +20,7 @@ public class QueueManager {
     private final ConcurrentHashMap<String, ConcurrentLinkedQueue<JSONObject>> queueMap = new ConcurrentHashMap<>();
 
     // region queue helpers
-    private ConcurrentLinkedQueue<JSONObject> getById(String id) {
+    public ConcurrentLinkedQueue<JSONObject> getById(String id) {
         ConcurrentLinkedQueue<JSONObject> meQueue = this.queueMap.get(id);
         if (meQueue == null) {
             meQueue = this.queueMap.computeIfAbsent(id, k -> new ConcurrentLinkedQueue<JSONObject>());
@@ -28,7 +28,7 @@ public class QueueManager {
         return meQueue;
     }
 
-    private void deleteById(String id) {
+    public void deleteById(String id) {
         var keys = this.queueMap.keySet().iterator();
         while (keys.hasNext()) {
             String currentKey = (String) keys.next();
@@ -38,10 +38,6 @@ public class QueueManager {
         }
     }
 
-    public void delete(String name) {
-        deleteById(name);
-    }
-    
     public void deleteAll() {
         this.queueMap.clear();
     }
