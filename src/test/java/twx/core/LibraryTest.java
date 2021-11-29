@@ -15,7 +15,6 @@ class LibraryTest {
             return ((Double)arg).longValue();
             
         throw new Exception("Unable to convert to Long");
-        return 0L;
     }
 
     @Test void testSomeLibraryMethod() {

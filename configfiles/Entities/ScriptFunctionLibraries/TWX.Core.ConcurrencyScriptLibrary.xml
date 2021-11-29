@@ -1,174 +1,174 @@
 <Entities>
-        <ScriptFunctionLibraries>
-                <ScriptFunctionLibrary
-                        name="ConcurrencyFunctions"
-                        description="Library providing concurrent secure functions"
-                        className="twx.core.concurrency.ConcurrencyScriptLibrary"
-                        projectName="TWX.Core">
-                        <FunctionDefinitions>
-                                <FunctionDefinition name="queue_exists">
-                                        <ResultType baseType="BOOLEAN" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="name" ordinal="0" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>    
-                                <FunctionDefinition name="queue_delete">
-                                        <ResultType baseType="NOTHING" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="name" ordinal="0" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>                                 
-                                <FunctionDefinition name="queue_push">
-                                        <ResultType baseType="NOTHING" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="name" ordinal="0" />
-                                                <FieldDefinition baseType="JSON" name="value" ordinal="1" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>
-                                <FunctionDefinition name="queue_pop">
-                                        <ResultType baseType="JSON" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="name" ordinal="0" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>
-                                <FunctionDefinition name="queue_peek">
-                                        <ResultType baseType="JSON" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="name" ordinal="0" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>
-                                <FunctionDefinition name="queue_isEmtpy">
-                                        <ResultType baseType="BOOLEAN" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="name" ordinal="0" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>
-                                <FunctionDefinition name="queue_size">
-                                        <ResultType baseType="INTEGER" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="name" ordinal="0" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>
-                                <FunctionDefinition name="queue_clear">
-                                        <ResultType baseType="NOTHING" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="name" ordinal="0" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>
-                                <FunctionDefinition name="mtx_getTotalActiveLocks">
-                                        <ResultType baseType="LONG" description="Count" name="result" ordinal="0" />
-                                </FunctionDefinition>
-                                <FunctionDefinition name="mtx_getTotalActiveWaiting">
-                                        <ResultType baseType="LONG" description="Count" name="result" ordinal="0" />
-                                </FunctionDefinition>
-                                <FunctionDefinition name="mtx_getTotalThingsLocksUsage">
-                                        <ResultType baseType="LONG" description="Count" name="result" ordinal="0" />
-                                </FunctionDefinition>
-                                <FunctionDefinition name="mtx_exists">
-                                        <ResultType baseType="BOOLEAN" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="name" ordinal="0" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>    
-                                <FunctionDefinition name="mtx_delete">
-                                        <ResultType baseType="NOTHING" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="name" ordinal="0" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition> 
+  <ScriptFunctionLibraries>
+    <ScriptFunctionLibrary
+      name="ConcurrencyFunctions"
+      description="Library providing concurrent secure functions"
+      className="twx.core.concurrency.ConcurrencyScriptLibrary"
+      projectName="TWX.Core">
+      <FunctionDefinitions>
+        <FunctionDefinition name="queue_exists">
+          <ResultType baseType="BOOLEAN" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="name" ordinal="0" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="queue_delete">
+          <ResultType baseType="NOTHING" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="name" ordinal="0" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="queue_push">
+          <ResultType baseType="NOTHING" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="name" ordinal="0" />
+            <FieldDefinition baseType="JSON" name="value" ordinal="1" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="queue_pop">
+          <ResultType baseType="JSON" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="name" ordinal="0" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="queue_peek">
+          <ResultType baseType="JSON" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="name" ordinal="0" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="queue_isEmtpy">
+          <ResultType baseType="BOOLEAN" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="name" ordinal="0" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="queue_size">
+          <ResultType baseType="INTEGER" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="name" ordinal="0" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="queue_clear">
+          <ResultType baseType="NOTHING" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="name" ordinal="0" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="mtx_getTotalActiveLocks">
+          <ResultType baseType="LONG" description="Count" name="result" ordinal="0" />
+        </FunctionDefinition>
+        <FunctionDefinition name="mtx_getTotalActiveWaiting">
+          <ResultType baseType="LONG" description="Count" name="result" ordinal="0" />
+        </FunctionDefinition>
+        <FunctionDefinition name="mtx_getTotalThingsLocksUsage">
+          <ResultType baseType="LONG" description="Count" name="result" ordinal="0" />
+        </FunctionDefinition>
+        <FunctionDefinition name="mtx_exists">
+          <ResultType baseType="BOOLEAN" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="name" ordinal="0" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="mtx_delete">
+          <ResultType baseType="NOTHING" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="name" ordinal="0" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
 
-                                <FunctionDefinition name="mtx_lock">
-                                        <ResultType baseType="NOTHING" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="name" ordinal="0" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>
-                                <FunctionDefinition name="mtx_tryLock">
-                                        <ResultType baseType="BOOLEAN" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="name" ordinal="0" />
-                                                <FieldDefinition baseType="LONG" name="timeout" ordinal="1" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>
-                                <FunctionDefinition name="mtx_unlock">
-                                        <ResultType baseType="NOTHING" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="name" ordinal="0" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>
-                                <FunctionDefinition name="mtx_isLocked">
-                                        <ResultType baseType="BOOLEAN" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="name" ordinal="0" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>
-                                <FunctionDefinition name="mtx_callLocked">
-                                        <ResultType baseType="NOTHING" name="result" ordinal="0"/>
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" description="name of the mutex" name="name" ordinal="0" />
-                                                <FieldDefinition baseType="STRING" description="Function body to execute" name="function" ordinal="1"/>
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>
-                                <FunctionDefinition name="mtx_callTryLocked">
-                                        <ResultType baseType="BOOLEAN" name="result" ordinal="0"/>
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" description="name of the mutex" name="name" ordinal="0" />
-                                                <FieldDefinition baseType="STRING" description="Function body to execute" name="function" ordinal="1"/>
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>                                
-                                <FunctionDefinition name="atomic_exists">
-                                        <ResultType baseType="BOOLEAN" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="name" ordinal="0" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>    
-                                <FunctionDefinition name="atomic_delete">
-                                        <ResultType baseType="NOTHING" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="name" ordinal="0" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>                                
-                                <FunctionDefinition name="atomic_get">
-                                        <ResultType baseType="LONG" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="name" ordinal="0" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>
-                                <FunctionDefinition name="atomic_set">
-                                        <ResultType baseType="NOTHING" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="name" ordinal="0" />
-                                                <FieldDefinition baseType="LONG" name="value" ordinal="1" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>
-                                <FunctionDefinition name="atomic_incrementAndGet">
-                                        <ResultType baseType="LONG" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="name" ordinal="0" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>
-                                <FunctionDefinition name="atomic_decrementAndGet">
-                                        <ResultType baseType="LONG" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="name" ordinal="0" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>
-                                <FunctionDefinition name="atomic_addAndGet">
-                                        <ResultType baseType="LONG" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="name" ordinal="0" />
-                                                <FieldDefinition baseType="LONG" name="delta" ordinal="1" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>
-                                <FunctionDefinition name="atomic_compareAndSet">
-                                        <ResultType baseType="BOOLEAN" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="name" ordinal="0" />
-                                                <FieldDefinition baseType="LONG" name="expect" ordinal="1" />
-                                                <FieldDefinition baseType="LONG" name="update" ordinal="2" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>
-                        </FunctionDefinitions>
-                </ScriptFunctionLibrary>
-        </ScriptFunctionLibraries>
+        <FunctionDefinition name="mtx_lock">
+          <ResultType baseType="NOTHING" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="name" ordinal="0" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="mtx_tryLock">
+          <ResultType baseType="BOOLEAN" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="name" ordinal="0" />
+            <FieldDefinition baseType="LONG" name="timeout" ordinal="1" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="mtx_unlock">
+          <ResultType baseType="NOTHING" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="name" ordinal="0" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="mtx_isLocked">
+          <ResultType baseType="BOOLEAN" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="name" ordinal="0" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="mtx_callLocked">
+          <ResultType baseType="NOTHING" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" description="name of the mutex" name="name" ordinal="0" />
+            <FieldDefinition baseType="STRING" description="Function body to execute" name="function" ordinal="1" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="mtx_callTryLocked">
+          <ResultType baseType="BOOLEAN" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" description="name of the mutex" name="name" ordinal="0" />
+            <FieldDefinition baseType="STRING" description="Function body to execute" name="function" ordinal="1" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="atomic_exists">
+          <ResultType baseType="BOOLEAN" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="name" ordinal="0" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="atomic_delete">
+          <ResultType baseType="NOTHING" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="name" ordinal="0" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="atomic_get">
+          <ResultType baseType="LONG" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="name" ordinal="0" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="atomic_set">
+          <ResultType baseType="NOTHING" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="name" ordinal="0" />
+            <FieldDefinition baseType="LONG" name="value" ordinal="1" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="atomic_incrementAndGet">
+          <ResultType baseType="LONG" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="name" ordinal="0" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="atomic_decrementAndGet">
+          <ResultType baseType="LONG" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="name" ordinal="0" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="atomic_addAndGet">
+          <ResultType baseType="LONG" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="name" ordinal="0" />
+            <FieldDefinition baseType="LONG" name="delta" ordinal="1" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="atomic_compareAndSet">
+          <ResultType baseType="BOOLEAN" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="name" ordinal="0" />
+            <FieldDefinition baseType="LONG" name="expect" ordinal="1" />
+            <FieldDefinition baseType="LONG" name="update" ordinal="2" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+      </FunctionDefinitions>
+    </ScriptFunctionLibrary>
+  </ScriptFunctionLibraries>
 </Entities>
