@@ -202,13 +202,14 @@ public class ConcurrencyScriptLibrary {
             throw new Exception("Invalid number of arguments in mtx_callLocked");
         if (!(args[0] instanceof String))
             throw new Exception("The first mtx_callLocked argument must be a string with mutex name");
-        if (!(args[1] instanceof Integer) && !(args[1] instanceof Long) && !(args[1] instanceof Double) )
-        	throw new Exception("The second mtx_tryLock argument must be a number with ms");  
-        if (!(args[2] instanceof NativeFunction)) 
-            throw new Exception("The third mtx_callLocked argument must be a function");
+        if (!(args[1] instanceof NativeFunction)) 
+            throw new Exception("The second mtx_callLocked argument must be a function");
+        if (!(args[2] instanceof Integer) && !(args[1] instanceof Long) && !(args[1] instanceof Double) )
+            throw new Exception("The third mtx_tryLock argument must be a number with ms");  
+                      
         ReentrantLock mtx = MutexManager.getInstance().getById( (String) args[0] );
-        Long timeOut 		= argToLong(args[1]);
-        Boolean locked 		= mtx.tryLock((long) timeOut, TimeUnit.MILLISECONDS);
+        Long timeOut 		= argToLong(args[2]);
+        Boolean locked 	= mtx.tryLock((long) timeOut, TimeUnit.MILLISECONDS);
         if( locked ) {
             try {
                 MutexManager.getInstance().incrementLocks();
