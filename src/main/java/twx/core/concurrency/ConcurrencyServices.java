@@ -160,7 +160,7 @@ public class ConcurrencyServices extends Resource {
     /*
      * Atomic Services
      */
-    @ThingworxServiceDefinition(name = "atomic_deleteAll", description = "", category = "Atomic", isAllowOverride = true, aspects = {"isAsync:false" })
+    @ThingworxServiceDefinition(name = "atomic_deleteAll", description = "", category = "Atomic", isAllowOverride = false, aspects = {"isAsync:false"})
     @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
     public void atomic_deleteAll() {
         AtomicManager.getInstance().deleteAll();
@@ -215,9 +215,9 @@ public class ConcurrencyServices extends Resource {
         return AtomicManager.getInstance().addAndGet(name,delta);
     }
 
-    @ThingworxServiceDefinition(name = "atomic_addAndGet", description = "", category = "Atomic", isAllowOverride = false, aspects = {"isAsync:false" })
+    @ThingworxServiceDefinition(name = "atomic_compareAndSet", description = "", category = "Atomic", isAllowOverride = false, aspects = {"isAsync:false"})
     @ThingworxServiceResult(name = "Result", description = "", baseType = "BOOLEAN", aspects = {})
-    public Boolean atomic_addAndGet(
+    public Boolean atomic_compareAndSet(
             @ThingworxServiceParameter(name = "name", description = "", baseType = "STRING") String name,
             @ThingworxServiceParameter(name = "expect", description = "", baseType = "LONG") Long expect,
             @ThingworxServiceParameter(name = "update", description = "", baseType = "LONG") Long update

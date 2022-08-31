@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<Entities>
+   <ThingShapes>
+        <ThingShape
+         	aspect.isEditableExtensionObject="true"
+         	className="twx.core.concurrency.ActorTS"
+         	description=""
+         	name="ActorTS"
+         	projectName="TWX.Core">
+		</ThingShape>
+	</ThingShapes>
+</Entities>

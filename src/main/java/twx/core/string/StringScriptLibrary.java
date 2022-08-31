@@ -28,4 +28,21 @@ public class StringScriptLibrary {
         var array = Arrays.copyOfRange(args,1,args.length);
         return MessageFormat.format((String)args[0], array);            
     }
+    
+    public static Boolean str_match_topic(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
+    	if(args.length < 2 )
+    		throw new Exception("Invalid number of arguments in string_format");
+    	if (!(args[0] instanceof String))
+            throw new Exception("The first string_format argument must be a format string");
+    	if (!(args[1] instanceof String))
+            throw new Exception("The second string_format argument must be a format string");
+    	return match_topic( (String)args[0], (String)args[1] );
+    }
+    
+    public static Boolean match_topic(String topic, String subscribe ) throws Exception {
+    	Boolean ret = false;
+    	
+    	return ret;
+    }
+  
 }

@@ -2,14 +2,16 @@ package twx.core.concurrency;
 
 import org.json.JSONObject;
 
-import com.thingworx.dsl.utils.ValueConverter;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.NativeFunction;
 import org.mozilla.javascript.Scriptable;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
+
+import com.thingworx.dsl.utils.ValueConverter;
 
 import twx.core.concurrency.imp.MutexManager;
 import twx.core.concurrency.imp.QueueManager;
@@ -151,6 +153,8 @@ public class ConcurrencyScriptLibrary {
             throw new Exception("Invalid Number of Arguments in mtx_tryLock");
         if (!(args[0] instanceof String))
             throw new Exception("The first mtx_tryLock argument must be a string with mutex name");
+        if (!(args[1] instanceof Integer) && !(args[1] instanceof Long) && !(args[1] instanceof Double) )
+        	throw new Exception("The second mtx_tryLock argument must be a number with ms");        
         String name = (String) args[0];
         Long timeOut = argToLong(args[1]);
         return MutexManager.getInstance().tryLock(name, timeOut);
@@ -198,11 +202,14 @@ public class ConcurrencyScriptLibrary {
             throw new Exception("Invalid number of arguments in mtx_callLocked");
         if (!(args[0] instanceof String))
             throw new Exception("The first mtx_callLocked argument must be a string with mutex name");
+        if (!(args[1] instanceof Integer) && !(args[1] instanceof Long) && !(args[1] instanceof Double) )
+        	throw new Exception("The second mtx_tryLock argument must be a number with ms");  
         if (!(args[2] instanceof NativeFunction)) 
-            throw new Exception("The second mtx_callLocked argument must be a function");
+            throw new Exception("The third mtx_callLocked argument must be a function");
         ReentrantLock mtx = MutexManager.getInstance().getById( (String) args[0] );
-        Boolean locked = mtx.tryLock();
-        {
+        Long timeOut 		= argToLong(args[1]);
+        Boolean locked 		= mtx.tryLock((long) timeOut, TimeUnit.MILLISECONDS);
+        if( locked ) {
             try {
                 MutexManager.getInstance().incrementLocks();
                 ((NativeFunction) args[1]).call(cx, func.getParentScope(), me, new Object[] {});
