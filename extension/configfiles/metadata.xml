@@ -4,7 +4,7 @@
         <ExtensionPackage
          dependsOn=""
          description=""
-         minimumThingWorxVersion="9.1.0"
+         minimumThingWorxVersion="9.3.0"
          name="twx.core.extension"
          packageVersion="1.0.0"
          vendor="">
