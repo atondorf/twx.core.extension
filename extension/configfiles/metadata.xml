@@ -2,14 +2,14 @@
 <Entities>
     <ExtensionPackages>
         <ExtensionPackage
-         dependsOn=""
-         description=""
-         minimumThingWorxVersion="9.3.0"
-         name="twx.core.extension"
-         packageVersion="1.0.0"
-         vendor="">
-         <JarResources>
-         </JarResources>
+                dependsOn=""
+                description=""
+                minimumThingWorxVersion="9.3.0"
+                name="twx.core.extension"
+                packageVersion="1.0.0"
+                vendor="">
+            <JarResources>
+            </JarResources>
         </ExtensionPackage>
     </ExtensionPackages>
 </Entities>

@@ -19,7 +19,6 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
     // this way you can get jars from a central repository ...
     implementation group: 'org.json', name: 'json', version: '20171018'
-    implementation group: 'io.netty', name: 'netty-all', version: '4.1.30.Final'
     implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
     implementation fileTree(dir: rootProject.ext.commonJarDir, include: ['*.jar'])
     packageDependencies fileTree(dir: rootProject.ext.localJarDir, include: ['*.jar'])

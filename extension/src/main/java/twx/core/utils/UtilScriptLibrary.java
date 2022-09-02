@@ -2,6 +2,7 @@ package twx.core.utils;
 
 import ch.qos.logback.classic.Logger;
 import com.thingworx.logging.LogUtilities;
+import com.thingworx.dsl.engine.adapters.ThingworxEntityAdapter;
 import java.util.Arrays;
 import java.text.MessageFormat;
 import org.mozilla.javascript.*;
@@ -50,9 +51,9 @@ public class UtilScriptLibrary {
       json.put("getName", meObj.getClass().getName());
       json.put("getSimpleName", meObj.getClass().getSimpleName());
       json.put("getCanonicalName", meObj.getClass().getCanonicalName());
-/*
-      if (meObj instanceof NativeJavaObject) {
-        NativeJavaObject adapter = (NativeJavaObject) meObj;
+
+      if (meObj instanceof ThingworxEntityAdapter) {
+        ThingworxEntityAdapter adapter = (ThingworxEntityAdapter) meObj;
         Object obj = adapter.get("name", me);
         json.put("name", obj);
       }
@@ -77,11 +78,11 @@ public class UtilScriptLibrary {
     json.put("getSimpleName", meObj.getClass().getSimpleName());
     json.put("getCanonicalName", meObj.getClass().getCanonicalName());
 
-    if (meObj instanceof NativeJavaObject) {
-      json.put("NativeJavaObject", true);
+    if (meObj instanceof ThingworxEntityAdapter) {
+      json.put("isThingworxEntityAdapter", true);
       json.put("me", formatScriptable((Scriptable) meObj));
     } else {
-      json.put("NativeJavaObject", false);
+      json.put("isThingworxEntityAdapter", false);
     }
     return json;
   }
