@@ -1,26 +1,29 @@
 <Entities>
-  <ScriptFunctionLibraries>
-    <ScriptFunctionLibrary
-      name="StringFunctions"
-      description="String library"
-      className="twx.core.string.StringScriptLibrary"
-      projectName="TWX.Core">
-      <FunctionDefinitions>
-        <FunctionDefinition name="str_format" description="">
-          <ResultType baseType="STRING" name="result" ordinal="0" />
-          <ParameterDefinitions>
-            <FieldDefinition baseType="STRING" name="fmt" ordinal="0" />
-            <FieldDefinition baseType="STRING" name="value" ordinal="1" />
-          </ParameterDefinitions>
-        </FunctionDefinition>
-        <FunctionDefinition name="str_message_format" description="">
-          <ResultType baseType="STRING" name="result" ordinal="0" />
-          <ParameterDefinitions>
-            <FieldDefinition baseType="STRING" name="fmt" ordinal="0" />
-            <FieldDefinition baseType="STRING" name="value" ordinal="1" />
-          </ParameterDefinitions>
-        </FunctionDefinition>
-      </FunctionDefinitions>
-    </ScriptFunctionLibrary>
-  </ScriptFunctionLibraries>
+	<ScriptFunctionLibraries>
+		<ScriptFunctionLibrary name="StringFunctions" description="String library" className="twx.core.string.StringScriptLibrary" projectName="TWX.Core">
+			<FunctionDefinitions>
+				<FunctionDefinition name="str_format" description="">
+					<ResultType baseType="STRING" name="result" ordinal="0"/>
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="fmt" ordinal="0"/>
+						<FieldDefinition baseType="STRING" name="value" ordinal="1"/>
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<FunctionDefinition name="str_message_format" description="">
+					<ResultType baseType="STRING" name="result" ordinal="0"/>
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="fmt" ordinal="0"/>
+						<FieldDefinition baseType="STRING" name="value" ordinal="1"/>
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<FunctionDefinition name="str_match_topic" description="">
+					<ResultType baseType="BOOLEAN" name="result" ordinal="0"/>
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="topicFilter" ordinal="0"/>
+						<FieldDefinition baseType="STRING" name="topicName" ordinal="1"/>
+					</ParameterDefinitions>
+				</FunctionDefinition>
+			</FunctionDefinitions>
+		</ScriptFunctionLibrary>
+	</ScriptFunctionLibraries>
 </Entities>

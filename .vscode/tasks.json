@@ -3,18 +3,18 @@
 	"tasks": [
 		{
 			"type": "gradle",
-			"id": "f:\\Projekte_DSP_9.2\\TWX.Core.Extensionjartwx.core.extension",
+			"id": "f:\\Projekte_DSP_9.3\\TWX.Core.Extensionjartwx.core",
 			"script": "jar",
 			"description": "Assembles a jar archive containing the main classes.",
 			"group": {
 				"kind": "build",
 				"isDefault": true
 			},
-			"project": "twx.core.extension",
-			"buildFile": "F:\\Projekte_DSP_9.2\\TWX.Core.Extension\\build.gradle",
-			"rootProject": "twx.core.extension",
-			"projectFolder": "f:\\Projekte_DSP_9.2\\TWX.Core.Extension",
-			"workspaceFolder": "f:\\Projekte_DSP_9.2\\TWX.Core.Extension",
+			"project": "twx.core",
+			"buildFile": "F:\\Projekte_DSP_9.3\\TWX.Core.Extension\\build.gradle",
+			"rootProject": "twx.core",
+			"projectFolder": "f:\\Projekte_DSP_9.3\\TWX.Core.Extension",
+			"workspaceFolder": "f:\\Projekte_DSP_9.3\\TWX.Core.Extension",
 			"args": "",
 			"javaDebug": false,
 			"problemMatcher": [
