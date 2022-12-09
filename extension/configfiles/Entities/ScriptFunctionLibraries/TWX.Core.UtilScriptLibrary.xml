@@ -9,33 +9,14 @@
         <FunctionDefinition name="src_getInfo" description="Creates a JSON containing current position in SRC ...">
           <ResultType baseType="JSON" name="result" ordinal="0" />
         </FunctionDefinition>
-        <FunctionDefinition name="exc_message" description="Creates a JSON that can be thrown as exception ...">
-          <ResultType baseType="JSON" name="result" ordinal="0" />
-          <ParameterDefinitions>
-						<FieldDefinition baseType="STRING" name="message" ordinal="0"/>
-					</ParameterDefinitions>
-        </FunctionDefinition>
-        <FunctionDefinition name="exc_format" description="Creates a JSON that can be thrown as exception using Message.format() ...">
+        <FunctionDefinition name="exc_create" description="Creates a JSON that can be thrown as exception using Message.format() ...">
           <ResultType baseType="JSON" name="result" ordinal="0" />
           <ParameterDefinitions>
 						<FieldDefinition baseType="STRING" name="fmt" ordinal="0"/>
 						<FieldDefinition baseType="STRING" name="value" ordinal="1"/>
 					</ParameterDefinitions>
         </FunctionDefinition>
-        <FunctionDefinition name="exc_strFormat" description="Creates a JSON that can be thrown as exception using String.format() ...">
-          <ResultType baseType="JSON" name="result" ordinal="0" />
-          <ParameterDefinitions>
-						<FieldDefinition baseType="STRING" name="fmt" ordinal="0"/>
-						<FieldDefinition baseType="STRING" name="value" ordinal="1"/>
-					</ParameterDefinitions>
-        </FunctionDefinition>
-        <FunctionDefinition name="exc_throw" description="Throws a native RuntimeException with given message">
-          <ResultType baseType="NOTHING" name="result" ordinal="0" />
-          <ParameterDefinitions>
-            <FieldDefinition baseType="STRING" name="message" ordinal="0" />
-          </ParameterDefinitions>
-        </FunctionDefinition>
-        <FunctionDefinition name="exc_throwFormat" description="Throws a native RuntimeException with given Message.format() ...">
+        <FunctionDefinition name="exc_throw" description="Throws a native RuntimeException with given Message.format() ...">
           <ResultType baseType="NOTHING" name="result" ordinal="0" />
           <ParameterDefinitions>
             <FieldDefinition baseType="STRING" name="fmt" ordinal="0" />

@@ -47,40 +47,11 @@ public class UtilScriptLibrary {
     return json;
   }
 
-  public static JSONObject exc_message(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
-    if (args.length != 1)
-      throw new IllegalArgumentException("Invalid Number of Arguments in exc_message");
-    if (!(args[0] instanceof String))
-      throw new IllegalArgumentException("The first exc_message argument must be a string with queue name");
-    var message = (String) args[0];
-
-    JSONObject json = UtilScriptLibrary.src_getInfo(cx, me, args, funObj);
-    json.put("message", message);
-
-    return json;
-  }
-
-  public static JSONObject exc_format(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
+  public static JSONObject exc_create(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
     if (args.length < 1)
       throw new IllegalArgumentException("Invalid number of arguments in exc_format");
     if (!(args[0] instanceof String))
       throw new IllegalArgumentException("The first exc_format argument must be a format string");
-    
-    var format_str = (String) args[0];
-    var array = Arrays.copyOfRange(args, 1, args.length);
-    var message = String.format((String) args[0], array);
-
-    JSONObject json = UtilScriptLibrary.src_getInfo(cx, me, args, funObj);
-    json.put("message", message);
-
-    return json;
-  }
-
-  public static JSONObject exc_strFormat(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
-    if (args.length < 1)
-      throw new IllegalArgumentException("Invalid number of arguments in exc_strFormat");
-    if (!(args[0] instanceof String))
-      throw new IllegalArgumentException("The first exc_strFormat argument must be a format string");
     
     var format_str = (String) args[0];
     var array = Arrays.copyOfRange(args, 1, args.length);
@@ -93,15 +64,6 @@ public class UtilScriptLibrary {
   }
 
   public static void exc_throw(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
-    if (args.length != 1)
-      throw new IllegalArgumentException("Invalid Number of Arguments in exc_throw");
-    if (!(args[0] instanceof String))
-      throw new IllegalArgumentException("The first exc_throw argument must be a string with queue name");
-    var message = (String) args[0];
-    throw new RuntimeException(message);
-  }
-
-  public static void exc_throwFormat(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
     if (args.length < 1)
       throw new IllegalArgumentException("Invalid number of arguments in exc_strFormat");
     if (!(args[0] instanceof String))

@@ -4,7 +4,7 @@
         <ThingShape
          	aspect.isEditableExtensionObject="true"
          	className="twx.core.concurrency.ActorTS"
-         	description=""
+         	description="A Simple Actor framework inside thingworx, using events and thus the main event subsystem pool"
          	name="ActorTS"
          	projectName="TWX.Core">
 		</ThingShape>
