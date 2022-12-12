@@ -8,39 +8,17 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import twx.core.concurrency.imp.AbstractActor;
-import twx.core.concurrency.imp.ActorManager;
-import twx.core.concurrency.imp.Message;
-
 public class App {
 
-    class Actor extends AbstractActor {
-		private final String dest;
-		public Actor(ActorManager system, String name, String Dest ) {
-			super(system, name);
-			this.dest = Dest;
-		}
-		@Override
-		protected void processMessage(Message message) throws Exception {
-			logger.info( this.getActorID() + ": Ping");
-			Thread.sleep(1000);
-			logger.info( this.getActorID() + ": Pong");
-			this.getActorManager().tell(this.dest, new Message(this,null) );
-		}
-	}
-
-    final static Logger 		logger  = LoggerFactory.getLogger(App.class);
-    final static ActorManager 	ActrSys = new ActorManager(1);
-
+	final static Logger 		logger  = LoggerFactory.getLogger(App.class);
+    
     public String getGreeting() {
         return "Hello World!";
     }
 
     public void test_1() throws Exception {
-    	var actor_1 = new Actor(ActrSys,"Actor_1","Actor_2");
-    	var actor_2 = new Actor(ActrSys,"Actor_2","Actor_1");
-    	ActrSys.tell("Actor_1", new Message(null,null) );
-    }
+
+	}
     
     public void match1() throws Exception  {
     	String topic	= "SIG";
@@ -57,7 +35,7 @@ public class App {
         logger.info("---------- Start-App ----------");
         
         try {
-        	// 	app.runApp();
+        	// 	app.runApp();B
         	//	app.runThingTasks2();
         	// app.test_1();
         	app.match1();
@@ -69,7 +47,6 @@ public class App {
         		System.out.println(s);
         	}
 */  
-        	ActrSys.shutdown();
         }
         catch(Exception ex) {
         	logger.error(ex.getMessage());

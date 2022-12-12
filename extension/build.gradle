@@ -5,8 +5,8 @@ plugins {
 
 project.ext {
     projectName     = rootProject.name + '.' + project.name
-    extensionJar    = projectName + '_' + version + '.jar'
-    zipName         = projectName + '_' + version + '.zip'
+    extensionJar    = projectName + '_' + rootProject.ext.base_version + '.jar'
+    zipName         = projectName + '_' + rootProject.ext.base_version + '.zip'
     baseDir         = projectDir
     uiDir           = "${baseDir}/ui"                     // if there are any widgets
     configDir       = "${baseDir}/configfiles"            // folder location of the metadata.xml file
@@ -49,7 +49,7 @@ def updateMetadata() {
     def parser = new XmlParser()
     def xml = parser.parse(file)
     // update the version number to current one ...
-    xml.ExtensionPackages.ExtensionPackage.@packageVersion = rootProject.ext.packageVersion
+    xml.ExtensionPackages.ExtensionPackage.@packageVersion = rootProject.ext.base_version
     xml.ExtensionPackages.ExtensionPackage.@name = projectName
     // add dependency to own jar
     xml.ExtensionPackages.ExtensionPackage.JarResources[0]?.appendNode('FileResource', [type: 'JAR', file: project.ext.extensionJar])
