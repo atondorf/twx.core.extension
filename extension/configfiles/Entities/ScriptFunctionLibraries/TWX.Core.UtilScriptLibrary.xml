@@ -1,0 +1,60 @@
+<Entities>
+  <ScriptFunctionLibraries>
+    <ScriptFunctionLibrary
+      name="UtilFunctions"
+      description="Util library"
+      className="twx.core.utils.UtilScriptLibrary"
+      projectName="TWX.Core">
+      <FunctionDefinitions>
+        <FunctionDefinition name="src_getInfo" description="Creates a JSON containing current position in SRC ...">
+          <ResultType baseType="JSON" name="result" ordinal="0" />
+        </FunctionDefinition>
+        <FunctionDefinition name="exc_create" description="Creates a JSON that can be thrown as exception using Message.format() ...">
+          <ResultType baseType="JSON" name="result" ordinal="0" />
+          <ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="fmt" ordinal="0"/>
+						<FieldDefinition baseType="STRING" name="value" ordinal="1"/>
+					</ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="exc_throw" description="Throws a native RuntimeException with given Message.format() ...">
+          <ResultType baseType="NOTHING" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="STRING" name="fmt" ordinal="0" />
+            <FieldDefinition baseType="STRING" name="value" ordinal="1"/>
+          </ParameterDefinitions>
+        </FunctionDefinition>        
+
+        <FunctionDefinition name="script_info" description="">
+          <ResultType baseType="JSON" name="result" ordinal="0" />
+        </FunctionDefinition>
+        <FunctionDefinition name="me_info" description="">
+          <ResultType baseType="JSON" name="result" ordinal="0" />
+        </FunctionDefinition>
+        <FunctionDefinition name="me_thing_info" description="">
+          <ResultType baseType="JSON" name="result" ordinal="0" />
+        </FunctionDefinition>
+        <FunctionDefinition name="me_native_counter" description="">
+          <ResultType baseType="JSON" name="result" ordinal="0" />
+        </FunctionDefinition>
+        <FunctionDefinition name="me_arg_test" description="">
+          <ResultType baseType="JSON" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="JSON" name="value" ordinal="0" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="me_json_test_1" description="">
+          <ResultType baseType="JSON" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="JSON" name="value" ordinal="0" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+        <FunctionDefinition name="me_json_test_2" description="">
+          <ResultType baseType="JSON" name="result" ordinal="0" />
+          <ParameterDefinitions>
+            <FieldDefinition baseType="JSON" name="value" ordinal="0" />
+          </ParameterDefinitions>
+        </FunctionDefinition>
+      </FunctionDefinitions>
+    </ScriptFunctionLibrary>
+  </ScriptFunctionLibraries>
+</Entities>
