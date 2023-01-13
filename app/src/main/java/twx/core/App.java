@@ -4,50 +4,111 @@
 package twx.core;
 
 import java.util.Scanner;
+import java.util.Date;
+import java.util.TimeZone;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Calendar;
 
+import org.joda.time.*;
+import org.joda.time.format.*;
+import org.joda.time.Period;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class App {
 
 	final static Logger 		logger  = LoggerFactory.getLogger(App.class);
+  
+    public void time1() throws Exception {
+        var date = new Date();
+        logger.info( date.toString() );
+        logger.info( java.util.TimeZone.getDefault().getID() );
+
+        var zones = TimeZone.getAvailableIDs();
+        for( var z : zones ) {
+            logger.info( z.toString() );
+        }
+
+        //get Calendar instance
+        Calendar now = Calendar.getInstance();
     
-    public String getGreeting() {
-        return "Hello World!";
+        //get current TimeZone using getTimeZone method of Calendar class
+        TimeZone timeZone = now.getTimeZone();
+    
+        //display current TimeZone using getDisplayName() method of TimeZone class
+        System.out.println("Current TimeZone is : " + timeZone.getDisplayName());
+
+        System.currentTimeMillis();
+        
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.command("powershell.exe", "/c", "Get-TimeZone");
+
+        Process process = processBuilder.start();
+        StringBuilder output = new StringBuilder();
+
+		BufferedReader reader = new BufferedReader( new InputStreamReader(process.getInputStream()));
+        String line;
+		while ((line = reader.readLine()) != null) {
+			output.append(line + "\n");
+		}      
+        logger.info( output.toString() );
     }
 
-    public void test_1() throws Exception {
+    public void joda_1() throws Exception {
+        DateTime        dt = new DateTime();
+        DateTimeZone    tz = DateTimeZone.forID("Europe/Berlin");
+        dt = dt.plus( Period.months(1) );
+        System.out.println( tz.getOffset(dt.getMillis()) );
+/*
+        for( int id = 0; id < 6; id++ ) {
+            System.out.println( dt.toString("dd:MM:yy") + "    " + dt.withZone(tz).toString("dd:MM:yy") );
+            dt = dt.plus( Period.months(1));
+        }
+ 
+        long sys_current = System.currentTimeMillis();
+        long dt_current = dt.getMillis();
+        long current = dt_current;
+        for (int i=0; i < 10; i++)
+        {
+            long next = tz.nextTransition(current);
+            if (current == next)
+            {
+                break;
+            }
+            System.out.println ( new DateTime(next) + " Into DST? "  + !tz.isStandardOffset(next) );
+            current = next;
+        }
+*/
 
-	}
-    
-    public void match1() throws Exception  {
-    	String topic	= "SIG";
-    	String filter 	= "SIG/#";
-    	
-		boolean match = twx.core.string.StringTopicMatcher.match(filter, topic);;
-		logger.info( "Pattern: " + filter + "  Topic: " +  topic + "  Match: " +  match);
     }
-    
+
+    public void joda_2() throws Exception {
+        DateTime dt = new DateTime();
+        var dtBerlin = dt.withZone(DateTimeZone.forID("Europe/Berlin"));
+
+        for (var id : DateTimeZone.getAvailableIDs()) {
+            System.out.println(id); 
+        }
+
+        System.out.println( dt );
+        System.out.println( dtBerlin );
+        System.out.println( dtBerlin.toString() );
+
+        System.out.println( DateTimeZone.forID("Europe/Berlin").toString() );
+        
+    }
+
     public static void main(String[] args) {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
     	var app 	= new App();
         var scanner	= new Scanner(System.in);
         
         logger.info("---------- Start-App ----------");
-        
         try {
-        	// 	app.runApp();B
-        	//	app.runThingTasks2();
-        	// app.test_1();
-        	app.match1();
-/*        	
-        	while (true){
-        		String s = scanner.next();
-        		if(s.equals("q")) 
-        			break;
-        		System.out.println(s);
-        	}
-*/  
-        }
+            app.joda_1();
+		}
         catch(Exception ex) {
         	logger.error(ex.getMessage());
         }

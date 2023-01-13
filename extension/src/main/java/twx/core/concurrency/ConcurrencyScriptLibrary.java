@@ -7,17 +7,39 @@ import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.NativeFunction;
 import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.thingworx.dsl.engine.DSLConverter;
 import com.thingworx.dsl.utils.ValueConverter;
+import com.thingworx.security.authentication.AuthenticationUtilities;
+import com.thingworx.types.BaseTypes;
+import com.thingworx.types.primitives.StringPrimitive;
 
 import twx.core.concurrency.imp.MutexManager;
 import twx.core.concurrency.imp.QueueManager;
 import twx.core.concurrency.imp.AtomicManager;
 
 public class ConcurrencyScriptLibrary {
+
+	//// Require  ////
+
+    public static void requrire_core_concurrency(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
+        AuthenticationUtilities.validateUserSecurityContext();
+        ScriptableObject.defineClass(me, ScriptableAtomic.class);
+    }
+
+    public static Object core_getAtomic(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
+        AuthenticationUtilities.validateUserSecurityContext();
+        if (args.length != 1)
+            throw new Exception("Invalid Number of Arguments in queue_exists");
+        DSLConverter.convertValues(args, me);
+        StringPrimitive atomicId = (StringPrimitive)BaseTypes.ConvertToPrimitive(args[0], BaseTypes.STRING);
+        Object[] args_new = { atomicId.getValue() };
+        return cx.newObject(me, "ScriptableAtomic", args_new);
+    }
 
     protected static Long argToLong(Object arg) throws Exception {
         if( arg instanceof Double )

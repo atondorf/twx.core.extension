@@ -2,19 +2,36 @@ package twx.core.utils;
 
 import ch.qos.logback.classic.Logger;
 import com.thingworx.logging.LogUtilities;
+import com.thingworx.common.utils.DateUtilities;
+import com.thingworx.dsl.engine.DSLConverter;
 import com.thingworx.dsl.engine.adapters.ThingworxEntityAdapter;
+import com.thingworx.security.authentication.AuthenticationUtilities;
 import java.util.Arrays;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.text.MessageFormat;
+import java.util.LinkedList;
+import java.util.List;
 import org.mozilla.javascript.*;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import twx.core.utils.Counter;
 
 public class UtilScriptLibrary {
   protected static final Logger _logger = LogUtilities.getInstance().getScriptLogger(UtilScriptLibrary.class);
+  
+  //// Require  ////
 
-  public static JSONObject src_getInfo(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
+  public static void require_core_util(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
+    AuthenticationUtilities.validateUserSecurityContext();
+    ScriptableObject.defineClass(me, MultiTimer.class);
+  }
+  
+  //// Internal Helpers and Tools  ////
 
+  public static JSONObject core_getSrcInfo(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
+    AuthenticationUtilities.validateUserSecurityContext();    
     JSONObject json = new JSONObject();
     String name = "me";
     Object meObj = me.get(name, me);
@@ -47,110 +64,64 @@ public class UtilScriptLibrary {
     return json;
   }
 
-  public static JSONObject exc_create(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
+  public static Object core_createException(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
+    AuthenticationUtilities.validateUserSecurityContext();        
     if (args.length < 1)
       throw new IllegalArgumentException("Invalid number of arguments in exc_format");
     if (!(args[0] instanceof String))
       throw new IllegalArgumentException("The first exc_format argument must be a format string");
-    
+      
     var format_str = (String) args[0];
     var array = Arrays.copyOfRange(args, 1, args.length);
-    var message = MessageFormat.format((String)args[0], array); 
+    var message = MessageFormat.format((String) args[0], array);
 
-    JSONObject json = UtilScriptLibrary.src_getInfo(cx, me, args, funObj);
+    JSONObject json = UtilScriptLibrary.core_getSrcInfo(cx, me, args, funObj);
     json.put("message", message);
-
     return json;
   }
 
-  public static void exc_throw(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
+  public static void core_throwException(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
+    AuthenticationUtilities.validateUserSecurityContext();
     if (args.length < 1)
       throw new IllegalArgumentException("Invalid number of arguments in exc_strFormat");
     if (!(args[0] instanceof String))
       throw new IllegalArgumentException("The first exc_strFormat argument must be a format string");
-    
+
     var format_str = (String) args[0];
     var array = Arrays.copyOfRange(args, 1, args.length);
-    var message = MessageFormat.format((String)args[0], array); 
+    var message = MessageFormat.format((String) args[0], array);
 
     throw new RuntimeException(message);
   }
 
-  public static JSONObject formatScriptable(Scriptable scr) {
-    JSONObject json = new JSONObject();
-    Object[] ids = scr.getIds();
-    for (Object id : ids) {
-      if (id instanceof String) {
-        String name = (String) id;
-        Object value = scr.get(name, scr);
-        if (value instanceof NativeJavaObject) {
-          value = ((NativeJavaObject) value).unwrap();
-        } else if (value instanceof Undefined) {
-          value = null;
-        }
-        if (name == "me") {
-          value = scr.get(name, scr).getClass().getName();
-        }
-        json.put(name, value);
-      }
+  //// System  ////
+
+  protected static Object[] callPowerShell(String script) throws Exception {
+    List<String> list = new LinkedList<>();
+
+    ProcessBuilder processBuilder = new ProcessBuilder();
+    processBuilder.command("powershell.exe", "/c", script);
+
+    Process process = processBuilder.start();
+
+    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+    String line = null;
+    while ((line = reader.readLine()) != null) {
+      list.add(line);
     }
-    return json;
+    return list.toArray();
   }
 
-  public static JSONObject script_info(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
-    JSONObject json = formatScriptable(me);
-    return json;
-  }
-
-  public static JSONObject me_info(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
-    JSONObject json = new JSONObject();
-    json.put("function", "me_info");
-    String name = "me";
-    Object meObj = me.get(name, me);
-    if (meObj == null) {
-      json.put("me", "NULL");
-    } else {
-      json.put("toString", meObj.toString());
-      json.put("getName", meObj.getClass().getName());
-      json.put("getSimpleName", meObj.getClass().getSimpleName());
-      json.put("getCanonicalName", meObj.getClass().getCanonicalName());
-
-      if (meObj instanceof ThingworxEntityAdapter) {
-        ThingworxEntityAdapter adapter = (ThingworxEntityAdapter) meObj;
-        Object obj = adapter.get("name", me);
-        json.put("name", obj);
-      }
-
-      // json.put("Properties", formatScriptable((Scriptable)meObj) );
-
-      /*
-       * if( meObj instanceof Scriptable ) { json.put("isScriptable", true );
-       * json.put("me", formatScriptable((Scriptable)meObj)); } else {
-       * json.put("isScriptable", false); }
-       */
+  public static Integer core_getTimeZoneOffsetFromSystem(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
+    String script = "$now = date; (($now)-($now).touniversaltime()).TotalMinutes";
+    Object[] res = callPowerShell(script);
+    if (res.length > 0) {
+      return Integer.parseInt((String) res[0]);
     }
-    return json;
+    return 0;
   }
 
-  public static JSONObject me_thing_info(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
-    JSONObject json = new JSONObject();
-    Object meObj = me.get("me", me);
-
-    json.put("toString", meObj.toString());
-    json.put("getName", meObj.getClass().getName());
-    json.put("getSimpleName", meObj.getClass().getSimpleName());
-    json.put("getCanonicalName", meObj.getClass().getCanonicalName());
-
-    if (meObj instanceof ThingworxEntityAdapter) {
-      json.put("isThingworxEntityAdapter", true);
-      json.put("me", formatScriptable((Scriptable) meObj));
-    } else {
-      json.put("isThingworxEntityAdapter", false);
-    }
-    return json;
-  }
-
-  public static JSONObject me_arg_test(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
+  public static JSONObject core_argTest(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
     JSONObject json = new JSONObject();
     json.put("Greet", "Hello Thingworx!");
 
@@ -171,34 +142,19 @@ public class UtilScriptLibrary {
       }
       json.put("ARG", sub_json);
     }
-
     return json;
   }
 
-  public static Scriptable me_native_counter(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
-    ScriptableObject.defineClass(me, Counter.class);
-
-    Object[] arg = { Integer.valueOf(7) };
-    Scriptable myCounter = cx.newObject(me, "Counter", arg);
-    return myCounter;
-  }
-
-  public static JSONObject me_json_test_1(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
+  public static JSONObject core_Test(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
     JSONObject json = new JSONObject();
-    json.put("Greet", "Hello Thingworx!");
+    JSONArray  array = new JSONArray();
+    json.put("meClass", me.getClassName() );
 
-    return json;
-  }
-
-  public static JSONObject me_json_test_2(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
-    JSONObject json = new JSONObject();
-    json.put("Greet", "Hello Thingworx!");
-
-    var obj = args[0];
-    json.put("ClassName", obj.getClass().getName());
-    json.put("ClassSimpleName", obj.getClass().getSimpleName());
-    json.put("ClassCanonicalName", obj.getClass().getCanonicalName());
-
+    var ids = ScriptableObject.getPropertyIds(me);
+    for( Object i : ids ) {
+      array.put(i);
+    }
+    json.put("Array", array);
     return json;
   }
 
