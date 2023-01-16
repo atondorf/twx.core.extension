@@ -1,7 +1,7 @@
 <Entities>
 	<Resources>
 		<Resource
-			name="TWX.Core.DateServices"
+			name="DateServices"
 			className="twx.core.date.DateServices"
 			description="Ressource providing basic Date Operations with TimeZone"
 			projectName="TWX.Core"

@@ -15,13 +15,30 @@ import com.thingworx.security.authentication.AuthenticationUtilities;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import twx.core.date.scriptable.TimeZone;
+
 public class DateScriptLibrary {
     
 	//// Require  ////
 
     public static void requrire_core_date(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
         AuthenticationUtilities.validateUserSecurityContext();
-        //  ScriptableObject.defineClass(me, MultiTimer.class);
+        ScriptableObject.defineClass(me, TimeZone.class);
+    }
+
+    public static Object core_getTimeZone(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
+        AuthenticationUtilities.validateUserSecurityContext();
+        if (args.length != 1)
+            throw new Exception("Invalid Number of Arguments in core_getTimeZone");
+        DSLConverter.convertValues(args, me);
+        // Check if the class is already registered ...
+        var obj  = ScriptableObject.getProperty(me,"TimeZone");
+        if( obj == Scriptable.NOT_FOUND )
+            ScriptableObject.defineClass(me, TimeZone.class);
+        // create and return ... 
+        StringPrimitive id = (StringPrimitive)BaseTypes.ConvertToPrimitive(args[0], BaseTypes.STRING);
+        Object[] args_new = { id.getValue() };
+        return cx.newObject(me, "TimeZone", args_new);
     }
 
     //// String Format and Tools  ////

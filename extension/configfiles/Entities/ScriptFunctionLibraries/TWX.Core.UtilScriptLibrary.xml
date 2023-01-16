@@ -46,6 +46,12 @@
 				<FunctionDefinition name="core_Test" description="">
 					<ResultType baseType="JSON" name="result" ordinal="0" />
 				</FunctionDefinition>
+				<FunctionDefinition name="core_hasProperty" description="">
+					<ResultType baseType="BOOLEAN" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
 			</FunctionDefinitions>
 		</ScriptFunctionLibrary>
 	</ScriptFunctionLibraries>

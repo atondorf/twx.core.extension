@@ -181,7 +181,7 @@ public class ConcurrencyServices extends Resource {
 
     @ThingworxServiceDefinition(name = "atomic_get", description = "", category = "Atomic", isAllowOverride = false, aspects = {"isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "LONG", aspects = {})
-    public Long atomic_get(@ThingworxServiceParameter(name = "name", description = "", baseType = "STRING") String name) {
+    public Integer atomic_get(@ThingworxServiceParameter(name = "name", description = "", baseType = "STRING") String name) {
         return AtomicManager.getInstance().get(name);
     }
 
@@ -189,28 +189,28 @@ public class ConcurrencyServices extends Resource {
     @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
     public void atomic_set(
         @ThingworxServiceParameter(name = "name", description = "", baseType = "STRING") String name,
-        @ThingworxServiceParameter(name = "value", description = "", baseType = "LONG") Long value
+        @ThingworxServiceParameter(name = "value", description = "", baseType = "INTEGER") Integer value
     ) {
         AtomicManager.getInstance().set(name,value);
     }
 
     @ThingworxServiceDefinition(name = "atomic_incrementAndGet", description = "", category = "Atomic", isAllowOverride = false, aspects = {"isAsync:false" })
-    @ThingworxServiceResult(name = "Result", description = "", baseType = "LONG", aspects = {})
-    public Long atomic_incrementAndGet(@ThingworxServiceParameter(name = "name", description = "", baseType = "STRING") String name ) {
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "INTEGER", aspects = {})
+    public Integer atomic_incrementAndGet(@ThingworxServiceParameter(name = "name", description = "", baseType = "STRING") String name ) {
         return AtomicManager.getInstance().incrementAndGet(name);
     }
 
     @ThingworxServiceDefinition(name = "atomic_decrementAndGet", description = "", category = "Atomic", isAllowOverride = false, aspects = {"isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "LONG", aspects = {})
-    public Long atomic_decrementAndGet(@ThingworxServiceParameter(name = "name", description = "", baseType = "STRING") String name ) {
+    public Integer atomic_decrementAndGet(@ThingworxServiceParameter(name = "name", description = "", baseType = "STRING") String name ) {
         return AtomicManager.getInstance().decrementAndGet(name);
     }
 
     @ThingworxServiceDefinition(name = "atomic_addAndGet", description = "", category = "Atomic", isAllowOverride = false, aspects = {"isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "LONG", aspects = {})
-    public Long atomic_addAndGet(
+    public Integer atomic_addAndGet(
             @ThingworxServiceParameter(name = "name", description = "", baseType = "STRING") String name,
-            @ThingworxServiceParameter(name = "delta", description = "", baseType = "LONG") Long delta
+            @ThingworxServiceParameter(name = "delta", description = "", baseType = "INTEGER") Integer delta
     ) {
         return AtomicManager.getInstance().addAndGet(name,delta);
     }
@@ -219,8 +219,8 @@ public class ConcurrencyServices extends Resource {
     @ThingworxServiceResult(name = "Result", description = "", baseType = "BOOLEAN", aspects = {})
     public Boolean atomic_compareAndSet(
             @ThingworxServiceParameter(name = "name", description = "", baseType = "STRING") String name,
-            @ThingworxServiceParameter(name = "expect", description = "", baseType = "LONG") Long expect,
-            @ThingworxServiceParameter(name = "update", description = "", baseType = "LONG") Long update
+            @ThingworxServiceParameter(name = "expect", description = "", baseType = "INTEGER") Integer expect,
+            @ThingworxServiceParameter(name = "update", description = "", baseType = "INTEGER") Integer update
     ) {
         return AtomicManager.getInstance().compareAndSet(name, expect, update);
     }

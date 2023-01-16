@@ -158,4 +158,16 @@ public class UtilScriptLibrary {
     return json;
   }
 
+  public static Boolean core_hasProperty(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
+    if (args.length != 1) 
+      throw new IllegalArgumentException("Invalid number of arguments in string_format");
+    if (!(args[0] instanceof String))
+      throw new IllegalArgumentException("The first core_hasProperty argument must be a name");
+    var name = (String)args[0];
+    var obj  = ScriptableObject.getProperty(me,name);
+    if( obj != Scriptable.NOT_FOUND )
+      return true;
+    return false;
+  }
+
 }

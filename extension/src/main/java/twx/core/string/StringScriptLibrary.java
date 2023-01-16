@@ -14,7 +14,7 @@ public class StringScriptLibrary {
 
 	//// Require  ////
 
-    public static void requrire_core_string(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
+    public static void require_core_string(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
         AuthenticationUtilities.validateUserSecurityContext();
         //  ScriptableObject.defineClass(me, MultiTimer.class);
     }

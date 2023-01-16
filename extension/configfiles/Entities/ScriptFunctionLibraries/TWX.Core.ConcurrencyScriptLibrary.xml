@@ -6,6 +6,19 @@
 			className="twx.core.concurrency.ConcurrencyScriptLibrary"
 			projectName="TWX.Core">
 			<FunctionDefinitions>
+				<!-- Require & Construction -->
+				<FunctionDefinition name="require_core_concurrency"
+				description="Registers the Classes of TWX.Core.Concurrency to the context and makes them usable ...">
+					<ResultType baseType="NOTHING" name="result" ordinal="0" />
+				</FunctionDefinition>
+				<FunctionDefinition name="core_getAtomic"
+					description="Returns the atomic for the given stringId">
+					<ResultType baseType="VARIANT" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="id" ordinal="0" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<!-- Basic date functions -->
 				<FunctionDefinition name="queue_exists">
 					<ResultType baseType="BOOLEAN" name="result" ordinal="0" />
 					<ParameterDefinitions>

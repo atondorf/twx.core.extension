@@ -1,72 +1,72 @@
-package twx.core.concurrency;
-
-
+package twx.core.concurrency.scriptable;
 
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.annotations.JSConstructor;
 import org.mozilla.javascript.annotations.JSFunction;
 import org.mozilla.javascript.annotations.JSGetter;
+
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import twx.core.concurrency.imp.AtomicManager;
 
-public class ScriptableAtomic extends ScriptableObject {
+public class Atomic extends ScriptableObject {
     private static final long serialVersionUID = 1L;
-    private AtomicLong  atomic = null;
-    private String      atomic_id = "";
+    private AtomicInteger  atomic = null;
+    private String          atomic_id = "";
 
     @Override
     public String getClassName() {
-        return "ScriptableAtomic";
+        return "Atomic";
     } 
     // The zero-argument constructor used by Rhino runtime to create instances
-    public ScriptableAtomic() { 
+    public Atomic() { 
         this.atomic_id = "default";
         this.atomic = AtomicManager.getInstance().getById(atomic_id);     
     };
     // @JSConstructor annotation defines the JavaScript constructor
     @JSConstructor
-    public ScriptableAtomic(String id) { 
+    public Atomic(String id) { 
         this.atomic_id = id;
         this.atomic = AtomicManager.getInstance().getById(id);
     }
     @JSFunction
-    public long addAndGet(long delta) {
+    public int addAndGet(int delta) {
         return atomic.addAndGet(delta);
     }
     @JSFunction
-    public Boolean compareAndSet(long expect, long update) {
+    public boolean compareAndSet(int expect, int update) {
         return atomic.compareAndSet(expect, update);
     }
     @JSFunction
-    public long decrementAndGet() {
+    public int decrementAndGet() {
         return atomic.decrementAndGet();
     }
     @JSFunction
-    public Long get() {
+    public int get() {
         return atomic.get();
     }
     @JSFunction
-    public Long getAndAdd(long delta) {
+    public int getAndAdd(int delta) {
         return atomic.getAndAdd(delta);
     }
     @JSFunction
-    public Long getAndDecrement() {
+    public int getAndDecrement() {
         return atomic.getAndDecrement();
     }
     @JSFunction
-    public Long getAndIncrement() {
+    public int getAndIncrement() {
         return atomic.getAndIncrement();
     }
     @JSFunction
-    public Long getAndSet(long newVal) {
+    public int getAndSet(int newVal) {
         return atomic.getAndSet(newVal);
     }
     @JSFunction
-    public Long incrementAndGet() {
+    public int incrementAndGet() {
         return atomic.incrementAndGet();
     }
     @JSFunction
-    public void set(Long val) {
+    public void set(int val) {
         atomic.set(val);
     }
 }

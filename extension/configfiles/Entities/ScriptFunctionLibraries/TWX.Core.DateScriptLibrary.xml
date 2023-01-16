@@ -3,7 +3,7 @@
 		<ScriptFunctionLibrary
 			name="TWX.Core.DateFunctions"
 			description="DateTime library"
-			className="twx.core.math.DateScriptLibrary"
+			className="twx.core.date.DateScriptLibrary"
 			projectName="TWX.Core">
 			<FunctionDefinitions>
 				<!-- Require & Construction -->
@@ -13,7 +13,7 @@
 				</FunctionDefinition>
 				<!-- Basic date functions -->
 				<FunctionDefinition name="core_getAvailableTimeZones" description="Get an infotable containing all available TimeZones">
-					<ResultType baseType="InfoTable" name="result" ordinal="0" />
+					<ResultType baseType="INFOTABLE" name="result" ordinal="0" />
 				</FunctionDefinition>
 				<FunctionDefinition name="core_getDefaultTimeZone" description="Get the default timezoneID used for formating">
 					<ResultType baseType="STRING" name="result" ordinal="0" />
@@ -28,7 +28,7 @@
 					<ResultType baseType="INTEGER" name="result" ordinal="0" />
 					<ParameterDefinitions>
 						<FieldDefinition baseType="STRING" name="tzId" ordinal="0" description="Timezone if empty, default is used"/>
-						<FieldDefinition baseType="DATE" name="dt" ordinal="1" description="UTC-Timestamp if empty, now is used"/>
+						<FieldDefinition baseType="DATETIME" name="dt" ordinal="1" description="UTC-Timestamp if empty, now is used"/>
 					</ParameterDefinitions>
 				</FunctionDefinition>
 				<FunctionDefinition name="date_getTimeZoneHasTransition" description="Gives true/false if the timezone has daylight saving ">
@@ -41,34 +41,34 @@
 					<ResultType baseType="BOOLEAN" name="result" ordinal="0" />
 					<ParameterDefinitions>
 						<FieldDefinition baseType="STRING" name="tzId" ordinal="0" description="UTC-Timestamp"/>
-						<FieldDefinition baseType="DATE" name="dt" ordinal="1" description="Timezone if empty default is used"/>
+						<FieldDefinition baseType="DATETIME" name="dt" ordinal="1" description="Timezone if empty default is used"/>
 					</ParameterDefinitions>
 				</FunctionDefinition>
 				<FunctionDefinition name="date_getTimeZoneNextTransition" description="Gives the next dayligh saving transition time in UTC after given ts">
-					<ResultType baseType="DATE" name="result" ordinal="0" />
+					<ResultType baseType="DATETIME" name="result" ordinal="0" />
 					<ParameterDefinitions>
 						<FieldDefinition baseType="STRING" name="tzId" ordinal="0" description="UTC-Timestamp"/>
-						<FieldDefinition baseType="DATE" name="dt" ordinal="1" description="Timezone if empty default is used"/>
+						<FieldDefinition baseType="DATETIME" name="dt" ordinal="1" description="Timezone if empty default is used"/>
 					</ParameterDefinitions>
 				</FunctionDefinition>
 				<FunctionDefinition name="date_getTimeZonePrevTransition" description="Gives the next dayligh saving transition time in UTC after given ts">
-					<ResultType baseType="DATE" name="result" ordinal="0" />
+					<ResultType baseType="DATETIME" name="result" ordinal="0" />
 					<ParameterDefinitions>
 						<FieldDefinition baseType="STRING" name="tzId" ordinal="0" description="UTC-Timestamp"/>
-						<FieldDefinition baseType="DATE" name="dt" ordinal="1" description="Timezone if empty default is used"/>
+						<FieldDefinition baseType="DATETIME" name="dt" ordinal="1" description="Timezone if empty default is used"/>
 					</ParameterDefinitions>
 				</FunctionDefinition>
 				<FunctionDefinition name="date_formatTimeZoneISO" description="Formats the given ts with TZ info to ISO 8601">
-					<ResultType baseType="DATE" name="result" ordinal="0" />
+					<ResultType baseType="DATETIME" name="result" ordinal="0" />
 					<ParameterDefinitions>
-						<FieldDefinition baseType="DATE" name="dt" ordinal="0" description="UTC-Timestamp"/>
+						<FieldDefinition baseType="DATETIME" name="dt" ordinal="0" description="UTC-Timestamp"/>
 						<FieldDefinition baseType="STRING" name="tzId" ordinal="1" description="Timezone if empty default is used"/>
 					</ParameterDefinitions>
 				</FunctionDefinition>
 				<FunctionDefinition name="date_formatTimeZone" description="Gives the next dayligh saving transition time in UTC after given ts">
-					<ResultType baseType="DATE" name="result" ordinal="0" />
+					<ResultType baseType="DATETIME" name="result" ordinal="0" />
 					<ParameterDefinitions>
-						<FieldDefinition baseType="DATE" name="dt" ordinal="0" description="UTC-Timestamp"/>
+						<FieldDefinition baseType="DATETIME" name="dt" ordinal="0" description="UTC-Timestamp"/>
 						<FieldDefinition baseType="STRING" name="fmt" ordinal="1" description="Format Pattern String"/>
 						<FieldDefinition baseType="STRING" name="tzId" ordinal="2" description="Timezone if empty default is used"/>
 					</ParameterDefinitions>

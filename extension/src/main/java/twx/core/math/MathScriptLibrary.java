@@ -90,6 +90,15 @@ public class MathScriptLibrary {
 
 	//// Old Deprecated Versions ///
 
+	@ThingworxServiceDefinition(name = "int_format")
+	@ThingworxServiceResult(name = "result", baseType = "STRING", aspects = {})
+	public static String int_format(
+			@ThingworxServiceParameter(name = "fmt", baseType = "STRING" ) String fmt,
+			@ThingworxServiceParameter(name = "value", baseType = "INTEGER" ) Integer value 
+	) throws Exception {
+		return String.format(fmt,value);
+	}
+
 	@ThingworxServiceDefinition(name = "number_format")
 	@ThingworxServiceResult(name = "result", baseType = "STRING", aspects = {})
 	public static String number_format(
