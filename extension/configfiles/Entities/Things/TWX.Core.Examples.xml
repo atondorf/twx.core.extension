@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entities
+    majorVersion="9"
+    minorVersion="3"
+    universal="password">
+    <Things>
+        <Thing
+         aspect.isEditableExtensionObject="true"
+         aspect.isExtension="true"
+            description=""
+            documentationContent=""
+            effectiveThingPackage="ConfiguredThing"
+            enabled="true"
+            homeMashup=""
+            identifier=""
+            inheritedValueStream=""
+            name="TWX.Core.Examples"
+            projectName="TWX.Core"
+            published="false"
+            tags=""
+            thingTemplate="GenericThing"
+         valueStream="">
+            <avatar></avatar>
+            <DesignTimePermissions>
+                <Create></Create>
+                <Read></Read>
+                <Update></Update>
+                <Delete></Delete>
+                <Metadata></Metadata>
+            </DesignTimePermissions>
+            <RunTimePermissions></RunTimePermissions>
+            <VisibilityPermissions>
+                <Visibility></Visibility>
+            </VisibilityPermissions>
+            <ConfigurationTableDefinitions></ConfigurationTableDefinitions>
+            <ConfigurationTables></ConfigurationTables>
+            <ThingShape>
+                <PropertyDefinitions></PropertyDefinitions>
+                <ServiceDefinitions>
+                    <ServiceDefinition
+                        aspect.isAsync="false"
+                        category=""
+                        description=""
+                        isAllowOverride="false"
+                        isLocalOnly="false"
+                        isOpen="false"
+                        isPrivate="false"
+                     name="exAtomic">
+                        <ResultType
+                         baseType="INTEGER"
+                         description=""
+                         name="result"
+                         ordinal="0"></ResultType>
+                        <ParameterDefinitions></ParameterDefinitions>
+                    </ServiceDefinition>
+                    <ServiceDefinition
+                     aspect.isAsync="false"
+                     category=""
+                     description=""
+                     isAllowOverride="false"
+                     isLocalOnly="false"
+                     isOpen="false"
+                     isPrivate="false"
+                     name="exDate">
+                        <ResultType
+                         baseType="JSON"
+                         description=""
+                         name="result"
+                         ordinal="0"></ResultType>
+                        <ParameterDefinitions></ParameterDefinitions>
+                    </ServiceDefinition>
+                    <ServiceDefinition
+                     aspect.isAsync="false"
+                     category=""
+                     description=""
+                     isAllowOverride="false"
+                     isLocalOnly="false"
+                     isOpen="false"
+                     isPrivate="false"
+                     name="exDateTimeZones">
+                        <ResultType
+                         baseType="INFOTABLE"
+                         description=""
+                         name="result"
+                         ordinal="0"></ResultType>
+                        <ParameterDefinitions></ParameterDefinitions>
+                    </ServiceDefinition>
+                    <ServiceDefinition
+                     aspect.isAsync="false"
+                     category=""
+                     description=""
+                     isAllowOverride="false"
+                     isLocalOnly="false"
+                     isOpen="false"
+                     isPrivate="false"
+                        name="exMultitimer">
+                        <ResultType
+                         baseType="JSON"
+                            description=""
+                            name="result"
+                            ordinal="0"></ResultType>
+                        <ParameterDefinitions></ParameterDefinitions>
+                    </ServiceDefinition>
+                    <ServiceDefinition
+                     aspect.isAsync="false"
+                     category=""
+                     description=""
+                     isAllowOverride="false"
+                     isLocalOnly="false"
+                     isOpen="false"
+                     isPrivate="false"
+                     name="exString">
+                        <ResultType
+                         baseType="JSON"
+                         description=""
+                         name="result"
+                         ordinal="0"></ResultType>
+                        <ParameterDefinitions></ParameterDefinitions>
+                    </ServiceDefinition>
+                    <ServiceDefinition
+                     aspect.isAsync="false"
+                     category=""
+                     description=""
+                     isAllowOverride="false"
+                     isLocalOnly="false"
+                     isOpen="false"
+                     isPrivate="false"
+                     name="exUtil_SrcInfo">
+                        <ResultType
+                         baseType="JSON"
+                         description=""
+                         name="result"
+                         ordinal="0"></ResultType>
+                        <ParameterDefinitions></ParameterDefinitions>
+                    </ServiceDefinition>
+                </ServiceDefinitions>
+                <EventDefinitions></EventDefinitions>
+                <ServiceMappings></ServiceMappings>
+                <ServiceImplementations>
+                    <ServiceImplementation
+                        description=""
+                        handlerName="Script"
+                     name="exAtomic">
+                        <ConfigurationTables>
+                            <ConfigurationTable
+                             dataShapeName=""
+                             description=""
+                             isMultiRow="false"
+                             name="Script"
+                             ordinal="0">
+                                <DataShape>
+                                    <FieldDefinitions>
+                                        <FieldDefinition
+                                         baseType="STRING"
+                                         description="code"
+                                         name="code"
+                                         ordinal="0"></FieldDefinition>
+                                    </FieldDefinitions>
+                                </DataShape>
+                                <Rows>
+                                    <Row>
+                                        <code>
+                                        <![CDATA[
+                                        // Atomic is mainly defined by it's name!! so those are all equivalent!
+                                        let val = 0;
+                                        val = atomic_get("exAtomic"); // get the value of the atomic, 0 if not defined yet ...
+                                        val = atomic_incrementAndGet("exAtomic");
+                                        val = Resources["ConcurrencyServices"].atomic_incrementAndGet({ name: "exAtomic" });
+                                        
+                                        // new feature!! Atomic as class in JS:
+                                        let atom = core_getAtomic("exAtomic");
+                                        val = atom.addAndGet(1);
+                                        /*	
+                                        	Atomic Class supports ... 
+                                            int addAndGet(int delta);
+                                            boolean compareAndSet(int expect, int update);
+                                        	int decrementAndGet();
+                                            int get();
+                                        	int getAndAdd(int delta);
+                                            int getAndDecrement();
+                                            int getAndIncrement();
+                                            int getAndSet(int newVal);
+                                            int incrementAndGet();
+                                        	void set(int val);
+                                        */
+                                        result = val;
+                                        ]]>
+                                        </code>
+                                    </Row>
+                                </Rows>
+                            </ConfigurationTable>
+                        </ConfigurationTables>
+                    </ServiceImplementation>
+                    <ServiceImplementation
+                     description=""
+                     handlerName="Script"
+                     name="exDate">
+                        <ConfigurationTables>
+                            <ConfigurationTable
+                             dataShapeName=""
+                             description=""
+                             isMultiRow="false"
+                             name="Script"
+                             ordinal="0">
+                                <DataShape>
+                                    <FieldDefinitions>
+                                        <FieldDefinition
+                                         baseType="STRING"
+                                         description="code"
+                                         name="code"
+                                         ordinal="0"></FieldDefinition>
+                                    </FieldDefinitions>
+                                </DataShape>
+                                <Rows>
+                                    <Row>
+                                        <code>
+                                        <![CDATA[
+                                        let now = new Date();
+                                        result = {};
+                                        
+                                        // get the id of the default timezone ...
+                                        core_setDefaultTimeZone("Europe/Berlin");
+                                        result.def_tz = core_getDefaultTimeZone();
+                                        
+                                        // format of DateTime to ISO using TimeZone ... 
+                                        // Parameters: 
+                                        //	1: DateTime in UTC ... 
+                                        //	2: TimezoneID, if not given, the default is used ... so call core_setDefaultTimeZone() once ... 
+                                        result.now = dateFormatISO(now);
+                                        result.brasil = core_formatTimeZoneISO(now, "America/Sao_Paulo");
+                                        result.berlin = core_formatTimeZoneISO(now, "Europe/Berlin");	
+                                        result.default = core_formatTimeZoneISO(now);	
+                                        
+                                        // format of DateTime to ISO using TimeZone ... 
+                                        //	1: DateTime in UTC ... 
+                                        //	2: Format Pattern ... https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html
+                                        //	3: TimezoneID, if not given, the default is used ... so call core_setDefaultTimeZone() once ... 
+                                        result.customFormat = core_formatTimeZone(now, "yyyy-MM-dd", "Europe/Berlin");	
+                                        
+                                        // some interesting functions to gather more info on timeZones ... 
+                                        //	1: TimezoneID, if not given, the default is used ... so call core_setDefaultTimeZone() once ... 
+                                        //	2: DateTime in UTC ... if not given, now() is evaluated internally ... 
+                                        result.TimeZone = {};
+                                        // get the offset in ms to UTC for a timzone at a given UTC timestamp ...
+                                        result.TimeZone.Offset = core_getTimeZoneOffset("Europe/Berlin", now);	
+                                        // returns if the offset at the timestamp is a std(true) or an daylight saving(false) ... 
+                                        result.TimeZone.DefOffset = core_getTimeZoneIsStdOffset("Europe/Berlin", now);
+                                        // returns true, when selected timezone uses daylight saving ... 
+                                        result.TimeZone.HasTransition = core_getTimeZoneHasTransition("Europe/Berlin");
+                                        // evaluate the timestamp (in UTC) of the next time transition in the time zone relative to the given timestamp ... 
+                                        result.TimeZone.NextTransition = core_formatTimeZoneISO( core_getTimeZoneNextTransition("Europe/Berlin", now) );
+                                        // evaluate the timestamp (in UTC) of the prev time transition in the time zone relative to the given timestamp ... 
+                                        result.TimeZone.PrevTransition = core_formatTimeZoneISO( core_getTimeZonePrevTransition("Europe/Berlin") );
+                                        ]]>
+                                        </code>
+                                    </Row>
+                                </Rows>
+                            </ConfigurationTable>
+                        </ConfigurationTables>
+                    </ServiceImplementation>
+                    <ServiceImplementation
+                     description=""
+                     handlerName="Script"
+                     name="exDateTimeZones">
+                        <ConfigurationTables>
+                            <ConfigurationTable
+                             dataShapeName=""
+                             description=""
+                             isMultiRow="false"
+                             name="Script"
+                             ordinal="0">
+                                <DataShape>
+                                    <FieldDefinitions>
+                                        <FieldDefinition
+                                         baseType="STRING"
+                                         description="code"
+                                         name="code"
+                                         ordinal="0"></FieldDefinition>
+                                    </FieldDefinitions>
+                                </DataShape>
+                                <Rows>
+                                    <Row>
+                                        <code>
+                                        <![CDATA[
+                                        // get infotable containing all available timezones ...
+                                        result = core_getAvailableTimeZones();
+                                        ]]>
+                                        </code>
+                                    </Row>
+                                </Rows>
+                            </ConfigurationTable>
+                        </ConfigurationTables>
+                    </ServiceImplementation>
+                    <ServiceImplementation
+                     description=""
+                     handlerName="Script"
+                        name="exMultitimer">
+                        <ConfigurationTables>
+                            <ConfigurationTable
+                                dataShapeName=""
+                                description=""
+                                isMultiRow="false"
+                                name="Script"
+                                ordinal="0">
+                                <DataShape>
+                                    <FieldDefinitions>
+                                        <FieldDefinition
+                                            baseType="STRING"
+                                            description="code"
+                                            name="code"
+                                            ordinal="0"></FieldDefinition>
+                                    </FieldDefinitions>
+                                </DataShape>
+                                <Rows>
+                                    <Row>
+                                        <code>
+                                        <![CDATA[
+                                        // create an instance of the timer with initial message
+                                        let timer = core_getMultiTimer("Hallo");
+                                        pause(100);
+                                        // push next interval
+                                        timer.push(" ");
+                                        // push next interval
+                                        pause(100);
+                                        timer.push("World!");
+                                        result = {};
+                                        // get an array of Results ... 
+                                        result.array = timer.getArray();
+                                        // get a string result
+                                        result.str = timer.toString();
+                                        ]]>
+                                        </code>
+                                    </Row>
+                                </Rows>
+                            </ConfigurationTable>
+                        </ConfigurationTables>
+                    </ServiceImplementation>
+                    <ServiceImplementation
+                     description=""
+                     handlerName="Script"
+                     name="exString">
+                        <ConfigurationTables>
+                            <ConfigurationTable
+                             dataShapeName=""
+                             description=""
+                             isMultiRow="false"
+                             name="Script"
+                             ordinal="0">
+                                <DataShape>
+                                    <FieldDefinitions>
+                                        <FieldDefinition
+                                         baseType="STRING"
+                                         description="code"
+                                         name="code"
+                                         ordinal="0"></FieldDefinition>
+                                    </FieldDefinitions>
+                                </DataShape>
+                                <Rows>
+                                    <Row>
+                                        <code>
+                                        <![CDATA[
+                                        // 
+                                        result = {};
+                                        // format a string using string.format()
+                                        // See e.g.: https://www.educative.io/answers/what-is-the-stringformat-method-in-java for Format specifier ...
+                                        result.strFormat 		= core_strFormat("value is %f",32.33434);  
+                                        
+                                        // format a string using MessageFormat()
+                                        // see https://docs.oracle.com/javase/7/docs/api/java/text/MessageFormat.html 
+                                        result.strMessageFormat = core_strMessageFormat("value is {0,number,#.##}",32.33434);
+                                        
+                                        // simple matching of topics ... 
+                                        // http://www.steves-internet-guide.com/understanding-mqtt-topics/
+                                        let filter = "SIG/Test/#";
+                                        let topic  = "SIG/Test/CL/1810/SB_OUT";
+                                        result.match = core_strMatchTopic(filter, topic);
+                                        ]]>
+                                        </code>
+                                    </Row>
+                                </Rows>
+                            </ConfigurationTable>
+                        </ConfigurationTables>
+                    </ServiceImplementation>
+                    <ServiceImplementation
+                     description=""
+                     handlerName="Script"
+                     name="exUtil_SrcInfo">
+                        <ConfigurationTables>
+                            <ConfigurationTable
+                             dataShapeName=""
+                             description=""
+                             isMultiRow="false"
+                             name="Script"
+                             ordinal="0">
+                                <DataShape>
+                                    <FieldDefinitions>
+                                        <FieldDefinition
+                                         baseType="STRING"
+                                         description="code"
+                                         name="code"
+                                         ordinal="0"></FieldDefinition>
+                                    </FieldDefinitions>
+                                </DataShape>
+                                <Rows>
+                                    <Row>
+                                        <code>
+                                        <![CDATA[
+                                        result = {};
+                                        // get position of code in source ... 
+                                        result.one = core_getSrcInfo();
+                                        result.two = core_getSrcInfo();
+                                        
+                                        // create an exception object with srcInfo and MessageFormat .. 
+                                        let val = 4711;
+                                        result.ex1 = core_createException("Hello {0}", val);
+                                        // directly throw an exception with MessageFormat and src_info ... 
+                                        try {
+                                            core_throwException("Hello {0}", "Thrown");
+                                        }
+                                        catch(ex) {
+                                        	result.ex2 = {};
+                                            result.ex2.message = ex.message;
+                                        	result.ex2.fileName = ex.fileName;
+                                            result.ex2.name = ex.name;
+                                        	result.ex2.lineNumber = ex.lineNumber;
+                                        }
+                                        ]]>
+                                        </code>
+                                    </Row>
+                                </Rows>
+                            </ConfigurationTable>
+                        </ConfigurationTables>
+                    </ServiceImplementation>
+                </ServiceImplementations>
+                <Subscriptions></Subscriptions>
+            </ThingShape>
+            <PropertyBindings></PropertyBindings>
+            <RemotePropertyBindings></RemotePropertyBindings>
+            <RemoteServiceBindings></RemoteServiceBindings>
+            <RemoteEventBindings></RemoteEventBindings>
+            <AlertConfigurations></AlertConfigurations>
+            <ImplementedShapes></ImplementedShapes>
+            <ThingProperties></ThingProperties>
+        </Thing>
+    </Things>
+</Entities>

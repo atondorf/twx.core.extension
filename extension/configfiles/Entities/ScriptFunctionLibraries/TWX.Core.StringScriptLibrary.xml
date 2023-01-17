@@ -12,32 +12,30 @@
 					<ResultType baseType="NOTHING" name="result" ordinal="0" />
 				</FunctionDefinition>
 				<!-- String Functions -->
-				<FunctionDefinitions>
-					<FunctionDefinition name="core_strFormat"
-						description="Uses String.Format to create a new String">
-						<ResultType baseType="STRING" name="result" ordinal="0" />
-						<ParameterDefinitions>
-							<FieldDefinition baseType="STRING" name="fmt" ordinal="0" />
-							<FieldDefinition baseType="STRING" name="value" ordinal="1" />
-						</ParameterDefinitions>
-					</FunctionDefinition>
-					<FunctionDefinition name="core_strMessageFormat"
-						description="Uses MessageFormat.Format to create a new String">
-						<ResultType baseType="STRING" name="result" ordinal="0" />
-						<ParameterDefinitions>
-							<FieldDefinition baseType="STRING" name="fmt" ordinal="0" />
-							<FieldDefinition baseType="STRING" name="value" ordinal="1" />
-						</ParameterDefinitions>
-					</FunctionDefinition>
-					<FunctionDefinition name="core_strMatchTopic"
-						description="Checks if a topic string matches the topic filter ... compatible to MQTT">
-						<ResultType baseType="BOOLEAN" name="result" ordinal="0" />
-						<ParameterDefinitions>
-							<FieldDefinition baseType="STRING" name="topicFilter" ordinal="0" />
-							<FieldDefinition baseType="STRING" name="topicName" ordinal="1" />
-						</ParameterDefinitions>
-					</FunctionDefinition>
-				</FunctionDefinitions>
+				<FunctionDefinition name="core_strFormat"
+					description="Uses String.Format to create a new String">
+					<ResultType baseType="STRING" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="fmt" ordinal="0" />
+						<FieldDefinition baseType="STRING" name="value" ordinal="1" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<FunctionDefinition name="core_strMessageFormat"
+					description="Uses MessageFormat.Format to create a new String">
+					<ResultType baseType="STRING" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="fmt" ordinal="0" />
+						<FieldDefinition baseType="STRING" name="value" ordinal="1" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<FunctionDefinition name="core_strMatchTopic"
+					description="Checks if a topic string matches the topic filter ... compatible to MQTT">
+					<ResultType baseType="BOOLEAN" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="topicFilter" ordinal="0" />
+						<FieldDefinition baseType="STRING" name="topicName" ordinal="1" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
 			</FunctionDefinitions>
 		</ScriptFunctionLibrary>
 	</ScriptFunctionLibraries>
