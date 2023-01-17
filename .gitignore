@@ -12,5 +12,10 @@ bin/
 !**/src/main/**
 !**/src/test/**
 
+### Common Libraries ###
+lib/common/*.jar
+
 ### VS Code ###
 .vscode/
+
+
