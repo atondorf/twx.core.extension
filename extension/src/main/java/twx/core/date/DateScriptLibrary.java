@@ -59,17 +59,17 @@ public class DateScriptLibrary {
         return DateServices._defaultTimeZone.getID();
     }
 
-    public static Object date_setDefaultTimeZone(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
+    public static Object core_setDefaultTimeZone(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
         AuthenticationUtilities.validateUserSecurityContext();
         DSLConverter.convertValues(args, me);
         if (args.length != 1)
-            throw new Exception("Invalid Number of Arguments in date_setDefaultTimeZone"); 
+            throw new Exception("Invalid Number of Arguments in core_setDefaultTimeZone"); 
         StringPrimitive stringVal = (StringPrimitive)BaseTypes.ConvertToPrimitive(args[0], BaseTypes.STRING);
         DateServices._defaultTimeZone = DateTimeZone.forID( stringVal.getValue() );
         return null;
     }
 
-    public static Object date_getTimeZoneOffset(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
+    public static Object core_getTimeZoneOffset(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
         AuthenticationUtilities.validateUserSecurityContext();
         DSLConverter.convertValues(args, me);
         long            current = System.currentTimeMillis();
@@ -85,22 +85,7 @@ public class DateScriptLibrary {
         return tz.getOffset( current );
     }
 
-    public static Object date_getTimeZoneHasTransition(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
-        AuthenticationUtilities.validateUserSecurityContext();
-        DSLConverter.convertValues(args, me);        
-        long            current = System.currentTimeMillis();
-        DateTimeZone    tz      = DateServices._defaultTimeZone;
-        if ( args.length > 0 ) {
-            StringPrimitive stringVal = (StringPrimitive)BaseTypes.ConvertToPrimitive(args[0], BaseTypes.STRING);
-            tz = DateTimeZone.forID( stringVal.getValue() );
-        }
-        long next = tz.nextTransition(current);
-        if( current != next )
-            return true;
-        return false;
-    }
-
-    public static Object date_getTimeZoneIsStdTransition(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
+    public static Object core_getTimeZoneIsStdOffset(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
         AuthenticationUtilities.validateUserSecurityContext();
         DSLConverter.convertValues(args, me);        
         long            current = System.currentTimeMillis();
@@ -115,8 +100,23 @@ public class DateScriptLibrary {
         }
         return tz.isStandardOffset(current);
     }
+    
+    public static Object core_getTimeZoneHasTransition(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
+        AuthenticationUtilities.validateUserSecurityContext();
+        DSLConverter.convertValues(args, me);        
+        long            current = System.currentTimeMillis();
+        DateTimeZone    tz      = DateServices._defaultTimeZone;
+        if ( args.length > 0 ) {
+            StringPrimitive stringVal = (StringPrimitive)BaseTypes.ConvertToPrimitive(args[0], BaseTypes.STRING);
+            tz = DateTimeZone.forID( stringVal.getValue() );
+        }
+        long next = tz.nextTransition(current);
+        if( current != next )
+            return true;
+        return false;
+    }
 
-    public static Object date_getTimeZoneNextTransition(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
+    public static Object core_getTimeZoneNextTransition(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
         AuthenticationUtilities.validateUserSecurityContext();
         DSLConverter.convertValues(args, me);
         long            current = System.currentTimeMillis();
@@ -133,7 +133,7 @@ public class DateScriptLibrary {
         return convertDate(cx, me, result);
     }
 
-    public static Object date_getTimeZonePrevTransition(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
+    public static Object core_getTimeZonePrevTransition(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
         AuthenticationUtilities.validateUserSecurityContext();
         DSLConverter.convertValues(args, me);
         long            current = System.currentTimeMillis();
@@ -150,11 +150,11 @@ public class DateScriptLibrary {
         return convertDate(cx, me, result);
     }
 
-    public static Object date_formatTimeZoneISO(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
+    public static Object core_formatTimeZoneISO(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
         AuthenticationUtilities.validateUserSecurityContext();
         DateTimeZone    tz = DateServices._defaultTimeZone;
         if (args.length < 1)
-            throw new Exception("Invalid Number of Arguments in date_formatTimeZoneISO"); 
+            throw new Exception("Invalid Number of Arguments in core_formatTimeZoneISO"); 
         DSLConverter.convertValues(args, me); 
         DatetimePrimitive dtVal = (DatetimePrimitive)BaseTypes.ConvertToPrimitive(args[0], BaseTypes.DATETIME );
         if ( args.length > 1 ) {
@@ -164,11 +164,11 @@ public class DateScriptLibrary {
         return dtVal.getValue().withZone(tz).toString();
     }
 
-    public static Object date_formatTimeZone(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
+    public static Object core_formatTimeZone(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
         AuthenticationUtilities.validateUserSecurityContext();
         DateTimeZone    tz = DateServices._defaultTimeZone;
         if (args.length < 2)
-            throw new Exception("Invalid Number of Arguments in date_formatTimeZoneISO"); 
+            throw new Exception("Invalid Number of Arguments in core_formatTimeZoneISO"); 
         DSLConverter.convertValues(args, me); 
         DatetimePrimitive   dtVal       = (DatetimePrimitive)BaseTypes.ConvertToPrimitive(args[0], BaseTypes.DATETIME );
         StringPrimitive     dtFormat    = (StringPrimitive)BaseTypes.ConvertToPrimitive(args[1], BaseTypes.STRING);

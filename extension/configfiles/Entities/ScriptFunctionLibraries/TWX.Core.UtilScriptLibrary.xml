@@ -11,6 +11,13 @@
 					description="Registers the Util Classes of TWX.Core.Util to the context and makes them usable to JS ...">
 					<ResultType baseType="NOTHING" name="result" ordinal="0" />
 				</FunctionDefinition>
+				<FunctionDefinition name="core_getMultiTimer"
+					description="Registers the Util Classes of TWX.Core.Util to the context and makes them usable to JS ...">
+					<ResultType baseType="JSON" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="desc" ordinal="0" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
 				<!--Src Info & Exception Creation - Functions-->
 				<FunctionDefinition name="core_getSrcInfo"
 					description="Creates a JSON containing current position in SRC ...">
