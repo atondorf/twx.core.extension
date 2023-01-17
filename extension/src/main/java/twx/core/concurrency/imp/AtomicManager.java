@@ -2,7 +2,7 @@ package twx.core.concurrency.imp;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AtomicManager {
 
@@ -16,12 +16,12 @@ public class AtomicManager {
     return SINGLETON;
   }
 
-  private final ConcurrentMap<String, AtomicLong> atomicMap = new ConcurrentHashMap<String, AtomicLong>();
+  private final ConcurrentMap<String, AtomicInteger> atomicMap = new ConcurrentHashMap<String, AtomicInteger>();
 
-  public AtomicLong getById(String id) {
-    AtomicLong atomic = this.atomicMap.get(id);
+  public AtomicInteger getById(String id) {
+    AtomicInteger atomic = this.atomicMap.get(id);
     if (atomic == null) {
-      atomic = this.atomicMap.computeIfAbsent(id, k -> new AtomicLong());
+      atomic = this.atomicMap.computeIfAbsent(id, k -> new AtomicInteger());
     }
     return atomic;
   }
@@ -44,33 +44,33 @@ public class AtomicManager {
     return this.atomicMap.containsKey(name);
   }
 
-  public long get(String name) {
-    AtomicLong atomic = this.getById(name);
+  public int get(String name) {
+    AtomicInteger atomic = this.getById(name);
     return atomic.get();
   }
 
-  public void set(String name, long value) {
-    AtomicLong atomic = this.getById(name);
+  public void set(String name, int value) {
+    AtomicInteger atomic = this.getById(name);
     atomic.set(value);
   }
 
-  public long incrementAndGet(String name) {
-    AtomicLong atomic = this.getById(name);
+  public int incrementAndGet(String name) {
+    AtomicInteger atomic = this.getById(name);
     return atomic.incrementAndGet();
   }
 
-  public long decrementAndGet(String name) {
-    AtomicLong atomic = this.getById(name);
+  public int decrementAndGet(String name) {
+    AtomicInteger atomic = this.getById(name);
     return atomic.decrementAndGet();
   }
 
-  public long addAndGet(String name, long delta) {
-    AtomicLong atomic = this.getById(name);
+  public int addAndGet(String name, int delta) {
+    AtomicInteger atomic = this.getById(name);
     return atomic.addAndGet(delta);
   }
 
-  public Boolean compareAndSet(String name, long expect, long update) {
-    AtomicLong atomic = this.getById(name);
+  public Boolean compareAndSet(String name, int expect, int update) {
+    AtomicInteger atomic = this.getById(name);
     return atomic.compareAndSet(expect, update);
   }
 

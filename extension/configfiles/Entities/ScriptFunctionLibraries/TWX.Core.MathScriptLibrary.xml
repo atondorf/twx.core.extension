@@ -1,49 +1,107 @@
 <Entities>
-        <ScriptFunctionLibraries>
-                <ScriptFunctionLibrary
-                        name="MathFunctions"
-                        description="Math library"
-                        className="twx.core.math.MathScriptLibrary"
-                        projectName="TWX.Core">
-                        <FunctionDefinitions>
-                                <FunctionDefinition name="int_format" description="">
-                                        <ResultType baseType="STRING" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="fmt" ordinal="0" />
-                                                <FieldDefinition baseType="INTEGER" name="value" ordinal="1" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>
-                                <FunctionDefinition name="number_format" description="">
-                                        <ResultType baseType="STRING" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="STRING" name="fmt" ordinal="0" />
-                                                <FieldDefinition baseType="NUMBER" name="value" ordinal="1" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>
-                                <FunctionDefinition name="number_round" description="Rounds the given value to the specified number of decimal places.">
-                                        <ResultType baseType="NUMBER" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="NUMBER" name="value" ordinal="0" />
-                                                <FieldDefinition baseType="INTEGER" name="decimals" ordinal="1" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>
-                                <FunctionDefinition name="number_compareTo" description="Compares two numbers given some amount of allowed error.">
-                                        <ResultType baseType="NUMBER" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="NUMBER" name="value1" ordinal="0" />
-                                                <FieldDefinition baseType="NUMBER" name="value2" ordinal="1" />
-                                                <FieldDefinition baseType="NUMBER" name="eps" ordinal="2" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>
-                                <FunctionDefinition name="number_equals" description="Compares two numbers given some amount of allowed error.">
-                                        <ResultType baseType="BOOLEAN" name="result" ordinal="0" />
-                                        <ParameterDefinitions>
-                                                <FieldDefinition baseType="NUMBER" name="value1" ordinal="0" />
-                                                <FieldDefinition baseType="NUMBER" name="value2" ordinal="1" />
-                                                <FieldDefinition baseType="NUMBER" name="eps" ordinal="2" />
-                                        </ParameterDefinitions>
-                                </FunctionDefinition>
-                        </FunctionDefinitions>
-                </ScriptFunctionLibrary>
-        </ScriptFunctionLibraries>
+	<ScriptFunctionLibraries>
+		<ScriptFunctionLibrary
+			name="TWX.Core.MathFunctions"
+			description="Math library"
+			className="twx.core.math.MathScriptLibrary"
+			projectName="TWX.Core">
+			<FunctionDefinitions>
+				<!-- Require & Construction -->
+				<FunctionDefinition name="requrire_core_math"
+					description="Registers the String Classes of TWX.Core to the context and makes them usable ...">
+					<ResultType baseType="NOTHING" name="result" ordinal="0" />
+				</FunctionDefinition>
+				<!-- Basic Math function format -->
+				<FunctionDefinition name="core_formatInteger" description="Formats an integer with given format String ... eg.leading Zeros...">
+					<ResultType baseType="STRING" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="fmt" ordinal="0" />
+						<FieldDefinition baseType="INTEGER" name="value" ordinal="1" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<FunctionDefinition name="core_formatLong" description="Formats an integer with given format String ... eg.leading Zeros...">
+					<ResultType baseType="STRING" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="fmt" ordinal="0" />
+						<FieldDefinition baseType="LONG" name="value" ordinal="1" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<FunctionDefinition name="core_formatNumber" description="Formats an integer with given format String ... eg.leading Zeros...">
+					<ResultType baseType="STRING" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="fmt" ordinal="0" />
+						<FieldDefinition baseType="NUMBER" name="value" ordinal="1" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<!-- Basic Math function helpers -->
+				<FunctionDefinition name="core_roundNumber"
+					description="Rounds the given value to the specified number of decimal places.">
+					<ResultType baseType="NUMBER" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="NUMBER" name="value" ordinal="0" />
+						<FieldDefinition baseType="INTEGER" name="decimals" ordinal="1" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<FunctionDefinition name="core_compareNumbers"
+					description="Compares two numbers given some amount of allowed error.">
+					<ResultType baseType="NUMBER" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="NUMBER" name="value1" ordinal="0" />
+						<FieldDefinition baseType="NUMBER" name="value2" ordinal="1" />
+						<FieldDefinition baseType="NUMBER" name="eps" ordinal="2" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<FunctionDefinition name="core_equalNumbers"
+					description="Compares two numbers given some amount of allowed error.">
+					<ResultType baseType="BOOLEAN" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="NUMBER" name="value1" ordinal="0" />
+						<FieldDefinition baseType="NUMBER" name="value2" ordinal="1" />
+						<FieldDefinition baseType="NUMBER" name="eps" ordinal="2" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<!--OLD Deprecated Functions ... -->
+				<FunctionDefinition name="int_format" description="DEPRECATED!">
+					<ResultType baseType="STRING" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="fmt" ordinal="0" />
+						<FieldDefinition baseType="INTEGER" name="value" ordinal="1" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<FunctionDefinition name="number_format" description="DEPRECATED!">
+					<ResultType baseType="STRING" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="fmt" ordinal="0" />
+						<FieldDefinition baseType="NUMBER" name="value" ordinal="1" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<FunctionDefinition name="number_round"
+					description="DEPRECATED! - Rounds the given value to the specified number of decimal places.">
+					<ResultType baseType="NUMBER" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="NUMBER" name="value" ordinal="0" />
+						<FieldDefinition baseType="INTEGER" name="decimals" ordinal="1" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<FunctionDefinition name="number_compareTo"
+					description="DEPRECATED! - Compares two numbers given some amount of allowed error.">
+					<ResultType baseType="NUMBER" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="NUMBER" name="value1" ordinal="0" />
+						<FieldDefinition baseType="NUMBER" name="value2" ordinal="1" />
+						<FieldDefinition baseType="NUMBER" name="eps" ordinal="2" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<FunctionDefinition name="number_equals"
+					description="DEPRECATED! - Compares two numbers given some amount of allowed error.">
+					<ResultType baseType="BOOLEAN" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="NUMBER" name="value1" ordinal="0" />
+						<FieldDefinition baseType="NUMBER" name="value2" ordinal="1" />
+						<FieldDefinition baseType="NUMBER" name="eps" ordinal="2" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
+			</FunctionDefinitions>
+		</ScriptFunctionLibrary>
+	</ScriptFunctionLibraries>
 </Entities>

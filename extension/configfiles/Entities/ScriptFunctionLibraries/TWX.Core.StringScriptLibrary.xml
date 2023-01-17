@@ -1,26 +1,39 @@
 <Entities>
 	<ScriptFunctionLibraries>
-		<ScriptFunctionLibrary name="StringFunctions" description="String library" className="twx.core.string.StringScriptLibrary" projectName="TWX.Core">
+		<ScriptFunctionLibrary
+			name="TWX.Core.StringFunctions"
+			description="String library"
+			className="twx.core.string.StringScriptLibrary"
+			projectName="TWX.Core">
 			<FunctionDefinitions>
-				<FunctionDefinition name="str_format" description="">
-					<ResultType baseType="STRING" name="result" ordinal="0"/>
+				<!--Require Function-->
+				<FunctionDefinition name="require_core_string"
+					description="Registers the String Classes of TWX.Core to the context and makes them usable ...">
+					<ResultType baseType="NOTHING" name="result" ordinal="0" />
+				</FunctionDefinition>
+				<!-- String Functions -->
+				<FunctionDefinition name="core_strFormat"
+					description="Uses String.Format to create a new String">
+					<ResultType baseType="STRING" name="result" ordinal="0" />
 					<ParameterDefinitions>
-						<FieldDefinition baseType="STRING" name="fmt" ordinal="0"/>
-						<FieldDefinition baseType="STRING" name="value" ordinal="1"/>
+						<FieldDefinition baseType="STRING" name="fmt" ordinal="0" />
+						<FieldDefinition baseType="STRING" name="value" ordinal="1" />
 					</ParameterDefinitions>
 				</FunctionDefinition>
-				<FunctionDefinition name="str_message_format" description="">
-					<ResultType baseType="STRING" name="result" ordinal="0"/>
+				<FunctionDefinition name="core_strMessageFormat"
+					description="Uses MessageFormat.Format to create a new String">
+					<ResultType baseType="STRING" name="result" ordinal="0" />
 					<ParameterDefinitions>
-						<FieldDefinition baseType="STRING" name="fmt" ordinal="0"/>
-						<FieldDefinition baseType="STRING" name="value" ordinal="1"/>
+						<FieldDefinition baseType="STRING" name="fmt" ordinal="0" />
+						<FieldDefinition baseType="STRING" name="value" ordinal="1" />
 					</ParameterDefinitions>
 				</FunctionDefinition>
-				<FunctionDefinition name="str_match_topic" description="">
-					<ResultType baseType="BOOLEAN" name="result" ordinal="0"/>
+				<FunctionDefinition name="core_strMatchTopic"
+					description="Checks if a topic string matches the topic filter ... compatible to MQTT">
+					<ResultType baseType="BOOLEAN" name="result" ordinal="0" />
 					<ParameterDefinitions>
-						<FieldDefinition baseType="STRING" name="topicFilter" ordinal="0"/>
-						<FieldDefinition baseType="STRING" name="topicName" ordinal="1"/>
+						<FieldDefinition baseType="STRING" name="topicFilter" ordinal="0" />
+						<FieldDefinition baseType="STRING" name="topicName" ordinal="1" />
 					</ParameterDefinitions>
 				</FunctionDefinition>
 			</FunctionDefinitions>

@@ -7,23 +7,61 @@ import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.NativeFunction;
 import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.thingworx.dsl.engine.DSLConverter;
 import com.thingworx.dsl.utils.ValueConverter;
+import com.thingworx.security.authentication.AuthenticationUtilities;
+import com.thingworx.types.BaseTypes;
+import com.thingworx.types.primitives.StringPrimitive;
 
 import twx.core.concurrency.imp.MutexManager;
 import twx.core.concurrency.imp.QueueManager;
 import twx.core.concurrency.imp.AtomicManager;
+import twx.core.concurrency.scriptable.Atomic;
 
 public class ConcurrencyScriptLibrary {
+
+	//// Require  ////
+
+    public static void require_core_concurrency(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
+        AuthenticationUtilities.validateUserSecurityContext();
+        ScriptableObject.defineClass(me, Atomic.class);
+    }
+
+    public static Object core_getAtomic(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
+        AuthenticationUtilities.validateUserSecurityContext();
+        if (args.length != 1)
+            throw new Exception("Invalid Number of Arguments in queue_exists");
+        DSLConverter.convertValues(args, me);
+        // Check if the class is already registered ...
+        var obj  = ScriptableObject.getProperty(me,"Atomic");
+        if( obj == Scriptable.NOT_FOUND )
+            ScriptableObject.defineClass(me, Atomic.class);
+        // create and return ... 
+        StringPrimitive atomicId = (StringPrimitive)BaseTypes.ConvertToPrimitive(args[0], BaseTypes.STRING);
+        Object[] args_new = { atomicId.getValue() };
+        return cx.newObject(me, "Atomic", args_new);
+    }
 
     protected static Long argToLong(Object arg) throws Exception {
         if( arg instanceof Double )
             return ((Double)arg).longValue();
         if( arg instanceof Integer )
             return Long.valueOf((Integer)arg);
+        throw new Exception("Invalid arg is not an Number: Type is: " + arg.getClass().getName() );
+    }
+
+    protected static Integer argToInt(Object arg) throws Exception {
+        if( arg instanceof Double )
+            return ((Double)arg).intValue();
+        if( arg instanceof Long )
+            return Integer.valueOf((Integer)arg);
+        if( arg instanceof Integer )
+            return (Integer)arg;            
         throw new Exception("Invalid arg is not an Number: Type is: " + arg.getClass().getName() );
     }
 
@@ -260,7 +298,7 @@ public class ConcurrencyScriptLibrary {
         if (!(args[1] instanceof Integer) && !(args[1] instanceof Double) )
             throw new Exception("Invalid Argument Type (not a Number) in atomic_set");
         String name = (String) args[0];
-        Long value = argToLong(args[1]);
+        int value = argToInt(args[1]);
         AtomicManager.getInstance().set(name,value);    
     }
 
@@ -290,7 +328,7 @@ public class ConcurrencyScriptLibrary {
         if (!(args[1] instanceof Integer) && !(args[1] instanceof Double) )
             throw new Exception("Invalid Argument Type (not a Number) in atomic_addAndGet");
         String name = (String) args[0];
-        Long delta = argToLong(args[1]);
+        int delta = argToInt(args[1]);
         return AtomicManager.getInstance().addAndGet(name,delta);    
     }
 
@@ -300,8 +338,8 @@ public class ConcurrencyScriptLibrary {
         if (!(args[0] instanceof String))
             throw new Exception("The first atomic_compareAndSet argument must be a string with atomic name");
         String name = (String) args[0];
-        Long expected = argToLong(args[1]);
-        Long update = argToLong(args[2]);
+        int expected = argToInt(args[1]);
+        int update = argToInt(args[2]);
         return AtomicManager.getInstance().compareAndSet(name,expected,update);    
     }
     // endregion
