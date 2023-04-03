@@ -1,14 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <Entities>
-	<Resources>
-		<Resource
-			name="ConcurrencyServices"
-			className="twx.core.concurrency.ConcurrencyServices"
-			description="Ressource providing basic queue and mutexes for Thingworx Services"
-			projectName="TWX.Core"
-			tags="TWX.Core:Service"
-			aspect.isEditableExtensionObject="false"
-			aspect.isCreatable="false">
-			<RunTimePermissions>
+    <ThingShapes>
+        <ThingShape
+            aspect.isEditableExtensionObject="true"
+            className="twx.core.concurrency.ActorTS"
+            description=""
+            name="TWX.Core.Actor_TS"
+            projectName="TWX.Core">
+            <RunTimePermissions>
                 <Permissions
                     resourceName="*">
                     <PropertyRead>
@@ -51,6 +50,6 @@
                         type="Organization"></Principal>
                 </Visibility>
             </VisibilityPermissions>
-		</Resource>
-	</Resources>
+        </ThingShape>
+    </ThingShapes>
 </Entities>
