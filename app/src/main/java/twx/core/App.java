@@ -17,87 +17,30 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import twx.core.db.sqlbuilder.CreateTableQuery;
+import twx.core.db.sqlbuilder.TypedColumnObject;
+import twx.core.db.sqlbuilder.dbspec.basic.*;
+import twx.core.db.sqlbuilder.custom.sqlserver.MssObjects;
+
 public class App {
+	final static Logger logger  = LoggerFactory.getLogger(App.class);
 
-	final static Logger 		logger  = LoggerFactory.getLogger(App.class);
-  
-    public void time1() throws Exception {
-        var date = new Date();
-        logger.info( date.toString() );
-        logger.info( java.util.TimeZone.getDefault().getID() );
 
-        var zones = TimeZone.getAvailableIDs();
-        for( var z : zones ) {
-            logger.info( z.toString() );
-        }
+    public String test_1() {
+        // create default schema
+        DbSpec spec     = new DbSpec();
+        DbSchema schema = spec.addDefaultSchema();
 
-        //get Calendar instance
-        Calendar now = Calendar.getInstance();
-    
-        //get current TimeZone using getTimeZone method of Calendar class
-        TimeZone timeZone = now.getTimeZone();
-    
-        //display current TimeZone using getDisplayName() method of TimeZone class
-        System.out.println("Current TimeZone is : " + timeZone.getDisplayName());
+        // add table with basic customer info
+        DbTable testTable = schema.addTable("test");
+        DbColumn uid = testTable.addColumn("uid", "bigint", null);
+        uid.primaryKey();
+        DbColumn name = testTable.addColumn("name", "varchar", 333);
 
-        System.currentTimeMillis();
-        
-        ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command("powershell.exe", "/c", "Get-TimeZone");
-
-        Process process = processBuilder.start();
-        StringBuilder output = new StringBuilder();
-
-		BufferedReader reader = new BufferedReader( new InputStreamReader(process.getInputStream()));
-        String line;
-		while ((line = reader.readLine()) != null) {
-			output.append(line + "\n");
-		}      
-        logger.info( output.toString() );
-    }
-
-    public void joda_1() throws Exception {
-        DateTime        dt = new DateTime();
-        DateTimeZone    tz = DateTimeZone.forID("Europe/Berlin");
-        dt = dt.plus( Period.months(1) );
-        System.out.println( tz.getOffset(dt.getMillis()) );
-/*
-        for( int id = 0; id < 6; id++ ) {
-            System.out.println( dt.toString("dd:MM:yy") + "    " + dt.withZone(tz).toString("dd:MM:yy") );
-            dt = dt.plus( Period.months(1));
-        }
- 
-        long sys_current = System.currentTimeMillis();
-        long dt_current = dt.getMillis();
-        long current = dt_current;
-        for (int i=0; i < 10; i++)
-        {
-            long next = tz.nextTransition(current);
-            if (current == next)
-            {
-                break;
-            }
-            System.out.println ( new DateTime(next) + " Into DST? "  + !tz.isStandardOffset(next) );
-            current = next;
-        }
-*/
-
-    }
-
-    public void joda_2() throws Exception {
-        DateTime dt = new DateTime();
-        var dtBerlin = dt.withZone(DateTimeZone.forID("Europe/Berlin"));
-
-        for (var id : DateTimeZone.getAvailableIDs()) {
-            System.out.println(id); 
-        }
-
-        System.out.println( dt );
-        System.out.println( dtBerlin );
-        System.out.println( dtBerlin.toString() );
-
-        System.out.println( DateTimeZone.forID("Europe/Berlin").toString() );
-        
+        String createCustomerTable = new CreateTableQuery(testTable, true)
+            .addColumnConstraint(uid, MssObjects.AUTO_INCREMENT_COLUMN )
+            .toString();
+        return createCustomerTable;
     }
 
     public static void main(String[] args) {
@@ -107,7 +50,7 @@ public class App {
         
         logger.info("---------- Start-App ----------");
         try {
-            app.joda_1();
+            logger.info( app.test_1() );
 		}
         catch(Exception ex) {
         	logger.error(ex.getMessage());
