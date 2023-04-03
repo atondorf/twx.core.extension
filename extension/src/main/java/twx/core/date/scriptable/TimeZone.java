@@ -30,5 +30,20 @@ public class TimeZone extends ScriptableObject {
     public TimeZone(String id) { 
         this.timeZone = DateTimeZone.forID( id );
     }
+
+    @JSFunction
+    public String test_toString(Object param) {
+        return param.toString();
+    }
+
+    @JSFunction
+    public String test_className(Object param) {
+        return param.getClass().getName();
+    }
+
+    @JSFunction
+    public String test_simpleName(Object param) {
+        return param.getClass().getSimpleName();
+    }
     
 }
