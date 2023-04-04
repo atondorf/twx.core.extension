@@ -1,7 +1,7 @@
 package twx.core.utils;
 
 import ch.qos.logback.classic.Logger;
-import twx.core.db.SQLBuilder;
+import twx.core.db.QueryBuilder;
 
 import com.thingworx.logging.LogUtilities;
 import com.thingworx.common.utils.DateUtilities;

@@ -22,6 +22,8 @@ import twx.core.db.sqlbuilder.TypedColumnObject;
 import twx.core.db.sqlbuilder.dbspec.basic.*;
 import twx.core.db.sqlbuilder.custom.sqlserver.MssObjects;
 
+import twx.core.db.QueryBuilder;
+
 public class App {
 	final static Logger logger  = LoggerFactory.getLogger(App.class);
 
@@ -45,6 +47,13 @@ public class App {
         return createCustomerTable;
     }
 
+    public String test_2() {
+        var queryBuilder = QueryBuilder.select("*")
+                            .from("Test")
+                            .where("a > 100", QueryBuilder.or("b < 200") );
+        return queryBuilder.getSQL();
+    }
+
     public static void main(String[] args) {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
     	var app 	= new App();
@@ -52,7 +61,9 @@ public class App {
         
         logger.info("---------- Start-App ----------");
         try {
-            logger.info( app.test_1() );
+            // logger.info( app.test_1() );
+            logger.info( app.test_2() );
+            
 		}
         catch(Exception ex) {
         	logger.error(ex.getMessage());

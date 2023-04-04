@@ -1,19 +1,15 @@
 <Entities>
 	<ScriptFunctionLibraries>
 		<ScriptFunctionLibrary
-			name="TWX.Core.DBFunctions"
+			name="TWX.Core.QueryBuilder"
 			description="Util library, for testing and development only!!!"
-			className="twx.core.db.SQLBuilder"
+			className="twx.core.db.QueryBuilder"
 			projectName="TWX.Core">
 			<FunctionDefinitions>
 				<!--Require Function-->
 				<FunctionDefinition name="require_core_db" description="Registers the DB Classes of TWX.Core.db to the context and makes them usable to JS ...">
 					<ResultType baseType="NOTHING" name="result" ordinal="0" />
 				</FunctionDefinition>
-                <!-- DB Dunctions -->
-                <FunctionDefinition name="core_getSQLBuilder" description="">
-                    <ResultType baseType="JSON" name="result" ordinal="0" />
-                </FunctionDefinition>
             </FunctionDefinitions>
 		</ScriptFunctionLibrary>
 	</ScriptFunctionLibraries>
