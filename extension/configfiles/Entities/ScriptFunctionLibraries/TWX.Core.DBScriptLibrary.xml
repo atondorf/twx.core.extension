@@ -3,14 +3,15 @@
 		<ScriptFunctionLibrary
 			name="TWX.Core.DBFunctions"
 			description="Util library, for testing and development only!!!"
-			className="twx.core.utils.UtilScriptLibrary"
+			className="twx.core.db.dbScriptLibrary"
 			projectName="TWX.Core">
 			<FunctionDefinitions>
 				<!--Require Function-->
-				<FunctionDefinition name="require_core_util"
-					description="Registers the Util Classes of TWX.Core.Util to the context and makes them usable to JS ...">
+				<FunctionDefinition name="require_core_db"
+					description="Registers the DB Classes of TWX.Core.db to the context and makes them usable to JS ...">
 					<ResultType baseType="NOTHING" name="result" ordinal="0" />
 				</FunctionDefinition>
+                <!-- DB Dunctions -->
                 <FunctionDefinition name="core_getDbSpec"
                     description="">
                     <ResultType baseType="JSON" name="result" ordinal="0" />

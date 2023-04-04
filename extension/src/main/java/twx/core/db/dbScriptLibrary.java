@@ -13,13 +13,16 @@ import org.mozilla.javascript.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import twx.core.db.scriptable.SqlDbSpec;
+import twx.core.db.scriptable.dbSpec;
 
 public class dbScriptLibrary {
 
   public static void require_core_db(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
-    // AuthenticationUtilities.validateUserSecurityContext();
-    ScriptableObject.defineClass(me, SqlDbSpec.class);
+    AuthenticationUtilities.validateUserSecurityContext();
+    // Check if the class is already registered ...
+    var obj = ScriptableObject.getProperty(me, "dbSpec");
+    if (obj == Scriptable.NOT_FOUND)
+      ScriptableObject.defineClass(me, dbSpec.class);
   }
 
   public static Object core_getDbSpec(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
@@ -27,10 +30,7 @@ public class dbScriptLibrary {
     if (args.length != 1)
       throw new Exception("Invalid Number of Arguments in core_getDbSpec");
     DSLConverter.convertValues(args, me);
-    // Check if the class is already registered ...
-    var obj = ScriptableObject.getProperty(me, "SqlDbSpec");
-    if (obj == Scriptable.NOT_FOUND)
-      ScriptableObject.defineClass(me, SqlDbSpec.class);
+    
     // create and return ...
     return cx.newObject(me, "SqlDbSpec");
   }
