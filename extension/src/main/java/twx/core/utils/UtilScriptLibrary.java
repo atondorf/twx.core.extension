@@ -31,16 +31,6 @@ public class UtilScriptLibrary {
     ScriptableObject.defineClass(me, MultiTimer.class);
   }
 
-  public static Object core_getSQLBuilder(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
-    // Check if the class is already registered ...
-    var obj  = ScriptableObject.getProperty(me,"SQLBuilder");
-    if( obj == Scriptable.NOT_FOUND )
-        ScriptableObject.defineClass(me, SQLBuilder.class);
-    // create and return ... 
-    return cx.newObject(me, "SQLBuilder");
-  }
-
-  
   public static Object core_getMultiTimer(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
     // AuthenticationUtilities.validateUserSecurityContext();
     if (args.length != 1)
