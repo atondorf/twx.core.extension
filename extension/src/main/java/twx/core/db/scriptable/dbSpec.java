@@ -14,7 +14,7 @@ public class dbSpec extends ScriptableObject {
 
     // The zero-argument constructor used by Rhino runtime to create instances
     @JSConstructor    
-    public dbSpec() { };
+    public SqlDbSpec() { };
 
     @JSFunction
     public String test_toString(Object param) {
