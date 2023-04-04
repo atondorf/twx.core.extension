@@ -33,45 +33,43 @@ import twx.core.db.sqlbuilder.dbspec.Constraint;
  */
 @SuppressWarnings("deprecation")
 public class DbColumn extends DbObject<DbTable>
-  implements Column
-{
-  private static final Map<Integer,String> _typeNameMap =
-    new HashMap<Integer,String>();
+    implements Column {
+  private static final Map<Integer, String> _typeNameMap = new HashMap<Integer, String>();
   static {
     try {
       // create a type -> type name map using the name of the constant field
-      for(java.lang.reflect.Field typeField : Types.class.getFields()) {
+      for (java.lang.reflect.Field typeField : Types.class.getFields()) {
         int mods = typeField.getModifiers();
-        if(java.lang.reflect.Modifier.isPublic(mods) &&
-           java.lang.reflect.Modifier.isStatic(mods) &&
-           (typeField.getType() == int.class)) {
-          Integer val = (Integer)typeField.get(null);
+        if (java.lang.reflect.Modifier.isPublic(mods) &&
+            java.lang.reflect.Modifier.isStatic(mods) &&
+            (typeField.getType() == int.class)) {
+          Integer val = (Integer) typeField.get(null);
           _typeNameMap.put(val, typeField.getName());
         }
       }
-    } catch(Exception e) {
+    } catch (Exception e) {
       // should never happen
       throw new Error("<clinit> cannot access jdbc type constants", e);
     }
   }
-    
+
   private final String _typeName;
   private final List<Object> _qualifiers = new ArrayList<Object>();
   private final List<DbConstraint> _constraints = new ArrayList<DbConstraint>();
   private Object _defaultValue;
 
   public DbColumn(DbTable parent, String name,
-                  String typeName, Integer typeLength) {
-    this(parent, name, typeName, (Object)typeLength);
+      String typeName, Integer typeLength) {
+    this(parent, name, typeName, (Object) typeLength);
   }
 
   public DbColumn(DbTable parent, String name,
-                  String typeName, Object... typeQualifiers) {
+      String typeName, Object... typeQualifiers) {
     super(parent, name);
     _typeName = typeName;
-    if(typeQualifiers != null) {
-      for(Object qual : typeQualifiers) {
-        if(qual != null) {
+    if (typeQualifiers != null) {
+      for (Object qual : typeQualifiers) {
+        if (qual != null) {
           _qualifiers.add(qual);
         }
       }
@@ -82,23 +80,23 @@ public class DbColumn extends DbObject<DbTable>
   public DbTable getTable() {
     return getParent();
   }
-    
+
   @Override
   public String getColumnNameSQL() {
     return getName();
   }
-    
+
   @Override
   public String getTypeNameSQL() {
     return _typeName;
   }
-    
+
   @Override
   public Integer getTypeLength() {
-    if(!_qualifiers.isEmpty()) {
+    if (!_qualifiers.isEmpty()) {
       Object first = _qualifiers.get(0);
-      if(first instanceof Integer) {
-        return (Integer)first;
+      if (first instanceof Integer) {
+        return (Integer) first;
       }
     }
     return null;
@@ -115,8 +113,8 @@ public class DbColumn extends DbObject<DbTable>
   }
 
   /**
-   * Sets the default value for this column.  A value of {@code null} will
-   * be treated as <i>no</i> default value.  
+   * Sets the default value for this column. A value of {@code null} will
+   * be treated as <i>no</i> default value.
    */
   public DbColumn setDefaultValue(Object defaultValue) {
     _defaultValue = defaultValue;
@@ -133,6 +131,7 @@ public class DbColumn extends DbObject<DbTable>
    * column.
    * <p>
    * Note, no effort is made to make sure the given name is unique.
+   * 
    * @return the freshly created constraint
    */
   public DbConstraint notNull() {
@@ -144,6 +143,7 @@ public class DbColumn extends DbObject<DbTable>
    * column.
    * <p>
    * Note, no effort is made to make sure the given name is unique.
+   * 
    * @param name the name of the new constraint
    * @return the freshly created constraint
    */
@@ -158,6 +158,7 @@ public class DbColumn extends DbObject<DbTable>
    * column.
    * <p>
    * Note, no effort is made to make sure the given name is unique.
+   * 
    * @return the freshly created constraint
    */
   public DbConstraint unique() {
@@ -169,6 +170,7 @@ public class DbColumn extends DbObject<DbTable>
    * column.
    * <p>
    * Note, no effort is made to make sure the given name is unique.
+   * 
    * @param name the name of the new constraint
    * @return the freshly created constraint
    */
@@ -179,10 +181,25 @@ public class DbColumn extends DbObject<DbTable>
   }
 
   /**
+   * Creates and adds unique constraint with the given parameters to this
+   * column.
+   * <p>
+   * Note, no effort is made to make sure the given name is unique.
+   * 
+   * @param name the name of the new constraint
+   * @return the freshly created constraint
+   */
+  public DbConstraint identity() {
+    DbConstraint constraint = getSpec().createColumnConstraint(this, null, Constraint.Type.IDENTITY);
+    return addConstraint(constraint);
+  }
+
+  /**
    * Creates and adds primary key constraint with the given parameters to this
    * column.
    * <p>
    * Note, no effort is made to make sure the given name is unique.
+   * 
    * @return the freshly created constraint
    */
   public DbConstraint primaryKey() {
@@ -194,6 +211,7 @@ public class DbColumn extends DbObject<DbTable>
    * column.
    * <p>
    * Note, no effort is made to make sure the given name is unique.
+   * 
    * @param name the name of the new constraint
    * @return the freshly created constraint
    */
@@ -208,6 +226,7 @@ public class DbColumn extends DbObject<DbTable>
    * column.
    * <p>
    * Note, no effort is made to make sure the given name is unique.
+   * 
    * @param referencedTableName the name of the referenced table
    * @return the freshly created constraint
    */
@@ -220,12 +239,13 @@ public class DbColumn extends DbObject<DbTable>
    * column.
    * <p>
    * Note, no effort is made to make sure the given name is unique.
-   * @param name the name of the new constraint
+   * 
+   * @param name                the name of the new constraint
    * @param referencedTableName the name of the referenced table
    * @return the freshly created constraint
    */
-  public DbForeignKeyConstraint references(String name, 
-                                           String referencedTableName) {
+  public DbForeignKeyConstraint references(String name,
+      String referencedTableName) {
     return references(name, referencedTableName, null);
   }
 
@@ -234,18 +254,19 @@ public class DbColumn extends DbObject<DbTable>
    * column.
    * <p>
    * Note, no effort is made to make sure the given name is unique.
-   * @param name the name of the new constraint
+   * 
+   * @param name                the name of the new constraint
    * @param referencedTableName the name of the referenced table
-   * @param referencedColName the names of the referenced column
+   * @param referencedColName   the names of the referenced column
    * @return the freshly created constraint
    */
-  public DbForeignKeyConstraint references(String name, 
-                                           String referencedTableName, 
-                                           String referencedColName) {
+  public DbForeignKeyConstraint references(String name,
+      String referencedTableName,
+      String referencedColName) {
     DbTable referencedTable = getTable().getParent()
-      .findTable(referencedTableName);
-    return references(name, referencedTable, 
-                      referencedTable.findColumn(referencedColName));
+        .findTable(referencedTableName);
+    return references(name, referencedTable,
+        referencedTable.findColumn(referencedColName));
   }
 
   /**
@@ -253,20 +274,21 @@ public class DbColumn extends DbObject<DbTable>
    * column.
    * <p>
    * Note, no effort is made to make sure the given name is unique.
-   * @param name the name of the new constraint
+   * 
+   * @param name                 the name of the new constraint
    * @param referencedSchemaName the name of the referenced schema
-   * @param referencedTableName the name of the referenced table
-   * @param referencedColName the names of the referenced column
+   * @param referencedTableName  the name of the referenced table
+   * @param referencedColName    the names of the referenced column
    * @return the freshly created constraint
    */
-  public DbForeignKeyConstraint references(String name, 
-                                           String referencedSchemaName,
-                                           String referencedTableName, 
-                                           String referencedColName) {
+  public DbForeignKeyConstraint references(String name,
+      String referencedSchemaName,
+      String referencedTableName,
+      String referencedColName) {
     DbTable referencedTable = getSpec().findSchema(referencedSchemaName)
-      .findTable(referencedTableName);
-    return references(name, referencedTable, 
-                      referencedTable.findColumn(referencedColName));
+        .findTable(referencedTableName);
+    return references(name, referencedTable,
+        referencedTable.findColumn(referencedColName));
   }
 
   /**
@@ -274,16 +296,16 @@ public class DbColumn extends DbObject<DbTable>
    * column.
    * <p>
    * Note, no effort is made to make sure the given name is unique.
-   * @param name the name of the new constraint
-   * @param referencedTable the referenced table
+   * 
+   * @param name             the name of the new constraint
+   * @param referencedTable  the referenced table
    * @param referencedColumn the referenced column
    * @return the freshly created constraint
    */
-  public DbForeignKeyConstraint references(String name, 
-                                           DbTable referencedTable,
-                                           DbColumn referencedColumn) {
-    DbForeignKeyConstraint fkConstraint =
-      getSpec().createColumnForeignKeyConstraint(
+  public DbForeignKeyConstraint references(String name,
+      DbTable referencedTable,
+      DbColumn referencedColumn) {
+    DbForeignKeyConstraint fkConstraint = getSpec().createColumnForeignKeyConstraint(
         this, name, referencedTable, referencedColumn);
     return addConstraint(fkConstraint);
   }
@@ -293,6 +315,7 @@ public class DbColumn extends DbObject<DbTable>
    * table.
    * <p>
    * Note, no effort is made to make sure the given name is unique.
+   * 
    * @param condition the check condition
    */
   public DbCheckConstraint checkCondition(String name, Condition condition) {
@@ -305,6 +328,7 @@ public class DbColumn extends DbObject<DbTable>
    * Adds the given constraint to this column.
    * <p>
    * Note, no effort is made to make sure the given constraint is unique.
+   * 
    * @param constraint the constraint to be added
    * @return the given constraint
    */
@@ -312,14 +336,14 @@ public class DbColumn extends DbObject<DbTable>
     _constraints.add(checkOwnership(constraint));
     return constraint;
   }
-  
+
   /**
-   * Returns the standard jdbc type name for the give type value (one of {@link java.sql.Types}).
+   * Returns the standard jdbc type name for the give type value (one of
+   * {@link java.sql.Types}).
    */
-  public static String getTypeName(int type)
-  {
+  public static String getTypeName(int type) {
     String name = _typeNameMap.get(type);
-    if(name == null) {
+    if (name == null) {
       throw new IllegalArgumentException("Type " + type + " is not a valid sql type");
     }
     return name;

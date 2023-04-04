@@ -24,7 +24,7 @@ public class MultiTimer extends ScriptableObject {
     public MultiTimer() {
         this.push("Start");
     };
-// @JSConstructor annotation defines the JavaScript constructor
+    // @JSConstructor annotation defines the JavaScript constructor
     @JSConstructor
     public MultiTimer(String desc) { 
         this.push(desc);

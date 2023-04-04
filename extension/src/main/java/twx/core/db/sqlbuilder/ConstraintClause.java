@@ -43,7 +43,8 @@ public class ConstraintClause extends SqlObject
     UNIQUE("UNIQUE"),
     PRIMARY_KEY("PRIMARY KEY"),
     FOREIGN_KEY("FOREIGN KEY", "REFERENCES"),
-    CHECK("CHECK");
+    CHECK("CHECK"),
+    IDENTITY("IDENTITY(1,1)");
 
     private final String _tableTypeStr;
     private final String _colTypeStr;

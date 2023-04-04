@@ -43,5 +43,11 @@ tasks.register('versionInfo') {
         println 'Minor:   ' + rootProject.ext.current_version_minor
         println 'Patch:   ' + rootProject.ext.current_version_patch
         println 'Distan:  ' + rootProject.ext.commit_distance
+        println 'Calc:    ' + rootProject.ext.calculated_version
+
+        println 'N_Major: ' + rootProject.ext.next_major_version
+        println 'N_Minor: ' + rootProject.ext.next_minor_version
+        println 'N_Patch: ' + rootProject.ext.next_patch_version
+
     }
 }

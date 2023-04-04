@@ -35,10 +35,12 @@ public class App {
         DbTable testTable = schema.addTable("test");
         DbColumn uid = testTable.addColumn("uid", "bigint", null);
         uid.primaryKey();
+        uid.identity();
+        // uid.addConstraint(MssObjects.AUTO_INCREMENT_COLUMN);
         DbColumn name = testTable.addColumn("name", "varchar", 333);
 
         String createCustomerTable = new CreateTableQuery(testTable, true)
-            .addColumnConstraint(uid, MssObjects.AUTO_INCREMENT_COLUMN )
+            // .addColumnConstraint(uid, MssObjects.AUTO_INCREMENT_COLUMN )
             .toString();
         return createCustomerTable;
     }

@@ -31,7 +31,8 @@ public interface Constraint
     UNIQUE,
     PRIMARY_KEY,
     FOREIGN_KEY,
-    CHECK;
+    CHECK,
+    IDENTITY;
   }
 
   /** @return the type of this constraint */

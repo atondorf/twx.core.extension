@@ -1,6 +1,8 @@
 package twx.core.utils;
 
 import ch.qos.logback.classic.Logger;
+import twx.core.db.SQLBuilder;
+
 import com.thingworx.logging.LogUtilities;
 import com.thingworx.common.utils.DateUtilities;
 import com.thingworx.dsl.engine.DSLConverter;
@@ -47,7 +49,6 @@ public class UtilScriptLibrary {
 }
 
   //// Internal Helpers and Tools  ////
-
   public static JSONObject core_getSrcInfo(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
     AuthenticationUtilities.validateUserSecurityContext();    
     JSONObject json = new JSONObject();

@@ -93,6 +93,28 @@
                      isLocalOnly="false"
                      isOpen="false"
                      isPrivate="false"
+                     name="exDB">
+                        <ResultType
+                         baseType="JSON"
+                         description=""
+                         name="result"
+                         ordinal="0"></ResultType>
+                        <ParameterDefinitions>
+                            <FieldDefinition
+                             baseType="JSON"
+                             description=""
+                             name="param"
+                             ordinal="1"></FieldDefinition>
+                        </ParameterDefinitions>
+                    </ServiceDefinition>
+                    <ServiceDefinition
+                     aspect.isAsync="false"
+                     category=""
+                     description=""
+                     isAllowOverride="false"
+                     isLocalOnly="false"
+                     isOpen="false"
+                     isPrivate="false"
                         name="exMultitimer">
                         <ResultType
                          baseType="JSON"
@@ -284,6 +306,50 @@
                                         <![CDATA[
                                         // get infotable containing all available timezones ...
                                         result = core_getAvailableTimeZones();
+                                        ]]>
+                                        </code>
+                                    </Row>
+                                </Rows>
+                            </ConfigurationTable>
+                        </ConfigurationTables>
+                    </ServiceImplementation>
+                    <ServiceImplementation
+                     description=""
+                     handlerName="Script"
+                     name="exDB">
+                        <ConfigurationTables>
+                            <ConfigurationTable
+                             dataShapeName=""
+                             description=""
+                             isMultiRow="false"
+                             name="Script"
+                             ordinal="0">
+                                <DataShape>
+                                    <FieldDefinitions>
+                                        <FieldDefinition
+                                         baseType="STRING"
+                                         description="code"
+                                         name="code"
+                                         ordinal="0"></FieldDefinition>
+                                    </FieldDefinitions>
+                                </DataShape>
+                                <Rows>
+                                    <Row>
+                                        <code>
+                                        <![CDATA[
+                                        require_core_db();
+                                        let builder = new SQLBuilder();
+                                        result = {};
+                                        
+                                        let dataShape = DataShapes["NamedVTQ"];
+                                        let obj = {
+                                        	value: 1234
+                                        };
+                                        let json = JSON.stringify(obj);
+                                        
+                                        result.name = builder.getObjClassName(dataShape);
+                                        result.desc = builder.getObjToString(dataShape);
+                                        result.string = builder.append("Hallo").append(" Welt").create();
                                         ]]>
                                         </code>
                                     </Row>

@@ -5,16 +5,16 @@ import org.mozilla.javascript.annotations.JSConstructor;
 import org.mozilla.javascript.annotations.JSFunction;
 import org.mozilla.javascript.annotations.JSGetter;
 
-public class dbSpec extends ScriptableObject {
+public class ScriptDBSpec extends ScriptableObject {
 
     @Override
     public String getClassName() {
-        return "dbSpec";
+        return "DBSpec";
     }
 
     // The zero-argument constructor used by Rhino runtime to create instances
     @JSConstructor    
-    public SqlDbSpec() { };
+    public ScriptDBSpec() { };
 
     @JSFunction
     public String test_toString(Object param) {
