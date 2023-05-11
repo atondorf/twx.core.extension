@@ -514,6 +514,34 @@ public class QueryBuilder extends ScriptableObject {
         return this;
     }
 
+    @JSFunction
+    public static QueryBuilder values(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception { 
+        if (args.length < 1)
+            throw new IllegalArgumentException("Invalid Number of Arguments in join"); 
+
+        var meBuilder = (QueryBuilder)me;
+       
+        return meBuilder;
+    }
+
+
+    private QueryBuilder values( JSONObject values ) {
+        
+        return this;
+    }
+
+    private QueryBuilder values( InfoTable values ) {
+        
+        return this;
+    }
+
+    private QueryBuilder values( ValueCollection values ) {
+     
+        return this;
+    }
+
+
+
     /**
      * Appends an "on duplicate key update" clause to a query.
      * @param columns   The columns to update.
@@ -640,52 +668,6 @@ public class QueryBuilder extends ScriptableObject {
         Object[] arg = { new String(sqlBuilder.toString()) };
         var queryBuilder = (QueryBuilder)cx.newObject(me, "QueryBuilder", arg );
         return queryBuilder;
-    }
-
-    /**
-     * Executes a query.
-     * @param connection    The connection on which the query will be executed.
-     * @return              The {@link QueryBuilder} instance.
-     * @throws              SQLException If an error occurs while executing the query.
-     */
-    public QueryBuilder execute(Connection connection) throws SQLException {
-        return execute(connection, mapOf());
-    }
-
-    /**
-     * Executes a query.
-     * @param connection    The connection on which the query will be executed.
-     * @param arguments     The query arguments.
-     * @return              The {@link QueryBuilder} instance.
-     * @throws              SQLException If an error occurs while executing the query.
-     */
-    public QueryBuilder execute(Connection connection, Map<String, ?> arguments) throws SQLException {
-        if (connection == null || arguments == null) {
-            throw new IllegalArgumentException();
-        }
-        try (var statement = prepare(connection)) {
-            apply(statement, arguments);
-            if (statement.execute()) {
-                try (var resultSetAdapter = new ResultSetAdapter(statement.getResultSet())) {
-                    results = resultSetAdapter.stream().collect(Collectors.toList());
-                }
-            } else {
-                updateCount = statement.getUpdateCount();
-                try (var generatedKeys = statement.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        var generatedKeysMetaData = generatedKeys.getMetaData();
-                        var n = generatedKeysMetaData.getColumnCount();
-                        this.generatedKeys = new ArrayList<>(n);
-                        for (var i = 0; i < n; i++) {
-                            this.generatedKeys.add(generatedKeys.getObject(i + 1));
-                        }
-                    } else {
-                        this.generatedKeys = null;
-                    }
-                }
-            }
-        }
-        return this;
     }
 
     /**
@@ -918,5 +900,23 @@ public class QueryBuilder extends ScriptableObject {
         }
         return ((ThingworxJSONObjectAdapter) obj).getJSONObject().toString();
     }
+    
+    @JSFunction
+    public JSONObject getJsonObject() {
+        JSONObject obj = new JSONObject();
+        obj.put("Hallo", 2);
+        return obj;
+    }
+
+    @JSFunction
+    public NativeObject getNativeObject() {
+        NativeObject obj = new NativeObject();
+        
+        obj.put("Hallo", 2);
+        return obj;
+    }
+
+
+
 
 }

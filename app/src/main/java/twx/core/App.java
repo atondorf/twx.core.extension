@@ -23,6 +23,10 @@ import twx.core.db.sqlbuilder.dbspec.basic.*;
 import twx.core.db.sqlbuilder.custom.sqlserver.MssObjects;
 
 import twx.core.db.QueryBuilder;
+import twx.core.db.Collections;
+import static twx.core.db.Collections.entry;
+import static twx.core.db.Collections.listOf;
+import static twx.core.db.Collections.mapOf;
 
 public class App {
 	final static Logger logger  = LoggerFactory.getLogger(App.class);
@@ -48,9 +52,14 @@ public class App {
     }
 
     public String test_2() {
-        var queryBuilder = QueryBuilder.select("*")
-                            .from("Test")
-                            .where("a > 100", QueryBuilder.or("b < 200") );
+        var queryBuilder = QueryBuilder.insertInto("A").values(mapOf(
+            entry("a", 1),
+            entry("b", true),
+            entry("c", "hello"),
+            entry("d", ":d"),
+            entry("e", "?"),
+            entry("f", QueryBuilder.select("f").from("F").where("g = :g"))
+        ));
         return queryBuilder.getSQL();
     }
 
