@@ -286,10 +286,7 @@
                                         });
                                     }
                                     catch (err) {
-                                        if( err.fileName && err.lineNumber )
                                             logger.error("Actor-Thing [{}] Service [{}] error at line [{}] : {}", me.name, err.fileName, err.lineNumber, err);
-                                        else
-                                    		logger.error("Actor-Thing [{}] Service [{}] : {}", me.name, "actorTell", err);
                                     }
                                     ]]></code>
 								</Row>
@@ -337,15 +334,17 @@
                                         } else {
                                         	logger.warning("Actor-Thing [{}] Service [{}] : {}", me.name, "actorExecute", "Thread was no able to get lock!" );
                                         }
+                                    }
+                                    catch (err) {
+                                        logger.error("Actor-Thing [{}] Service [{}] error at line [{}] : {}", me.name, err.fileName, err.lineNumber, err);
+                                    }
+                                    finally {
                                        	// reset the atomic to Available ... 
                                        	atomic_set(name,0);
                                     	// Call readyToExecute() again is to ensure the fairness of all the actors for the thread pool
                                     	if( queue_size(name) > 0 ) {
                                         	me.actorReadyToExecute();
                                         }
-                                    }
-                                    catch (err) {
-                                        logger.error("Actor-Thing [{}] Service [{}] error at line [{}] : {}", me.name, err.fileName, err.lineNumber, err);
                                     }
                                     
                                     function dispatchMessage(message) {
@@ -394,7 +393,7 @@
                                      * 	Overload this function to implement behaviour ... 
                                      *  Or create additional Services that have the same interface and post service name as parameter...
                                      */
-                                    logger.trace("Actor-Thing [{}] Service [{}] Dequeued Message Time: {}, Sender: {}, Subj: {}, Body : {}", me.name, "actorProcessMessage", dateFormatISO(time), sender, subject, body);
+                                    logger.info("Actor-Thing [{}] Service [{}] Dequeued Message Time: {}, Sender: {}, Subj: {}, Body : {}", me.name, "actorProcessMessage", dateFormatISO(time), sender, subject, body);
                                     ]]></code>
 								</Row>
 							</Rows>
@@ -508,9 +507,9 @@
                                     try {
                                         let actor = Things[recipient];
                                         if( !actor )
-                                        	throw( recipient + " is not a valid Thing!" );
+                                        	core_throwException( recipient + " is not a valid Thing!" );
                                     	if( !actor.ImplementsShape({ thingShapeName: "SIG_Base.Actor_TS" }) )
-                                            throw( recipient + " does not implements SIG_Base.Actor_TS" );
+                                            core_throwException( recipient + " does not implements SIG_Base.Actor_TS" );
                                         actor.actorAddMessage({
                                     		sender: me.name,
                                     		subject: subject,
@@ -519,10 +518,7 @@
                                     	}); 
                                     }
                                     catch (err) {
-                                        if( err.fileName && err.lineNumber )
                                             logger.error("Actor-Thing [{}] Service [{}] error at line [{}] : {}", me.name, err.fileName, err.lineNumber, err);
-                                        else
-                                    		logger.error("Actor-Thing [{}] Service [{}] : {}", me.name, "actorTell", err);
                                     }
                                     ]]></code>
 								</Row>
