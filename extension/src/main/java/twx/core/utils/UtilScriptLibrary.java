@@ -47,7 +47,6 @@ public class UtilScriptLibrary {
 }
 
   //// Internal Helpers and Tools  ////
-
   public static JSONObject core_getSrcInfo(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
     AuthenticationUtilities.validateUserSecurityContext();    
     JSONObject json = new JSONObject();
