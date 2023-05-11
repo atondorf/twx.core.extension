@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entities>
+    <ThingPackages>
+        <ThingPackage
+            className="twx.core.concurrency.ActorManagerTT"
+            description="Package for ActorManagement"
+            name="ActorManagerPackage"
+            projectName="TWX.Core"
+        ></ThingPackage>
+    </ThingPackages>
+</Entities>

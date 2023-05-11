@@ -30,7 +30,7 @@ public class UtilScriptLibrary {
     // AuthenticationUtilities.validateUserSecurityContext();
     ScriptableObject.defineClass(me, MultiTimer.class);
   }
-  
+
   public static Object core_getMultiTimer(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
     // AuthenticationUtilities.validateUserSecurityContext();
     if (args.length != 1)
@@ -47,7 +47,6 @@ public class UtilScriptLibrary {
 }
 
   //// Internal Helpers and Tools  ////
-
   public static JSONObject core_getSrcInfo(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
     AuthenticationUtilities.validateUserSecurityContext();    
     JSONObject json = new JSONObject();
