@@ -1,0 +1,737 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entities>
+	<ThingShapes>
+		<ThingShape aspect.isEditableExtensionObject="true"
+		            aspect.isExtension="true"
+		            className="twx.core.concurrency.ActorTS"
+		            description=""
+		            name="TWX.Core.Actor_TS"
+		            projectName="TWX.Core">
+			<PropertyDefinitions>
+				<PropertyDefinition aspect.cacheTime="0.0"
+				                    aspect.dataChangeType="VALUE"
+				                    aspect.defaultValue="TWX.Core.ActorManager"
+				                    aspect.isPersistent="true"
+				                    aspect.thingTemplate="TWX.Core.ActorManager_TT"
+				                    baseType="THINGNAME"
+				                    category=""
+				                    description=""
+				                    isLocalOnly="false"
+				                    name="ActorManager"
+				                    ordinal="2"/>
+			</PropertyDefinitions>
+			<ServiceDefinitions>
+				<ServiceDefinition aspect.isAsync="false"
+				                   category="Actor"
+				                   description="Adds a new message to the actor's work queue ..."
+				                   isAllowOverride="false"
+				                   isLocalOnly="false"
+				                   isOpen="false"
+				                   isPrivate="false"
+				                   name="actorAddMessage">
+					<ResultType baseType="NOTHING"
+					            description=""
+					            name="result"
+					            ordinal="0"/>
+					<ParameterDefinitions>
+						<FieldDefinition baseType="JSON"
+						                 description=""
+						                 name="body"
+						                 ordinal="4"/>
+						<FieldDefinition aspect.thingShape="SIG_Base.Actor_TS"
+						                 baseType="THINGNAME"
+						                 description="original sending actor of the message"
+						                 name="sender"
+						                 ordinal="1"/>
+						<FieldDefinition baseType="STRING"
+						                 description="[optional] service to handle the message ... "
+						                 name="service"
+						                 ordinal="4"/>
+						<FieldDefinition baseType="STRING"
+						                 description="[optional] subject ... "
+						                 name="subject"
+						                 ordinal="2"/>
+					</ParameterDefinitions>
+				</ServiceDefinition>
+				<ServiceDefinition aspect.isAsync="false"
+				                   category="Actor"
+				                   description="Sends a message to all other actors ..."
+				                   isAllowOverride="false"
+				                   isLocalOnly="false"
+				                   isOpen="false"
+				                   isPrivate="false"
+				                   name="actorBroadcast">
+					<ResultType baseType="NOTHING"
+					            description=""
+					            name="result"
+					            ordinal="0"/>
+					<ParameterDefinitions>
+						<FieldDefinition aspect.isRequired="true"
+						                 baseType="JSON"
+						                 description=""
+						                 name="body"
+						                 ordinal="4"/>
+						<FieldDefinition baseType="STRING"
+						                 description=""
+						                 name="service"
+						                 ordinal="3"/>
+						<FieldDefinition baseType="STRING"
+						                 description=""
+						                 name="subject"
+						                 ordinal="2"/>
+					</ParameterDefinitions>
+				</ServiceDefinition>
+				<ServiceDefinition aspect.isAsync="false"
+				                   category="Actor"
+				                   description="Main execution service, called by event handler ... "
+				                   isAllowOverride="false"
+				                   isLocalOnly="false"
+				                   isOpen="false"
+				                   isPrivate="false"
+				                   name="actorExecute">
+					<ResultType baseType="NOTHING"
+					            description=""
+					            name="result"
+					            ordinal="0"/>
+					<ParameterDefinitions/>
+				</ServiceDefinition>
+				<ServiceDefinition aspect.isAsync="false"
+				                   category="Actor"
+				                   description="central Service to process mesages in sequence ... "
+				                   isAllowOverride="true"
+				                   isLocalOnly="false"
+				                   isOpen="false"
+				                   isPrivate="false"
+				                   name="actorProcessMessage">
+					<ResultType baseType="NOTHING"
+					            description=""
+					            name="result"
+					            ordinal="0"/>
+					<ParameterDefinitions>
+						<FieldDefinition baseType="JSON"
+						                 description=""
+						                 name="body"
+						                 ordinal="5"/>
+						<FieldDefinition aspect.thingShape="SIG_Base.Actor_TS"
+						                 baseType="THINGNAME"
+						                 description=""
+						                 name="sender"
+						                 ordinal="3"/>
+						<FieldDefinition baseType="STRING"
+						                 description=""
+						                 name="subject"
+						                 ordinal="4"/>
+						<FieldDefinition baseType="DATETIME"
+						                 description=""
+						                 name="time"
+						                 ordinal="2"/>
+					</ParameterDefinitions>
+				</ServiceDefinition>
+				<ServiceDefinition aspect.isAsync="false"
+				                   category="Actor"
+				                   description=""
+				                   isAllowOverride="false"
+				                   isLocalOnly="false"
+				                   isOpen="false"
+				                   isPrivate="false"
+				                   name="actorReadyToExecute">
+					<ResultType baseType="NOTHING"
+					            description=""
+					            name="result"
+					            ordinal="0"/>
+					<ParameterDefinitions/>
+				</ServiceDefinition>
+				<ServiceDefinition aspect.isAsync="false"
+				                   category="Actor"
+				                   description=""
+				                   isAllowOverride="false"
+				                   isLocalOnly="false"
+				                   isOpen="false"
+				                   isPrivate="false"
+				                   name="actorReset">
+					<ResultType baseType="NOTHING"
+					            description=""
+					            name="result"
+					            ordinal="0"/>
+					<ParameterDefinitions/>
+				</ServiceDefinition>
+				<ServiceDefinition aspect.isAsync="false"
+				                   category="Actor"
+				                   description="Sends a message to another actor ..."
+				                   isAllowOverride="false"
+				                   isLocalOnly="false"
+				                   isOpen="false"
+				                   isPrivate="false"
+				                   name="actorTell">
+					<ResultType baseType="NOTHING"
+					            description=""
+					            name="result"
+					            ordinal="0"/>
+					<ParameterDefinitions>
+						<FieldDefinition aspect.isRequired="true"
+						                 baseType="JSON"
+						                 description=""
+						                 name="body"
+						                 ordinal="4"/>
+						<FieldDefinition baseType="THINGNAME"
+						                 description=""
+						                 name="recipient"
+						                 ordinal="1"/>
+						<FieldDefinition baseType="STRING"
+						                 description=""
+						                 name="service"
+						                 ordinal="3"/>
+						<FieldDefinition baseType="STRING"
+						                 description=""
+						                 name="subject"
+						                 ordinal="2"/>
+					</ParameterDefinitions>
+				</ServiceDefinition>
+			</ServiceDefinitions>
+			<EventDefinitions>
+				<EventDefinition category=""
+				                 dataShape="ScheduledEvent"
+				                 description=""
+				                 name="actorTaskEnqueued"/>
+			</EventDefinitions>
+			<ServiceMappings/>
+			<ServiceImplementations>
+				<ServiceImplementation description=""
+				                       handlerName="Script"
+				                       name="actorAddMessage">
+					<ConfigurationTables>
+						<ConfigurationTable dataShapeName=""
+						                    description=""
+						                    isMultiRow="false"
+						                    name="Script"
+						                    ordinal="0">
+							<DataShape>
+								<FieldDefinitions>
+									<FieldDefinition baseType="STRING"
+									                 description="code"
+									                 name="code"
+									                 ordinal="0"/>
+								</FieldDefinitions>
+							</DataShape>
+							<Rows>
+								<Row>
+									<code>
+                                    <![CDATA[
+                                    /*************************************************************
+                                     *	auhor:	a.tondorf
+                                     *	date:	20.9.2022
+                                     */
+                                    try {
+                                        let name 	= me.name;
+                                        // create the json object to queue ..
+                                        let message	= {
+                                            time:		new Date(),
+                                            sender:		sender 		|| me.name,
+                                            subject:	subject 	|| "",
+                                            service:	service 	|| "actorProcessMessage",
+                                            body:		body
+                                        };
+                                        // push to queue ... 
+                                    	queue_push(name, message);
+                                        // shedule call of actor ... 
+                                        me.actorReadyToExecute();
+                                    }
+                                    catch (err) {
+                                        logger.error("Actor-Thing [{}] Service [{}] error at line [{}] : {}", me.name, err.fileName, err.lineNumber, err);
+                                    }
+                                    ]]></code>
+								</Row>
+							</Rows>
+						</ConfigurationTable>
+					</ConfigurationTables>
+				</ServiceImplementation>
+				<ServiceImplementation description=""
+				                       handlerName="Script"
+				                       name="actorBroadcast">
+					<ConfigurationTables>
+						<ConfigurationTable dataShapeName=""
+						                    description=""
+						                    isMultiRow="false"
+						                    name="Script"
+						                    ordinal="0">
+							<DataShape>
+								<FieldDefinitions>
+									<FieldDefinition baseType="STRING"
+									                 description="code"
+									                 name="code"
+									                 ordinal="0"/>
+								</FieldDefinitions>
+							</DataShape>
+							<Rows>
+								<Row>
+									<code>
+                                    <![CDATA[
+                                    /*************************************************************
+                                     *	auhor:	a.tondorf
+                                     *	date:	20.9.2022
+                                     */
+                                    try {
+                                    	let actors = ThingShapes["SIG_Base.Actor_TS"].GetImplementingThings();
+                                        actors.rows.toArray().forEach(row => {	
+                                    		// don't send to myself
+                                            if( row.name == me.name ) 
+                                                return;
+                                    		let actor = Things[row.name];
+                                            actor.actorAddMessage({
+                                    			sender: me.name,
+                                    			subject: subject,
+                                    			service: service,
+                                    			body: body
+                                    		}); 
+                                        });
+                                    }
+                                    catch (err) {
+                                            logger.error("Actor-Thing [{}] Service [{}] error at line [{}] : {}", me.name, err.fileName, err.lineNumber, err);
+                                    }
+                                    ]]></code>
+								</Row>
+							</Rows>
+						</ConfigurationTable>
+					</ConfigurationTables>
+				</ServiceImplementation>
+				<ServiceImplementation description=""
+				                       handlerName="Script"
+				                       name="actorExecute">
+					<ConfigurationTables>
+						<ConfigurationTable dataShapeName=""
+						                    description=""
+						                    isMultiRow="false"
+						                    name="Script"
+						                    ordinal="0">
+							<DataShape>
+								<FieldDefinitions>
+									<FieldDefinition baseType="STRING"
+									                 description="code"
+									                 name="code"
+									                 ordinal="0"/>
+								</FieldDefinitions>
+							</DataShape>
+							<Rows>
+								<Row>
+									<code>
+                                    <![CDATA[
+                                    /*************************************************************
+                                     *	auhor:	a.tondorf
+                                     *	date:	20.9.2022
+                                     */
+                                    let name 	= me.name;
+                                    let locked 	= false;
+                                    try {
+                                        locked = true;
+                                        if( locked ) {
+                                        	let messageCount = queue_size(name);
+                                            if( messageCount > 0 ) {
+                                            // while( messageCount > 0 ) {
+                                        		let message = queue_pop(name); 
+                                                messageCount--;
+                                    			dispatchMessage(message);
+                                            }
+                                        } else {
+                                        	logger.warning("Actor-Thing [{}] Service [{}] : {}", me.name, "actorExecute", "Thread was no able to get lock!" );
+                                        }
+                                    }
+                                    catch (err) {
+                                        logger.error("Actor-Thing [{}] Service [{}] error at line [{}] : {}", me.name, err.fileName, err.lineNumber, err);
+                                    }
+                                    finally {
+                                       	// reset the atomic to Available ... 
+                                       	atomic_set(name,0);
+                                    	// Call readyToExecute() again is to ensure the fairness of all the actors for the thread pool
+                                    	if( queue_size(name) > 0 ) {
+                                        	me.actorReadyToExecute();
+                                        }
+                                    }
+                                    
+                                    function dispatchMessage(message) {
+                                    	// how to handle messages that's service is not available ???
+                                        if( !me[message.service] ) {
+                                            logger.warning("Actor-Thing [{}] Service [{}] : {} ", me.name, "actorExecute", "Service undefined: "+ message.service );
+                                            return;
+                                        }
+                                        me[message.service]({
+                                    		time: message.time,
+                                    		sender: message.sender,
+                                    		subject: message.subject,
+                                    		body: message.body
+                                    	});
+                                    }
+                                    ]]></code>
+								</Row>
+							</Rows>
+						</ConfigurationTable>
+					</ConfigurationTables>
+				</ServiceImplementation>
+				<ServiceImplementation description=""
+				                       handlerName="Script"
+				                       name="actorProcessMessage">
+					<ConfigurationTables>
+						<ConfigurationTable dataShapeName=""
+						                    description=""
+						                    isMultiRow="false"
+						                    name="Script"
+						                    ordinal="0">
+							<DataShape>
+								<FieldDefinitions>
+									<FieldDefinition baseType="STRING"
+									                 description="code"
+									                 name="code"
+									                 ordinal="0"/>
+								</FieldDefinitions>
+							</DataShape>
+							<Rows>
+								<Row>
+									<code>
+                                    <![CDATA[
+                                    /*************************************************************
+                                     *	auhor:	a.tondorf
+                                     *	date:	20.9.2022
+                                     * 	Overload this function to implement behaviour ... 
+                                     *  Or create additional Services that have the same interface and post service name as parameter...
+                                     */
+                                    logger.info("Actor-Thing [{}] Service [{}] Dequeued Message Time: {}, Sender: {}, Subj: {}, Body : {}", me.name, "actorProcessMessage", dateFormatISO(time), sender, subject, body);
+                                    ]]></code>
+								</Row>
+							</Rows>
+						</ConfigurationTable>
+					</ConfigurationTables>
+				</ServiceImplementation>
+				<ServiceImplementation description=""
+				                       handlerName="Script"
+				                       name="actorReadyToExecute">
+					<ConfigurationTables>
+						<ConfigurationTable dataShapeName=""
+						                    description=""
+						                    isMultiRow="false"
+						                    name="Script"
+						                    ordinal="0">
+							<DataShape>
+								<FieldDefinitions>
+									<FieldDefinition baseType="STRING"
+									                 description="code"
+									                 name="code"
+									                 ordinal="0"/>
+								</FieldDefinitions>
+							</DataShape>
+							<Rows>
+								<Row>
+									<code>
+                                    <![CDATA[
+                                    /*************************************************************
+                                     *	auhor:	a.tondorf
+                                     *	date:	20.9.2022
+                                     */
+                                    let name = me.name;
+                                    // check if atomic is 0: AVAILABLE, if so ... directly fire event to get next EvenProcessor ... 
+                                    // Otherwise the Execute will call, when current is finished ... 
+                                    if( atomic_compareAndSet(name, 0, 1) ) {
+                                        me.actorTaskEnqueued({ timestamp: new Date() });
+                                    }
+                                    ]]></code>
+								</Row>
+							</Rows>
+						</ConfigurationTable>
+					</ConfigurationTables>
+				</ServiceImplementation>
+				<ServiceImplementation description=""
+				                       handlerName="Script"
+				                       name="actorReset">
+					<ConfigurationTables>
+						<ConfigurationTable dataShapeName=""
+						                    description=""
+						                    isMultiRow="false"
+						                    name="Script"
+						                    ordinal="0">
+							<DataShape>
+								<FieldDefinitions>
+									<FieldDefinition baseType="STRING"
+									                 description="code"
+									                 name="code"
+									                 ordinal="0"/>
+								</FieldDefinitions>
+							</DataShape>
+							<Rows>
+								<Row>
+									<code>
+                                    <![CDATA[
+                                    /*************************************************************
+                                     *	auhor:	a.tondorf
+                                     *	date:	20.9.2022
+                                     */
+                                    let name = me.name;
+                                    try {
+                                        logger.trace("Actor-Thing [{}] Service [{}] : {}", me.name, "actorReset", "Resetting the Actor on Startup ... " );
+                                    	mtx_callLocked(name, function() { 
+                                        	atomic_set(name,0);
+                                            queue_clear(name);
+                                    	});
+                                    }
+                                    catch (err) {
+                                        logger.error("Actor-Thing [{}] Service [{}] error at line [{}] : {}", me.name, err.fileName, err.lineNumber, err);
+                                    }
+                                    ]]></code>
+								</Row>
+							</Rows>
+						</ConfigurationTable>
+					</ConfigurationTables>
+				</ServiceImplementation>
+				<ServiceImplementation description=""
+				                       handlerName="Script"
+				                       name="actorTell">
+					<ConfigurationTables>
+						<ConfigurationTable dataShapeName=""
+						                    description=""
+						                    isMultiRow="false"
+						                    name="Script"
+						                    ordinal="0">
+							<DataShape>
+								<FieldDefinitions>
+									<FieldDefinition baseType="STRING"
+									                 description="code"
+									                 name="code"
+									                 ordinal="0"/>
+								</FieldDefinitions>
+							</DataShape>
+							<Rows>
+								<Row>
+									<code>
+                                    <![CDATA[
+                                    /*************************************************************
+                                     *	auhor:	a.tondorf
+                                     *	date:	20.9.2022
+                                     */
+                                    try {
+                                        let actor = Things[recipient];
+                                        if( !actor )
+                                        	core_throwException( recipient + " is not a valid Thing!" );
+                                    	if( !actor.ImplementsShape({ thingShapeName: "SIG_Base.Actor_TS" }) )
+                                            core_throwException( recipient + " does not implements SIG_Base.Actor_TS" );
+                                        actor.actorAddMessage({
+                                    		sender: me.name,
+                                    		subject: subject,
+                                    		service: service,
+                                    		body: body
+                                    	}); 
+                                    }
+                                    catch (err) {
+                                            logger.error("Actor-Thing [{}] Service [{}] error at line [{}] : {}", me.name, err.fileName, err.lineNumber, err);
+                                    }
+                                    ]]></code>
+								</Row>
+							</Rows>
+						</ConfigurationTable>
+					</ConfigurationTables>
+				</ServiceImplementation>
+			</ServiceImplementations>
+			<Subscriptions>
+				<Subscription description=""
+				              enabled="false"
+				              eventName="DataChange"
+				              name="actorOnMeManagerChanged"
+				              source=""
+				              sourceProperty="ActorManager"
+				              sourceType="Thing">
+					<ServiceImplementation description=""
+					                       handlerName="Script"
+					                       name="actorOnMeManagerChanged">
+						<ConfigurationTables>
+							<ConfigurationTable dataShapeName=""
+							                    description=""
+							                    isMultiRow="false"
+							                    name="Script"
+							                    ordinal="0">
+								<DataShape>
+									<FieldDefinitions>
+										<FieldDefinition baseType="STRING"
+										                 description="code"
+										                 name="code"
+										                 ordinal="0"/>
+									</FieldDefinitions>
+								</DataShape>
+								<Rows>
+									<Row>
+										<code>
+                                        <![CDATA[
+                                        /*
+                                        eventData.newValue.quality
+                                        eventData.newValue.time
+                                        eventData.newValue.value
+                                        
+                                        eventData.oldValue.quality
+                                        eventData.oldValue.time
+                                        eventData.oldValue.value
+                                        */
+                                        ]]></code>
+									</Row>
+								</Rows>
+							</ConfigurationTable>
+						</ConfigurationTables>
+					</ServiceImplementation>
+				</Subscription>
+				<Subscription description=""
+				              enabled="true"
+				              eventName="actorTaskEnqueued"
+				              name="actorOnMeTaskEnqueued"
+				              source=""
+				              sourceProperty=""
+				              sourceType="Thing">
+					<ServiceImplementation description=""
+					                       handlerName="Script"
+					                       name="actorOnMeTaskEnqueued">
+						<ConfigurationTables>
+							<ConfigurationTable dataShapeName=""
+							                    description=""
+							                    isMultiRow="false"
+							                    name="Script"
+							                    ordinal="0">
+								<DataShape>
+									<FieldDefinitions>
+										<FieldDefinition baseType="STRING"
+										                 description="code"
+										                 name="code"
+										                 ordinal="0"/>
+									</FieldDefinitions>
+								</DataShape>
+								<Rows>
+									<Row>
+										<code>
+                                        <![CDATA[
+                                        /*************************************************************
+                                         *	auhor:	a.tondorf
+                                         *	date:	20.9.2022
+                                         *	Simply call the actroRun() Method ... 
+                                         *  synchronisation is handled inside it ... 
+                                         */
+                                        // logger.debug("Thing [{}] Service [{}] Execute Message : {}", me.name, "OnMeEnqueuedTask", dateFormatISO( eventData.eventTime ) );
+                                        me.actorExecute();
+                                        ]]></code>
+									</Row>
+								</Rows>
+							</ConfigurationTable>
+						</ConfigurationTables>
+					</ServiceImplementation>
+				</Subscription>
+				<Subscription description=""
+				              enabled="true"
+				              eventName="ThingStart"
+				              name="actorOnMeThingStart"
+				              source=""
+				              sourceProperty=""
+				              sourceType="Thing">
+					<ServiceImplementation description=""
+					                       handlerName="Script"
+					                       name="actorOnMeThingStart">
+						<ConfigurationTables>
+							<ConfigurationTable dataShapeName=""
+							                    description=""
+							                    isMultiRow="false"
+							                    name="Script"
+							                    ordinal="0">
+								<DataShape>
+									<FieldDefinitions>
+										<FieldDefinition baseType="STRING"
+										                 description="code"
+										                 name="code"
+										                 ordinal="0"/>
+									</FieldDefinitions>
+								</DataShape>
+								<Rows>
+									<Row>
+										<code>
+                                        <![CDATA[
+                                        /*************************************************************
+                                         *	auhor:	a.tondorf
+                                         *	date:	20.9.2022
+                                         *	Simply call the actroRun() Method ... 
+                                         *  synchronisation is handled inside it ... 
+                                         */
+                                        // logger.debug("Thing [{}] Service [{}] Execute Message : {}", me.name, "OnMeEnqueuedTask", dateFormatISO( eventData.eventTime ) );
+                                        me.actorReset();
+                                        ]]></code>
+									</Row>
+								</Rows>
+							</ConfigurationTable>
+						</ConfigurationTables>
+					</ServiceImplementation>
+				</Subscription>
+			</Subscriptions>
+			<avatar/>
+			<DesignTimePermissions>
+				<Create/>
+				<Read/>
+				<Update/>
+				<Delete/>
+				<Metadata/>
+			</DesignTimePermissions>
+			<RunTimePermissions>
+				<Permissions resourceName="*">
+					<PropertyRead>
+						<Principal isPermitted="true"
+						           name="TWX.Core.Default_UG"
+						           type="Group"/>
+					</PropertyRead>
+					<PropertyWrite>
+						<Principal isPermitted="true"
+						           name="TWX.Core.Default_UG"
+						           type="Group"/>
+					</PropertyWrite>
+					<ServiceInvoke>
+						<Principal isPermitted="true"
+						           name="TWX.Core.Default_UG"
+						           type="Group"/>
+					</ServiceInvoke>
+					<EventInvoke>
+						<Principal isPermitted="true"
+						           name="TWX.Core.Default_UG"
+						           type="Group"/>
+					</EventInvoke>
+					<EventSubscribe>
+						<Principal isPermitted="true"
+						           name="TWX.Core.Default_UG"
+						           type="Group"/>
+					</EventSubscribe>
+				</Permissions>
+			</RunTimePermissions>
+			<VisibilityPermissions>
+				<Visibility>
+					<Principal isPermitted="true"
+					           name="TWX.Core.Default_OR"
+					           type="Organization"/>
+				</Visibility>
+			</VisibilityPermissions>
+			<InstanceRunTimePermissions>
+				<Permissions resourceName="*">
+					<PropertyRead>
+						<Principal isPermitted="true"
+						           name="TWX.Core.Default_UG"
+						           type="Group"/>
+					</PropertyRead>
+					<PropertyWrite>
+						<Principal isPermitted="true"
+						           name="TWX.Core.Default_UG"
+						           type="Group"/>
+					</PropertyWrite>
+					<ServiceInvoke>
+						<Principal isPermitted="true"
+						           name="TWX.Core.Default_UG"
+						           type="Group"/>
+					</ServiceInvoke>
+					<EventInvoke>
+						<Principal isPermitted="true"
+						           name="TWX.Core.Default_UG"
+						           type="Group"/>
+					</EventInvoke>
+					<EventSubscribe>
+						<Principal isPermitted="true"
+						           name="TWX.Core.Default_UG"
+						           type="Group"/>
+					</EventSubscribe>
+				</Permissions>
+			</InstanceRunTimePermissions>
+		</ThingShape>
+	</ThingShapes>
+</Entities>

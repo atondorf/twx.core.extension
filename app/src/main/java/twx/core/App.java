@@ -4,75 +4,40 @@
 package twx.core;
 
 import java.util.Scanner;
-import java.util.Date;
-import java.util.TimeZone;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.Calendar;
-
-import org.joda.time.*;
-import org.joda.time.format.*;
-import org.joda.time.Period;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import twx.core.db.sqlbuilder.CreateTableQuery;
-import twx.core.db.sqlbuilder.TypedColumnObject;
-import twx.core.db.sqlbuilder.dbspec.basic.*;
-import twx.core.db.sqlbuilder.custom.sqlserver.MssObjects;
-
-import twx.core.db.QueryBuilder;
-import twx.core.db.Collections;
-import static twx.core.db.Collections.entry;
-import static twx.core.db.Collections.listOf;
-import static twx.core.db.Collections.mapOf;
-
+import com.healthmarketscience.sqlbuilder.CreateTableQuery;
+import com.healthmarketscience.sqlbuilder.dbspec.*;
+import com.healthmarketscience.sqlbuilder.dbspec.basic.*;
 public class App {
-	final static Logger logger  = LoggerFactory.getLogger(App.class);
 
+	final static Logger 		logger  = LoggerFactory.getLogger(App.class);
+  
+    public String getTableCreate() {
+        DbSpec      spec    = new DbSpec();
+        DbSchema    schema  = spec.addDefaultSchema();
 
-    public String test_1() {
-        // create default schema
-        DbSpec spec     = new DbSpec();
-        DbSchema schema = spec.addDefaultSchema();
+        DbTable     customerTable   = schema.addTable("test");
+        customerTable.addColumn("UID", "bigint", null);
+        customerTable.addColumn("cust_id", "number", null);
+        customerTable.addColumn("name", "varchar", 255);
+        customerTable.primaryKey("Customer_UID_PK", "UID");
+        customerTable.unique("Customer_UID_UN", "UID");   
 
-        // add table with basic customer info
-        DbTable testTable = schema.addTable("test");
-        DbColumn uid = testTable.addColumn("uid", "bigint", null);
-        uid.primaryKey();
-        uid.identity();
-        // uid.addConstraint(MssObjects.AUTO_INCREMENT_COLUMN);
-        DbColumn name = testTable.addColumn("name", "varchar", 333);
-
-        String createCustomerTable = new CreateTableQuery(testTable, true)
-            // .addColumnConstraint(uid, MssObjects.AUTO_INCREMENT_COLUMN )
-            .toString();
+        String createCustomerTable = new CreateTableQuery(customerTable, true)
+            .validate().toString();
+        
         return createCustomerTable;
     }
 
-    public String test_2() {
-        var queryBuilder = QueryBuilder.insertInto("A").values(mapOf(
-            entry("a", 1),
-            entry("b", true),
-            entry("c", "hello"),
-            entry("d", ":d"),
-            entry("e", "?"),
-            entry("f", QueryBuilder.select("f").from("F").where("g = :g"))
-        ));
-        return queryBuilder.getSQL();
-    }
-
     public static void main(String[] args) {
-        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
     	var app 	= new App();
         var scanner	= new Scanner(System.in);
         
         logger.info("---------- Start-App ----------");
         try {
-            // logger.info( app.test_1() );
-            logger.info( app.test_2() );
-            
+            logger.info( app.getTableCreate() );
 		}
         catch(Exception ex) {
         	logger.error(ex.getMessage());

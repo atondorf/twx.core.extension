@@ -32,7 +32,7 @@ public class UtilScriptLibrary {
     // AuthenticationUtilities.validateUserSecurityContext();
     ScriptableObject.defineClass(me, MultiTimer.class);
   }
-  
+
   public static Object core_getMultiTimer(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
     // AuthenticationUtilities.validateUserSecurityContext();
     if (args.length != 1)

@@ -131,6 +131,22 @@
                      isLocalOnly="false"
                      isOpen="false"
                      isPrivate="false"
+                     name="exPostActor">
+                        <ResultType
+                         baseType="NOTHING"
+                         description=""
+                         name="result"
+                         ordinal="0"></ResultType>
+                        <ParameterDefinitions></ParameterDefinitions>
+                    </ServiceDefinition>
+                    <ServiceDefinition
+                     aspect.isAsync="false"
+                     category=""
+                     description=""
+                     isAllowOverride="false"
+                     isLocalOnly="false"
+                     isOpen="false"
+                     isPrivate="false"
                      name="exString">
                         <ResultType
                          baseType="JSON"
@@ -404,6 +420,42 @@
                     <ServiceImplementation
                      description=""
                      handlerName="Script"
+                     name="exPostActor">
+                        <ConfigurationTables>
+                            <ConfigurationTable
+                             dataShapeName=""
+                             description=""
+                             isMultiRow="false"
+                             name="Script"
+                             ordinal="0">
+                                <DataShape>
+                                    <FieldDefinitions>
+                                        <FieldDefinition
+                                         baseType="STRING"
+                                         description="code"
+                                         name="code"
+                                         ordinal="0"></FieldDefinition>
+                                    </FieldDefinitions>
+                                </DataShape>
+                                <Rows>
+                                    <Row>
+                                        <code>
+                                        <![CDATA[
+                                        /*
+                                         *
+                                         */
+                                        let message = { val1: "Hello" };
+                                        me.actorAddMessage({ body: message });
+                                        ]]>
+                                        </code>
+                                    </Row>
+                                </Rows>
+                            </ConfigurationTable>
+                        </ConfigurationTables>
+                    </ServiceImplementation>
+                    <ServiceImplementation
+                     description=""
+                     handlerName="Script"
                      name="exString">
                         <ConfigurationTables>
                             <ConfigurationTable
@@ -473,12 +525,12 @@
                                         <![CDATA[
                                         result = {};
                                         // get position of code in source ... 
-                                        result.one = core_getSrcInfo();
-                                        result.two = core_getSrcInfo();
+                                        //result.one = core_getSrcInfo();
+                                        //result.two = core_getSrcInfo();
                                         
                                         // create an exception object with srcInfo and MessageFormat .. 
                                         let val = 4711;
-                                        result.ex1 = core_createException("Hello {0}", val);
+                                        //result.ex1 = core_createException("Hello {0}", val);
                                         // directly throw an exception with MessageFormat and src_info ... 
                                         try {
                                             core_throwException("Hello {0}", "Thrown");
@@ -505,8 +557,22 @@
             <RemoteServiceBindings></RemoteServiceBindings>
             <RemoteEventBindings></RemoteEventBindings>
             <AlertConfigurations></AlertConfigurations>
-            <ImplementedShapes></ImplementedShapes>
-            <ThingProperties></ThingProperties>
+            <ImplementedShapes>
+                <ImplementedShape
+                 name="TWX.Core.Actor_TS"
+                 type="ThingShape"></ImplementedShape>
+            </ImplementedShapes>
+            <ThingProperties>
+                <ActorManager>
+                    <Value>
+                    <![CDATA[
+                    TWX.Core.ActorManager
+                    ]]>
+                    </Value>
+                    <Timestamp>1970-01-01T00:00:00.000Z</Timestamp>
+                    <Quality>UNKNOWN</Quality>
+                </ActorManager>
+            </ThingProperties>
         </Thing>
     </Things>
 </Entities>
