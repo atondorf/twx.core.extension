@@ -37,6 +37,49 @@
 					</ParameterDefinitions>
 				</FunctionDefinition>
 			</FunctionDefinitions>
+			<RunTimePermissions>
+                <Permissions
+                    resourceName="*">
+                    <PropertyRead>
+                        <Principal
+                            isPermitted="true"
+                            name="TWX.Core.Default_UG"
+                            type="Group"></Principal>
+                    </PropertyRead>
+                    <PropertyWrite>
+                        <Principal
+                            isPermitted="true"
+                            name="TWX.Core.Default_UG"
+                            type="Group"></Principal>
+                    </PropertyWrite>
+                    <ServiceInvoke>
+                        <Principal
+                            isPermitted="true"
+                            name="TWX.Core.Default_UG"
+                            type="Group"></Principal>
+                    </ServiceInvoke>
+                    <EventInvoke>
+                        <Principal
+                            isPermitted="true"
+                            name="TWX.Core.Default_UG"
+                            type="Group"></Principal>
+                    </EventInvoke>
+                    <EventSubscribe>
+                        <Principal
+                            isPermitted="true"
+                            name="TWX.Core.Default_UG"
+                            type="Group"></Principal>
+                    </EventSubscribe>
+                </Permissions>
+            </RunTimePermissions>
+            <VisibilityPermissions>
+                <Visibility>
+                    <Principal
+                        isPermitted="true"
+                        name="TWX.Core.Default_OR"
+                        type="Organization"></Principal>
+                </Visibility>
+            </VisibilityPermissions>
 		</ScriptFunctionLibrary>
 	</ScriptFunctionLibraries>
 </Entities>
