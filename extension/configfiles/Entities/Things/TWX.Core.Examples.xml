@@ -489,8 +489,8 @@
                                         
                                         // simple matching of topics ... 
                                         // http://www.steves-internet-guide.com/understanding-mqtt-topics/
-                                        let filter = "SIG/Test/#";
-                                        let topic  = "SIG/Test/CL/1810/SB_OUT";
+                                        let filter = "TWX/Test/#";
+                                        let topic  = "TWX/Test/CL/1810/SB_OUT";
                                         result.match = core_strMatchTopic(filter, topic);
                                         ]]>
                                         </code>
