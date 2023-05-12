@@ -15,17 +15,17 @@ import com.thingworx.metadata.annotations.ThingworxSubscriptions;
 import com.thingworx.things.Thing;
 import com.thingworx.types.InfoTable;
 
-import twx.core.BaseTS;
+import twx.core.ThingUtil;
 
-public class ActorTS extends BaseTS {
+public class ActorTS {
 
     private static Logger _logger = LogUtilities.getInstance().getApplicationLogger(ActorTS.class);
 
     @ThingworxServiceDefinition(name = "actorExecuteNative", description = "Internal Execution", category = "Actor", isAllowOverride = false )
     @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
     public void actorExecuteNative() throws Exception {
-        Thing thing = getMe();
-        thing.getName();
+        Thing thing = ThingUtil.getThing();
+        
     }
 
 }

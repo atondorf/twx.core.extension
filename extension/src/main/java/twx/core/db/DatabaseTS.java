@@ -1,7 +1,11 @@
 package twx.core.db;
 
-import twx.core.BaseTS;
+import org.json.JSONObject;
+import org.slf4j.Logger;
 
-public class DatabaseTS extends BaseTS {
-    
+import com.thingworx.logging.LogUtilities;
+
+public class DatabaseTS {
+    private static Logger _logger = LogUtilities.getInstance().getApplicationLogger(DatabaseTS.class);
+
 }

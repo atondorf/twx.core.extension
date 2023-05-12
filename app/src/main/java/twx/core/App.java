@@ -7,37 +7,17 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.healthmarketscience.sqlbuilder.CreateTableQuery;
-import com.healthmarketscience.sqlbuilder.dbspec.*;
-import com.healthmarketscience.sqlbuilder.dbspec.basic.*;
 public class App {
 
 	final static Logger 		logger  = LoggerFactory.getLogger(App.class);
   
-    public String getTableCreate() {
-        DbSpec      spec    = new DbSpec();
-        DbSchema    schema  = spec.addDefaultSchema();
-
-        DbTable     customerTable   = schema.addTable("test");
-        customerTable.addColumn("UID", "bigint", null);
-        customerTable.addColumn("cust_id", "number", null);
-        customerTable.addColumn("name", "varchar", 255);
-        customerTable.primaryKey("Customer_UID_PK", "UID");
-        customerTable.unique("Customer_UID_UN", "UID");   
-
-        String createCustomerTable = new CreateTableQuery(customerTable, true)
-            .validate().toString();
-        
-        return createCustomerTable;
-    }
-
     public static void main(String[] args) {
     	var app 	= new App();
         var scanner	= new Scanner(System.in);
         
         logger.info("---------- Start-App ----------");
         try {
-            logger.info( app.getTableCreate() );
+
 		}
         catch(Exception ex) {
         	logger.error(ex.getMessage());

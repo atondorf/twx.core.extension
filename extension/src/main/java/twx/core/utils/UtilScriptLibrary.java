@@ -1,7 +1,8 @@
 package twx.core.utils;
 
 import ch.qos.logback.classic.Logger;
-import twx.core.db.QueryBuilder;
+import twx.core.db.scriptable.QueryBuilder;
+import twx.core.utils.scriptable.MultiTimer;
 
 import com.thingworx.logging.LogUtilities;
 import com.thingworx.common.utils.DateUtilities;
@@ -23,14 +24,19 @@ import org.joda.time.DateTimeZone;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import twx.core.utils.scriptable.MultiTimer;
+
 public class UtilScriptLibrary {
   protected static final Logger _logger = LogUtilities.getInstance().getScriptLogger(UtilScriptLibrary.class);
   
-  //// Require  ////
-
+  // Scriptable Interface for contrsution
+  // --------------------------------------------------------------------------------
   public static void require_core_util(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
-    // AuthenticationUtilities.validateUserSecurityContext();
-    ScriptableObject.defineClass(me, MultiTimer.class);
+    AuthenticationUtilities.validateUserSecurityContext();
+    // Check if the class is already registered ...
+    var obj = ScriptableObject.getProperty(me, "MultiTimer");
+    if (obj == Scriptable.NOT_FOUND)
+        ScriptableObject.defineClass(me, MultiTimer.class);
   }
 
   public static Object core_getMultiTimer(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
@@ -48,7 +54,8 @@ public class UtilScriptLibrary {
     return cx.newObject(me, "MultiTimer", args_new);
 }
 
-  //// Internal Helpers and Tools  ////
+  // Internal Helpers and Tools 
+  // --------------------------------------------------------------------------------
   public static JSONObject core_getSrcInfo(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
     AuthenticationUtilities.validateUserSecurityContext();    
     JSONObject json = new JSONObject();
@@ -113,8 +120,8 @@ public class UtilScriptLibrary {
     throw new RuntimeException(message);
   }
 
-  //// System  ////
-
+  // System  
+  // --------------------------------------------------------------------------------
   protected static Object[] callPowerShell(String script) throws Exception {
     List<String> list = new LinkedList<>();
 

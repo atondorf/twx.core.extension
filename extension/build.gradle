@@ -21,6 +21,7 @@ dependencies {
     implementation group: 'org.json', name: 'json', version: '20171018'
     implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
     implementation fileTree(dir: rootProject.ext.commonJarDir, include: ['*.jar'])
+    implementation fileTree(dir: rootProject.ext.localJarDir, include: ['*.jar'])
     packageDependencies fileTree(dir: rootProject.ext.localJarDir, include: ['*.jar'])
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
     implementation group: 'com.google.collections', name: 'google-collections', version: '1.0'

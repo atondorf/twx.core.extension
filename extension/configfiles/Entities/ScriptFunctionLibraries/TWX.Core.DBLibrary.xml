@@ -1,0 +1,16 @@
+<Entities>
+	<ScriptFunctionLibraries>
+		<ScriptFunctionLibrary
+			name="TWX.Core.DatabaseScriptLibrary"
+			description="DB Library implementing services for access to SQL-DBs"
+			className="twx.core.db.DatabaseScriptLibrary"
+			projectName="TWX.Core">
+			<FunctionDefinitions>
+				<!--Require Function-->
+				<FunctionDefinition name="require_core_db" description="Registers the DB Classes of TWX.Core.db to the context and makes them usable to JS ...">
+					<ResultType baseType="NOTHING" name="result" ordinal="0" />
+				</FunctionDefinition>
+            </FunctionDefinitions>
+		</ScriptFunctionLibrary>
+	</ScriptFunctionLibraries>
+</Entities>

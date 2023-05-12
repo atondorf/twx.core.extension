@@ -525,12 +525,12 @@
                                         <![CDATA[
                                         result = {};
                                         // get position of code in source ... 
-                                        //result.one = core_getSrcInfo();
-                                        //result.two = core_getSrcInfo();
+                                        result.one = core_getSrcInfo();
+                                        result.two = core_getSrcInfo();
                                         
                                         // create an exception object with srcInfo and MessageFormat .. 
                                         let val = 4711;
-                                        //result.ex1 = core_createException("Hello {0}", val);
+                                        result.ex1 = core_createException("Hello {0}", val);
                                         // directly throw an exception with MessageFormat and src_info ... 
                                         try {
                                             core_throwException("Hello {0}", "Thrown");
