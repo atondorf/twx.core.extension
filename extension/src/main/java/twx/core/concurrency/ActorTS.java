@@ -24,7 +24,7 @@ public class ActorTS {
     @ThingworxServiceDefinition(name = "actorExecuteNative", description = "Internal Execution", category = "Actor", isAllowOverride = false )
     @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
     public void actorExecuteNative() throws Exception {
-        Thing thing = ThingUtil.getThing();
+        Thing thing = ThingUtil.getMeThing();
         
     }
 

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entities
+    majorVersion="9"
+    minorVersion="3"
+    universal="password">
+    <Things>
+        <Thing
+            aspect.isEditableExtensionObject="true"
+            description=""
+            documentationContent=""
+            effectiveThingPackage="SQLThingPackage"
+            enabled="true"
+            homeMashup=""
+            identifier=""
+            inheritedValueStream=""
+            name="TWX.Core.DBExample"
+            projectName="TWX.Core"
+            published="false"
+            tags=""
+            thingTemplate="SQLThing"
+            valueStream="">
+            <avatar></avatar>
+            <DesignTimePermissions>
+                <Create></Create>
+                <Read></Read>
+                <Update></Update>
+                <Delete></Delete>
+                <Metadata></Metadata>
+            </DesignTimePermissions>
+            <RunTimePermissions></RunTimePermissions>
+            <VisibilityPermissions>
+                <Visibility></Visibility>
+            </VisibilityPermissions>
+            <ConfigurationTableDefinitions></ConfigurationTableDefinitions>
+            <ConfigurationTables>
+                <ConfigurationTable
+                    dataShapeName=""
+                    description="Connection Monitoring Settings"
+                    isMultiRow="false"
+                    name="ConnectionMonitoring"
+                    ordinal="0">
+                    <DataShape>
+                        <FieldDefinitions>
+                            <FieldDefinition
+                                aspect.defaultValue="30000.0"
+                                aspect.friendlyName="Monitor Rate (milliseconds)"
+                                baseType="NUMBER"
+                                description="Monitor rate in milliseconds"
+                                name="connectionMonitorRate"
+                                ordinal="1"></FieldDefinition>
+                            <FieldDefinition
+                                aspect.defaultValue="false"
+                                aspect.friendlyName="Enable Monitoring"
+                                baseType="BOOLEAN"
+                                description="Enable connection monitoring"
+                                name="enableMonitor"
+                                ordinal="0"></FieldDefinition>
+                            <FieldDefinition
+                                aspect.defaultValue="1.0"
+                                aspect.friendlyName="Number of Retries"
+                                baseType="NUMBER"
+                                description="Number of retries"
+                                name="numberOfRetries"
+                                ordinal="2"></FieldDefinition>
+                            <FieldDefinition
+                                aspect.defaultValue="2000.0"
+                                aspect.friendlyName="Retry Delay (milliseconds)"
+                                baseType="NUMBER"
+                                description="Retry delay in milliseconds"
+                                name="retryDelay"
+                                ordinal="3"></FieldDefinition>
+                        </FieldDefinitions>
+                    </DataShape>
+                    <Rows>
+                        <Row>
+                            <connectionMonitorRate>30000.0</connectionMonitorRate>
+                            <enableMonitor>false</enableMonitor>
+                            <numberOfRetries>1.0</numberOfRetries>
+                            <retryDelay>2000.0</retryDelay>
+                        </Row>
+                    </Rows>
+                </ConfigurationTable>
+                <ConfigurationTable
+                    dataShapeName=""
+                    description="Connection Provider"
+                    isMultiRow="false"
+                    name="ConnectionProvider"
+                    ordinal="0">
+                    <DataShape>
+                        <FieldDefinitions>
+                            <FieldDefinition
+                                aspect.defaultValue="false"
+                                aspect.friendlyName="Participate in platform transactions"
+                                baseType="BOOLEAN"
+                                description="Participate in platform transactions"
+                                name="isTransactional"
+                                ordinal="0"></FieldDefinition>
+                            <FieldDefinition
+                                aspect.defaultValue="ThingworxPersistenceProvider"
+                                aspect.friendlyName="Persistence Provider Name"
+                                baseType="PERSISTENCEPROVIDERNAME"
+                                description="The Persistence Provider from which to retrieve connections"
+                                name="persistenceProviderName"
+                                ordinal="0"></FieldDefinition>
+                        </FieldDefinitions>
+                    </DataShape>
+                    <Rows>
+                        <Row>
+                            <isTransactional>false</isTransactional>
+                            <persistenceProviderName>
+                            <![CDATA[
+                            ThingworxPersistenceProvider
+                            ]]>
+                            </persistenceProviderName>
+                        </Row>
+                    </Rows>
+                </ConfigurationTable>
+                <ConfigurationTable
+                    dataShapeName=""
+                    description="Field/Column Name Aliases"
+                    isMultiRow="true"
+                    name="ColumnAliases"
+                    ordinal="1">
+                    <DataShape>
+                        <FieldDefinitions>
+                            <FieldDefinition
+                                aspect.friendlyName="Database Column Name"
+                                baseType="STRING"
+                                description="Database column name"
+                                name="columnName"
+                                ordinal="0"></FieldDefinition>
+                            <FieldDefinition
+                                aspect.friendlyName="Thingworx Field Name"
+                                baseType="STRING"
+                                description="Thingworx field name"
+                                name="fieldName"
+                                ordinal="1"></FieldDefinition>
+                        </FieldDefinitions>
+                    </DataShape>
+                    <Rows></Rows>
+                </ConfigurationTable>
+            </ConfigurationTables>
+            <ThingShape>
+                <PropertyDefinitions></PropertyDefinitions>
+                <ServiceDefinitions>
+                    <ServiceDefinition
+                        aspect.isAsync="false"
+                        category=""
+                        description=""
+                        isAllowOverride="false"
+                        isLocalOnly="false"
+                        isOpen="false"
+                        isPrivate="false"
+                        name="exBuilder">
+                        <ResultType
+                            baseType="JSON"
+                            description=""
+                            name="result"
+                            ordinal="0"></ResultType>
+                        <ParameterDefinitions></ParameterDefinitions>
+                    </ServiceDefinition>
+                </ServiceDefinitions>
+                <EventDefinitions></EventDefinitions>
+                <ServiceMappings></ServiceMappings>
+                <ServiceImplementations>
+                    <ServiceImplementation
+                        description=""
+                        handlerName="Script"
+                        name="exBuilder">
+                        <ConfigurationTables>
+                            <ConfigurationTable
+                                dataShapeName=""
+                                description=""
+                                isMultiRow="false"
+                                name="Script"
+                                ordinal="0">
+                                <DataShape>
+                                    <FieldDefinitions>
+                                        <FieldDefinition
+                                            baseType="STRING"
+                                            description="code"
+                                            name="code"
+                                            ordinal="0"></FieldDefinition>
+                                    </FieldDefinitions>
+                                </DataShape>
+                                <Rows>
+                                    <Row>
+                                        <code>
+                                        <![CDATA[
+                                        result = {};
+                                        require_core_db();
+                                        let builder = new QueryBuilder();
+                                        
+                                        // builder.select("*").from("test");
+                                        result.sql1 = builder.toString();
+                                        //let builder = core_db_getQueryBuilder();
+                                        ]]>
+                                        </code>
+                                    </Row>
+                                </Rows>
+                            </ConfigurationTable>
+                        </ConfigurationTables>
+                    </ServiceImplementation>
+                </ServiceImplementations>
+                <Subscriptions></Subscriptions>
+            </ThingShape>
+            <PropertyBindings></PropertyBindings>
+            <RemotePropertyBindings></RemotePropertyBindings>
+            <RemoteServiceBindings></RemoteServiceBindings>
+            <RemoteEventBindings></RemoteEventBindings>
+            <AlertConfigurations></AlertConfigurations>
+            <ImplementedShapes>
+                <ImplementedShape
+                    name="TWX.Core.Database_TS"
+                    type="ThingShape"></ImplementedShape>
+            </ImplementedShapes>
+            <ThingProperties></ThingProperties>
+        </Thing>
+    </Things>
+</Entities>

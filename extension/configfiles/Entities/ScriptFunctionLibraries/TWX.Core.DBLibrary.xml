@@ -1,16 +1,51 @@
 <Entities>
 	<ScriptFunctionLibraries>
-		<ScriptFunctionLibrary
-			name="TWX.Core.DatabaseScriptLibrary"
-			description="DB Library implementing services for access to SQL-DBs"
-			className="twx.core.db.DatabaseScriptLibrary"
-			projectName="TWX.Core">
+		<ScriptFunctionLibrary name="TWX.Core.DatabaseFunctions" description="DB Library implementing services for access to SQL-DBs" className="twx.core.db.DatabaseScriptLibrary" projectName="TWX.Core">
 			<FunctionDefinitions>
-				<!--Require Function-->
+				<!--Require
+				Function-->
 				<FunctionDefinition name="require_core_db" description="Registers the DB Classes of TWX.Core.db to the context and makes them usable to JS ...">
-					<ResultType baseType="NOTHING" name="result" ordinal="0" />
+					<ResultType baseType="NOTHING" name="result" ordinal="0"/>
 				</FunctionDefinition>
-            </FunctionDefinitions>
+				<!--Require
+				Function-->
+				<FunctionDefinition name="core_db_getConnection" description="">
+					<ResultType baseType="JSON" name="result" ordinal="0"/>
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="thingName" ordinal="0"/>
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<FunctionDefinition name="core_db_getQueryBuilder" description="">
+					<ResultType baseType="JSON" name="result" ordinal="0"/>
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="sql" ordinal="0"/>
+					</ParameterDefinitions>
+				</FunctionDefinition>
+			</FunctionDefinitions>
+			<RunTimePermissions>
+				<Permissions resourceName="*">
+					<PropertyRead>
+						<Principal isPermitted="true" name="TWX.Core.Default_UG" type="Group"/>
+					</PropertyRead>
+					<PropertyWrite>
+						<Principal isPermitted="true" name="TWX.Core.Default_UG" type="Group"/>
+					</PropertyWrite>
+					<ServiceInvoke>
+						<Principal isPermitted="true" name="TWX.Core.Default_UG" type="Group"/>
+					</ServiceInvoke>
+					<EventInvoke>
+						<Principal isPermitted="true" name="TWX.Core.Default_UG" type="Group"/>
+					</EventInvoke>
+					<EventSubscribe>
+						<Principal isPermitted="true" name="TWX.Core.Default_UG" type="Group"/>
+					</EventSubscribe>
+				</Permissions>
+			</RunTimePermissions>
+			<VisibilityPermissions>
+				<Visibility>
+					<Principal isPermitted="true" name="TWX.Core.Default_OR" type="Organization"/>
+				</Visibility>
+			</VisibilityPermissions>
 		</ScriptFunctionLibrary>
 	</ScriptFunctionLibraries>
 </Entities>

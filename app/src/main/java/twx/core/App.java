@@ -7,21 +7,66 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import com.microsoft.sqlserver.jdbc.SQLServerDriver;
+
 public class App {
 
-	final static Logger 		logger  = LoggerFactory.getLogger(App.class);
-  
-    public static void main(String[] args) {
-    	var app 	= new App();
-        var scanner	= new Scanner(System.in);
-        
-        logger.info("---------- Start-App ----------");
-        try {
+    final static Logger logger = LoggerFactory.getLogger(App.class);
 
-		}
-        catch(Exception ex) {
-        	logger.error(ex.getMessage());
+    static final String DB_URL = "jdbc:sqlserver://localhost:1433;database=twdata;";
+    static final String USER = "twx";
+    static final String PASS = "twx@1234";
+    Connection con = null;
+
+    public static void main(String[] args) {
+        var app = new App();
+        var scanner = new Scanner(System.in);
+        logger.info("---------- Start-App ----------");
+        Connection con = null;
+        try {
+            DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
+            con = DriverManager.getConnection(DB_URL, USER, PASS);
+            con.setAutoCommit(false);
+
+            var meta = new JDBCMeta(con);
+
+//            meta.getTables();
+            meta.getDatabaseInfo();
+
         }
-        logger.info( "---------- Exit-App ----------");
+        catch (SQLException e) {
+            printSQLException(e);
+        } 
+        finally {
+            if( con != null )  {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    printSQLException(e);
+                }
+            }
+        }
+        logger.info("---------- Exit-App ----------");
+    }
+
+    public static void printSQLException(SQLException ex) {
+        for (Throwable e : ex) {
+            if (e instanceof SQLException) {
+                e.printStackTrace(System.err);
+                System.err.println("SQLState: " + ((SQLException) e).getSQLState());
+                System.err.println("Error Code: " + ((SQLException) e).getErrorCode());
+                System.err.println("Message: " + e.getMessage());
+                Throwable t = ex.getCause();
+                while (t != null) {
+                    System.out.println("Cause: " + t);
+                    t = t.getCause();
+                }
+            }
+        }
     }
 }

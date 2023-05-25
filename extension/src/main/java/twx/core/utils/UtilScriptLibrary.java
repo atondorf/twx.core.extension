@@ -40,14 +40,11 @@ public class UtilScriptLibrary {
   }
 
   public static Object core_getMultiTimer(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
+    require_core_util(cx, me, args, funObj);
     // AuthenticationUtilities.validateUserSecurityContext();
     if (args.length != 1)
         throw new Exception("Invalid Number of Arguments in core_getMultiTimer");
     DSLConverter.convertValues(args, me);
-    // Check if the class is already registered ...
-    var obj  = ScriptableObject.getProperty(me,"MultiTimer");
-    if( obj == Scriptable.NOT_FOUND )
-        ScriptableObject.defineClass(me, MultiTimer.class);
     // create and return ... 
     StringPrimitive desc = (StringPrimitive)BaseTypes.ConvertToPrimitive(args[0], BaseTypes.STRING);
     Object[] args_new = { desc.getValue() };

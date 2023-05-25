@@ -47,7 +47,6 @@ public class QueryBuilder extends ScriptableObject {
 
     // Implementation ...
     // --------------------------------------------------------------------------------
-
     private StringBuilder sqlBuilder;
     private List<String> parameters = new LinkedList<>();
     private List<Map<String, Object>> results = null;
@@ -89,7 +88,7 @@ public class QueryBuilder extends ScriptableObject {
         return queryBuilder;
     }
 
-    @JSStaticFunction
+    @JSFunction
     public static QueryBuilder select(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception { 
         if (args.length < 1)
             throw new IllegalArgumentException("Invalid Number of Arguments in select"); 
