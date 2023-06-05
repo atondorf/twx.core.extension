@@ -33,17 +33,18 @@ public class App {
             con = DriverManager.getConnection(DB_URL, USER, PASS);
             con.setAutoCommit(false);
 
-            var meta = new JDBCMeta(con);
+            var meta = new DbModelBuilder(con);
 
-//            meta.getTables();
-            meta.getDatabaseInfo();
+            var model = meta.getDbModel();
 
-        }
-        catch (SQLException e) {
+            model.toJSON();
+
+            logger.info(model.toString());
+
+        } catch (SQLException e) {
             printSQLException(e);
-        } 
-        finally {
-            if( con != null )  {
+        } finally {
+            if (con != null) {
                 try {
                     con.close();
                 } catch (SQLException e) {

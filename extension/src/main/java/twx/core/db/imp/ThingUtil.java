@@ -1,4 +1,4 @@
-package twx.core;
+package twx.core.db.imp;
 
 import ch.qos.logback.classic.Logger;
 import com.thingworx.logging.LogUtilities;

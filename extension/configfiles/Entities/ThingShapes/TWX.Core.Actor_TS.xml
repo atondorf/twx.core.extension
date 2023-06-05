@@ -3,7 +3,6 @@
 	<ThingShapes>
 		<ThingShape aspect.isEditableExtensionObject="true"
 		            aspect.isExtension="true"
-		            className="twx.core.concurrency.ActorTS"
 		            description=""
 		            name="TWX.Core.Actor_TS"
 		            projectName="TWX.Core">
@@ -347,17 +346,22 @@
                                         }
                                     }
                                     
-                                    function dispatchMessage(message) {
+                                    function dispatchMessage(msg) {
                                     	// how to handle messages that's service is not available ???
-                                        if( !me[message.service] ) {
-                                            logger.warning("Actor-Thing [{}] Service [{}] : {} ", me.name, "actorExecute", "Service undefined: "+ message.service );
+                                        if( !msg ) {
+                                        	logger.warn("Actor-Thing [{}] Service [{}] : {} ", me.name, "actorExecute", "Undefined Message");
                                             return;
                                         }
-                                        me[message.service]({
-                                    		time: message.time,
-                                    		sender: message.sender,
-                                    		subject: message.subject,
-                                    		body: message.body
+                                        let serviceName = msg.service;
+                                        if( !me[serviceName] ) {
+                                            logger.error("Actor-Thing [{}] Service [{}] : {} ", me.name, "actorExecute", "Service undefined: "+ message.service );
+                                            return;
+                                        }
+                                        me[serviceName]({
+                                    		time: msg.time,
+                                    		sender: msg.sender,
+                                    		subject: msg.subject,
+                                    		body: msg.body
                                     	});
                                     }
                                     ]]></code>
@@ -393,7 +397,7 @@
                                      * 	Overload this function to implement behaviour ... 
                                      *  Or create additional Services that have the same interface and post service name as parameter...
                                      */
-                                    logger.info("Actor-Thing [{}] Service [{}] Dequeued Message Time: {}, Sender: {}, Subj: {}, Body : {}", me.name, "actorProcessMessage", dateFormatISO(time), sender, subject, body);
+                                    logger.trace("Actor-Thing [{}] Service [{}] Dequeued Message Time: {}, Sender: {}, Subj: {}, Body : {}", me.name, "actorProcessMessage", dateFormatISO(time), sender, subject, body);
                                     ]]></code>
 								</Row>
 							</Rows>

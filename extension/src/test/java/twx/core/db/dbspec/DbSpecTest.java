@@ -2,35 +2,32 @@ package twx.core.db.dbspec;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
+
+import twx.core.db.model.DbModel;
+import twx.core.db.model.DbSchema;
+
 import java.util.logging.Logger;
 
 public class DbSpecTest {
     static final Logger log = Logger.getLogger(DbSpecTest.class.getName());
-    DbSpec sut;
+    DbModel sut;
 
     @Test
     void isInstantiatedWithNew() {
-        assertNotNull(new DbSpec("Name"));
+        assertNotNull(new DbModel("Name"));
     }
 
     @Nested
     public class givenNewSpec {
         @BeforeEach
         void createNewSpec() {
-            sut = new DbSpec("Name");
+            sut = new DbModel("Name");
         }
 
         @Test
         void shouldBeRoot() {
             assertTrue(sut.isRoot());
             assertNull(sut.getParent());
-            assertEquals(0, sut.getLevel());
-        }
-
-        @Test
-        void shouldHaveOneChilds() {
-            assertFalse(sut.isLeaf());
-            assertEquals(1, sut.getChildCount());
         }
 
         @Test
@@ -45,10 +42,9 @@ public class DbSpecTest {
         }
 
         @Test
-        void shouldHaveDefaultSchema() {
-            assertNotNull(sut.getDefaultSchema());
-            assertNotNull(sut.getChild(DbSpec.DEFAULT_SCHEMA_NAME));
-            assertEquals(1, sut.getSchemas().size());
+        void shouldHaveNoSchema() {
+            assertNull(sut.getDefaultSchema());
+            assertEquals(0, sut.getSchemas().size());
         }
 
         @Test
@@ -61,7 +57,8 @@ public class DbSpecTest {
         @Nested
         class afterSchemaAdd {
             @BeforeEach
-            void addSchema() {
+            void addSchemas() {
+                sut.addDefaultSchema();
                 sut.addSchema("Test");
             }
 
@@ -69,7 +66,7 @@ public class DbSpecTest {
             void shouldHaveSchemas() {
                 assertEquals(2, sut.getSchemas().size());
                 assertNotNull(sut.getSchema("Test"));
-                assertNotNull(sut.getChild("Test"));
+                assertNotNull(sut.getDefaultSchema());
             }
 
             @Test
@@ -77,12 +74,6 @@ public class DbSpecTest {
                 DbSchema schema = sut.getSchema("Test");
                 assertEquals(sut, schema.getParent());
                 assertEquals(sut, schema.getSpec());
-            }
-
-            @Test
-            void shouldHaveTwoChilds() {
-                assertFalse(sut.isLeaf());
-                assertEquals(2, sut.getChildCount());
             }
 
             @Test

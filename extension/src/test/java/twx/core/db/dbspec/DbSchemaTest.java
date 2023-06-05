@@ -2,18 +2,23 @@ package twx.core.db.dbspec;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
+
+import twx.core.db.model.DbModel;
+import twx.core.db.model.DbSchema;
+import twx.core.db.model.DbTable;
+
 import java.util.logging.Logger;
 
 public class DbSchemaTest {
     static final Logger log = Logger.getLogger(DbSpecTest.class.getName());
-    DbSpec spec;
+    DbModel spec;
     DbSchema sut;
 
     @Nested
     public class givenTestSchema {
         @BeforeEach
         void createNewSpec() {
-            spec = new DbSpec("Spec");
+            spec = new DbModel("Spec");
             sut = spec.addSchema("Schema");
             log.info("DbSchemaTest.BeforeEach()");
         }
@@ -22,13 +27,10 @@ public class DbSchemaTest {
         void shouldNotBeRoot() {
             assertFalse(sut.isRoot());
             assertNotNull(sut.getParent());
-            assertEquals(1, sut.getLevel());
         }
 
         @Test
         void shouldHaveNoChilds() {
-            assertTrue(sut.isLeaf());
-            assertEquals(0, sut.getChildCount());
             assertEquals(0, sut.getTables().size());
         }
 
@@ -52,12 +54,6 @@ public class DbSchemaTest {
             void createNewSpec() {
                 table = sut.addTable("Table");
                 log.info("whenAddingATable.BeforeEach()");
-            }
-
-            @Test
-            void shouldHaveOneChild() {
-                assertFalse(sut.isLeaf());
-                assertEquals(1, sut.getChildCount());
             }
 
             @Test

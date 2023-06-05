@@ -1,4 +1,4 @@
-package twx.core.db.dbspec;
+package twx.core.db.model;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -11,15 +11,13 @@ import org.json.JSONArray;
 
 public class DbObject<ParentType extends DbObject<?>> {
   protected ParentType parent;
-  protected List<DbObject<?>> children;
 
   protected final String name;
-  protected String  description;
+  protected String description;
 
   protected DbObject(ParentType parent, String name) {
     this.parent = parent;
     this.name = name;
-    this.children = new LinkedList<DbObject<?>>();
   }
 
   protected void takeOwnerShip(DbObject<?> parent) {
@@ -28,25 +26,6 @@ public class DbObject<ParentType extends DbObject<?>> {
 
   public boolean isRoot() {
     return this.parent == null;
-  }
-
-  public boolean isLeaf() {
-    return this.children.size() == 0;
-  }
-
-  public int getChildCount() {
-    return this.children.size();
-  }
-
-  DbObject<?> getChild(String name) {
-    return this.children.stream().filter(child -> name.equals(child.getName())).findFirst().orElse(null);
-  }
-
-  public int getLevel() {
-    if (this.isRoot())
-      return 0;
-    else
-      return this.parent.getLevel() + 1;
   }
 
   public DbObject<?> getParent() {
@@ -60,8 +39,8 @@ public class DbObject<ParentType extends DbObject<?>> {
       return this.getParent().getRoot();
   }
 
-  public DbSpec getSpec() {
-    return (DbSpec)this.getRoot();
+  public DbModel getSpec() {
+    return (DbModel) this.getRoot();
   }
 
   public String getName() {
@@ -69,11 +48,11 @@ public class DbObject<ParentType extends DbObject<?>> {
   }
 
   public String getFullName() {
-    String name   = getName();
+    String name = getName();
     String prefix = (!(this.isRoot()) ? getParent().getFullName() : null);
-    if(name == null) {
+    if (name == null) {
       name = prefix;
-    } else if(prefix != null) {
+    } else if (prefix != null) {
       name = prefix + "." + name;
     }
     return name;
@@ -87,16 +66,11 @@ public class DbObject<ParentType extends DbObject<?>> {
     this.description = desc;
   }
 
-  protected void addChild(DbObject<?> child) {
-    child.takeOwnerShip(this);
-		this.children.add(child);
-	}
-
   public JSONObject toJSON() {
     var json = new JSONObject();
     json.put("name", getName());
-    if( description != null )
-      json.put("description",this.description);
+    if (description != null)
+      json.put("description", this.description);
     return json;
   }
 }

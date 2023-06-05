@@ -1,4 +1,4 @@
-package twx.core.db.dbspec;
+package twx.core.db.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public class DbIndex extends DbObject<DbTable> {
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();
-
+        
         return json;        
     }
 }

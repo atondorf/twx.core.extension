@@ -1,4 +1,4 @@
-package twx.core.db.dbspec;
+package twx.core.db.model;
 
 import java.util.ArrayList;
 import java.util.List;

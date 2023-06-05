@@ -1,4 +1,4 @@
-package twx.core.db.dbspec;
+package twx.core.db.model;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -7,11 +7,11 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class DbSchema extends DbObject<DbSpec> {
+public class DbSchema extends DbObject<DbModel> {
     
     private final LinkedHashMap<String,DbTable> tables = new LinkedHashMap<String,DbTable>();
 
-    public DbSchema(DbSpec spec, String name) {
+    protected DbSchema(DbModel spec, String name) {
         super(spec,name);
     };
     
@@ -29,7 +29,6 @@ public class DbSchema extends DbObject<DbSpec> {
     }
 
     protected <T extends DbTable> T addTable(T table) {
-        super.addChild(table);
         this.tables.put(table.getName(), table);
         return table;
     }

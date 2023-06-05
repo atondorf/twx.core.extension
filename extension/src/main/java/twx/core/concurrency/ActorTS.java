@@ -15,7 +15,7 @@ import com.thingworx.metadata.annotations.ThingworxSubscriptions;
 import com.thingworx.things.Thing;
 import com.thingworx.types.InfoTable;
 
-import twx.core.ThingUtil;
+import twx.core.db.imp.ThingUtil;
 
 public class ActorTS {
 
