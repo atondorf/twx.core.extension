@@ -8,17 +8,6 @@
 		            name="TWX.Core.Actor_TS"
 		            projectName="TWX.Core">
 			<PropertyDefinitions>
-				<PropertyDefinition aspect.cacheTime="0.0"
-				                    aspect.dataChangeType="VALUE"
-				                    aspect.defaultValue="TWX.Core.ActorManager"
-				                    aspect.isPersistent="true"
-				                    aspect.thingTemplate="TWX.Core.ActorManager_TT"
-				                    baseType="THINGNAME"
-				                    category=""
-				                    description=""
-				                    isLocalOnly="false"
-				                    name="ActorManager"
-				                    ordinal="2"/>
 			</PropertyDefinitions>
 			<ServiceDefinitions>
 				<ServiceDefinition aspect.isAsync="false"
@@ -347,17 +336,22 @@
                                         }
                                     }
                                     
-                                    function dispatchMessage(message) {
+                                    function dispatchMessage(msg) {
                                     	// how to handle messages that's service is not available ???
-                                        if( !me[message.service] ) {
-                                            logger.warning("Actor-Thing [{}] Service [{}] : {} ", me.name, "actorExecute", "Service undefined: "+ message.service );
+                                        if( !msg ) {
+                                        	logger.warn("Actor-Thing [{}] Service [{}] : {} ", me.name, "actorExecute", "Undefined Message");
                                             return;
                                         }
-                                        me[message.service]({
-                                    		time: message.time,
-                                    		sender: message.sender,
-                                    		subject: message.subject,
-                                    		body: message.body
+                                        let serviceName = msg.service;
+                                        if( !me[serviceName] ) {
+                                            logger.error("Actor-Thing [{}] Service [{}] : {} ", me.name, "actorExecute", "Service undefined: "+ message.service );
+                                            return;
+                                        }    
+                                        me[serviceName]({
+                                    		time: msg.time,
+                                    		sender: msg.sender,
+                                    		subject: msg.subject,
+                                    		body: msg.body
                                     	});
                                     }
                                     ]]></code>
@@ -393,7 +387,7 @@
                                      * 	Overload this function to implement behaviour ... 
                                      *  Or create additional Services that have the same interface and post service name as parameter...
                                      */
-                                    logger.info("Actor-Thing [{}] Service [{}] Dequeued Message Time: {}, Sender: {}, Subj: {}, Body : {}", me.name, "actorProcessMessage", dateFormatISO(time), sender, subject, body);
+                                    logger.trace("Actor-Thing [{}] Service [{}] Dequeued Message Time: {}, Sender: {}, Subj: {}, Body : {}", me.name, "actorProcessMessage", dateFormatISO(time), sender, subject, body);
                                     ]]></code>
 								</Row>
 							</Rows>
@@ -528,50 +522,6 @@
 				</ServiceImplementation>
 			</ServiceImplementations>
 			<Subscriptions>
-				<Subscription description=""
-				              enabled="false"
-				              eventName="DataChange"
-				              name="actorOnMeManagerChanged"
-				              source=""
-				              sourceProperty="ActorManager"
-				              sourceType="Thing">
-					<ServiceImplementation description=""
-					                       handlerName="Script"
-					                       name="actorOnMeManagerChanged">
-						<ConfigurationTables>
-							<ConfigurationTable dataShapeName=""
-							                    description=""
-							                    isMultiRow="false"
-							                    name="Script"
-							                    ordinal="0">
-								<DataShape>
-									<FieldDefinitions>
-										<FieldDefinition baseType="STRING"
-										                 description="code"
-										                 name="code"
-										                 ordinal="0"/>
-									</FieldDefinitions>
-								</DataShape>
-								<Rows>
-									<Row>
-										<code>
-                                        <![CDATA[
-                                        /*
-                                        eventData.newValue.quality
-                                        eventData.newValue.time
-                                        eventData.newValue.value
-                                        
-                                        eventData.oldValue.quality
-                                        eventData.oldValue.time
-                                        eventData.oldValue.value
-                                        */
-                                        ]]></code>
-									</Row>
-								</Rows>
-							</ConfigurationTable>
-						</ConfigurationTables>
-					</ServiceImplementation>
-				</Subscription>
 				<Subscription description=""
 				              enabled="true"
 				              eventName="actorTaskEnqueued"
