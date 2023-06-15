@@ -36,10 +36,9 @@ public class App {
             var meta = new DbModelBuilder(con);
 
             var model = meta.getDbModel();
+            var tab = model.getDefaultSchema().getTable("Tab_2");
 
-            model.toJSON();
-
-            logger.info(model.toString());
+            logger.info(tab.toJSON().toString(2));
 
         } catch (SQLException e) {
             printSQLException(e);

@@ -46,6 +46,11 @@ public class DbModelBuilder {
 
     public DbModel getDbModel() throws SQLException {
         String dbName = con.getCatalog();
+        String productName      = meta.getDatabaseProductName();
+        String productVersion   = meta.getDatabaseProductVersion();
+        String driverName       = meta.getDriverName();
+        String driverVersion    = meta.getDriverVersion();
+
         DbModel dbModel = new DbModel(dbName);
         return this.addSchemas(dbModel);
     }
@@ -85,16 +90,16 @@ public class DbModelBuilder {
     protected DbTable addColumns(DbTable dbTable) throws SQLException {
         ResultSet rs = meta.getColumns(null, dbTable.getSchemaName(), dbTable.getName(), null);
         while (rs.next()) {
-            DbColumn col = dbTable.addColumn( rs.getString("COLUMN_NAME") );
+            DbColumn col = dbTable.addColumn(rs.getString("COLUMN_NAME"));
             String typeName = rs.getString("TYPE_NAME");
-            if ( typeName.contains("identity")) {
+            if (typeName.contains("identity")) {
                 typeName = typeName.split(" ")[0];
             }
-            col.setTypeName( typeName );
-            col.setTypeId( rs.getInt("DATA_TYPE") );
+            col.setTypeName(typeName);
+            col.setTypeId(rs.getInt("DATA_TYPE"));
             col.setSize(rs.getInt("COLUMN_SIZE"));
-            col.setNullable( ((String)"YES").equals( rs.getString("IS_NULLABLE") ) );
-            col.setAutoIncrement( ((String)"YES").equals(rs.getString("IS_AUTOINCREMENT") ) );
+            col.setNullable(((String) "YES").equals(rs.getString("IS_NULLABLE")));
+            col.setAutoIncrement(((String) "YES").equals(rs.getString("IS_AUTOINCREMENT")));
         }
         return dbTable;
     }
@@ -104,21 +109,35 @@ public class DbModelBuilder {
         while (rs.next()) {
             String colName = rs.getString("COLUMN_NAME");
             DbColumn column = dbTable.getColumn(colName);
-            column.setPrimaryKeySeq( rs.getInt("KEY_SEQ") );
+            column.setPrimaryKeySeq(rs.getInt("KEY_SEQ"));
         }
         return dbTable;
     }
 
     protected DbTable addIndexes(DbTable dbTable) throws SQLException {
-        ResultSet rs = meta.getColumns(null, dbTable.getSchemaName(), dbTable.getName(), null);
+        ResultSet rs = meta.getIndexInfo(null,dbTable.getSchemaName(), dbTable.getName(), false, false );
         while (rs.next()) {
+            String name = rs.getString("INDEX_NAME");
+            if( name != null ) {
+                DbIndex index = dbTable.getOrAddIndex(name);
+                index.setColumn(rs.getString("COLUMN_NAME"));
+                index.setType(rs.getInt("TYPE"));
+                index.setUnique(!rs.getBoolean("NON_UNIQUE"));
+            }
         }
         return dbTable;
     }
 
     protected DbTable addForeignKeys(DbTable dbTable) throws SQLException {
-        ResultSet rs = meta.getColumns(null, dbTable.getSchemaName(), dbTable.getName(), null);
+        ResultSet rs = meta.getImportedKeys(null, dbTable.getSchemaName(), dbTable.getName());
         while (rs.next()) {
+            DbForeignKey fk = dbTable.addForeignKey(rs.getString("FK_NAME"));
+            fk.setColumn(rs.getString("PKCOLUMN_NAME"));
+            fk.setToSchema(rs.getString("FKTABLE_SCHEM"));
+            fk.setToTable(rs.getString("FKTABLE_NAME"));
+            fk.setToColumn(rs.getString("FKCOLUMN_NAME"));
+            fk.setOnDelete(rs.getInt("UPDATE_RULE"));
+            fk.setOnUpdate(rs.getInt("DELETE_RULE"));
         }
         return dbTable;
     }

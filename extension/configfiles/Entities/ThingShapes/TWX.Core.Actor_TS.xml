@@ -7,17 +7,6 @@
 		            name="TWX.Core.Actor_TS"
 		            projectName="TWX.Core">
 			<PropertyDefinitions>
-				<PropertyDefinition aspect.cacheTime="0.0"
-				                    aspect.dataChangeType="VALUE"
-				                    aspect.defaultValue="TWX.Core.ActorManager"
-				                    aspect.isPersistent="true"
-				                    aspect.thingTemplate="TWX.Core.ActorManager_TT"
-				                    baseType="THINGNAME"
-				                    category=""
-				                    description=""
-				                    isLocalOnly="false"
-				                    name="ActorManager"
-				                    ordinal="2"/>
 			</PropertyDefinitions>
 			<ServiceDefinitions>
 				<ServiceDefinition aspect.isAsync="false"

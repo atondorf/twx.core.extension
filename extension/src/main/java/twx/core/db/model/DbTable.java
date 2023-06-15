@@ -20,14 +20,6 @@ public class DbTable extends DbObject<DbSchema> {
     private String      dataShapeName;
     private JSONObject  dbInfo;
 
-/* TODO: some kind of take Ownership & CLone of Tree
-    public DbTable(String schemaName, String name) {
-        super(null, name);
-        this.schemaName = schemaName;
-        this.dataShapeName = null;
-        this.dbInfo = null;
-    };
- */
     protected DbTable(DbSchema schema, String name) {
         super(schema, name);
         schemaName = schema.getName();
@@ -98,8 +90,16 @@ public class DbTable extends DbObject<DbSchema> {
     }
 
     public DbIndex addIndex(String name) {
-        DbIndex table = createIndex(name);
-        return addIndex(table);
+        DbIndex index = createIndex(name);
+        return addIndex(index);
+    }
+
+    public DbIndex getOrAddIndex(String name) {
+        DbIndex index = getIndex(name);
+        if( index == null ) {
+            index = this.addIndex(name);
+        }
+        return index;
     }
 
     public DbIndex createIndex(String name) {
@@ -123,8 +123,8 @@ public class DbTable extends DbObject<DbSchema> {
     }
     
     public DbForeignKey addForeignKey(String name) {
-        DbForeignKey table = createForeignKey(name);
-        return addForeignKey(table);
+        DbForeignKey fk = createForeignKey(name);
+        return addForeignKey(fk);
     }
 
     public DbForeignKey createForeignKey(String name) {
@@ -150,11 +150,11 @@ public class DbTable extends DbObject<DbSchema> {
         for (DbIndex index : this.indexes.values()) {
             indexes.put(index.toJSON());
         }
-        json.put("indexes ", indexes);
+        json.put("indexes", indexes);
 
         var foreignKeys = new JSONArray();
         for (DbForeignKey fk : this.foreignKeys.values()) {
-            columns.put(fk.toJSON());
+            foreignKeys.put(fk.toJSON());
         }
         json.put("foreignKeys", foreignKeys);
         return json;
