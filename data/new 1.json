@@ -1,0 +1,337 @@
+[
+	{
+		"dbInfo": [
+			{
+				"fields": [
+					{
+						"name": "UID",
+						"identity": true
+					},
+					{
+						"name": "CBMESReelNr",
+						"length": 20
+					},
+					{
+						"name": "CLMESReelNr",
+						"length": 20
+					},
+					{
+						"name": "PPMESReelNr",
+						"length": 20
+					},
+					{
+						"name": "CCMESReelNr",
+						"length": 20
+					}
+				],
+				"indexedFields": [],
+				"foreignKeys": [],
+				"dataShapeName": "SIG_Tracking.TrackedReel_DS",
+				"schemaName": "Tracking"
+			},
+			{
+				"fields": [
+					{
+						"name": "UID",
+						"identity": true
+					},
+					{
+						"name": "TrackedReelUID"
+					},
+					{
+						"name": "PlantId",
+						"length": 4
+					},
+					{
+						"name": "MachineId",
+						"length": 4
+					},
+					{
+						"name": "MachineType",
+						"length": 2
+					},
+					{
+						"name": "MESInReelNr",
+						"length": 20
+					},
+					{
+						"name": "MESOutReelNr",
+						"length": 20
+					},
+					{
+						"name": "MESOut2ReelNr",
+						"length": 20
+					}
+				],
+				"indexedFields": [
+					{
+						"name": "PlantId"
+					},
+					{
+						"name": "MachineId"
+					}
+				],
+				"foreignKeys": [
+					{
+						"name": "TrackedReelUID",
+						"referenceDataShapeName": "SIG_Tracking.TrackedReel_DS",
+						"referenceSchemaName": "test",
+						"referenceFieldName": "UID"
+					}
+				],
+				"dataShapeName": "SIG_Tracking.TrackedRun_DS",
+				"schemaName": "Tracking"
+			},
+			{
+				"fields": [
+					{
+						"name": "UID",
+						"identity": true
+					}
+				],
+				"indexedFields": [],
+				"foreignKeys": [],
+				"dataShapeName": "SIG_Tracking.TrackedDefect_DS",
+				"schemaName": "Tracking"
+			},
+			{
+				"fields": [
+					{
+						"name": "UID",
+						"identity": true
+					},
+					{
+						"name": "PlantId",
+						"length": 4
+					},
+					{
+						"name": "MachineId",
+						"length": 4
+					},
+					{
+						"name": "EventName",
+						"length": 32
+					},
+					{
+						"name": "EventSource",
+						"length": 32
+					}
+				],
+				"indexedFields": [],
+				"foreignKeys": [],
+				"dataShapeName": "SIG_Tracking.Event_DS",
+				"schemaName": "Tracking"
+			}
+		]
+	},
+	{
+		"tableInfos": [
+		{
+    "cache": false,
+    "cacheTS": 1686047027113,
+    "schemaName": "Tracking",
+    "cols": [
+        {
+            "notNull": true,
+            "identity": true,
+            "name": "UID",
+            "description": "",
+            "pk": true,
+            "type": "bigint"
+        },
+        {
+            "name": "TrackedReelUID",
+            "description": "",
+            "type": "bigint"
+        },
+        {
+            "name": "TrackedRunUID",
+            "description": "",
+            "type": "bigint"
+        },
+        {
+            "name": "DestRunUID",
+            "description": "",
+            "type": "bigint"
+        },
+        {
+            "name": "Type",
+            "description": "",
+            "type": "int"
+        },
+        {
+            "name": "Severity",
+            "description": "",
+            "type": "int"
+        },
+        {
+            "name": "MeterStart",
+            "description": "",
+            "type": "int"
+        },
+        {
+            "name": "MeterEnd",
+            "description": "",
+            "type": "int"
+        },
+        {
+            "name": "TransStart",
+            "description": "",
+            "type": "int"
+        },
+        {
+            "name": "TransEnd",
+            "description": "",
+            "type": "int"
+        },
+        {
+            "name": "Payload",
+            "description": "Custom integer ... could be eg. encoder ",
+            "type": "int"
+        },
+        {
+            "name": "ColMask",
+            "description": "",
+            "type": "int"
+        },
+        {
+            "name": "Status",
+            "description": "",
+            "type": "int"
+        },
+        {
+            "name": "CreatedTimestamp",
+            "description": "",
+            "type": "datetime2"
+        }
+    ],
+    "dataShapeName": "SIG_Tracking.TrackedDefect_DS",
+    "tableName": "TrackedDefect",
+    "fullTableName": "Tracking.TrackedDefect"
+}
+		]
+	},
+	{
+		"schemas": [
+			{
+				"tables": [
+					{
+						"foreignKeys": [],
+						"indexes ": [
+							{
+								"Type": 1,
+								"Column": "UID",
+								"name": "Tab_1_PK",
+								"Unique": true
+							}
+						],
+						"columns": [
+							{
+								"lenght": 19,
+								"nullable": false,
+								"autoIncrement": true,
+								"name": "UID",
+								"typeName": "bigint",
+								"primaryKeySeq": 1,
+								"typeId": -5
+							},
+							{
+								"lenght": 100,
+								"nullable": true,
+								"name": "Value",
+								"typeName": "varchar",
+								"typeId": 12
+							}
+						],
+						"name": "Tab_1"
+					},
+					{
+						"foreignKeys": [],
+						"indexes ": [
+							{
+								"Type": 1,
+								"Column": "UID",
+								"name": "Tab_2_PK",
+								"Unique": true
+							}
+						],
+						"columns": [
+							{
+								"lenght": 19,
+								"nullable": false,
+								"autoIncrement": true,
+								"name": "UID",
+								"typeName": "bigint",
+								"primaryKeySeq": 1,
+								"typeId": -5
+							},
+							{
+								"lenght": 19,
+								"nullable": true,
+								"name": "Tab_2_UID",
+								"typeName": "bigint",
+								"typeId": -5
+							},
+							{
+								"lenght": 100,
+								"nullable": true,
+								"name": "Value",
+								"typeName": "varchar",
+								"typeId": 12
+							},
+							{
+								"name": "Tab_1"
+							}
+						],
+						"name": "Tab_2"
+					},
+					{
+						"foreignKeys": [],
+						"indexes ": [
+							{
+								"Type": 1,
+								"Column": "ID2",
+								"name": "Tab_3_PK",
+								"Unique": true
+							},
+							{
+								"Type": 3,
+								"Column": "Value",
+								"name": "Tab_3_Value_IDX",
+								"Unique": false
+							}
+						],
+						"columns": [
+							{
+								"lenght": 19,
+								"nullable": false,
+								"name": "ID1",
+								"typeName": "bigint",
+								"primaryKeySeq": 1,
+								"typeId": -5
+							},
+							{
+								"lenght": 19,
+								"nullable": false,
+								"name": "ID2",
+								"typeName": "bigint",
+								"primaryKeySeq": 2,
+								"typeId": -5
+							},
+							{
+								"lenght": 100,
+								"nullable": true,
+								"name": "Value",
+								"typeName": "varchar",
+								"typeId": 12
+							}
+						],
+						"name": "Tab_3"
+					}
+				],
+				"name": "dbo"
+			}
+		],
+		"name": "twdata"
+	}
+]

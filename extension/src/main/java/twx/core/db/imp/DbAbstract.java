@@ -1,4 +1,4 @@
-package twx.core;
+package twx.core.db.imp;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -9,23 +9,23 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import com.microsoft.sqlserver.jdbc.SQLServerDriver;
 
+import twx.core.db.IDatabase;
 import twx.core.db.model.*;
 
 import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DbModelBuilder {
-    final static Logger logger = LoggerFactory.getLogger(DbModelBuilder.class);
+public class DbAbstract implements IDatabase {
+    final static Logger logger = LoggerFactory.getLogger(DbAbstract.class);
 
     private Connection con;
     private DatabaseMetaData meta;
     private List<String> systemSchemas;
     private List<String> systemTables;
 
-    DbModelBuilder(Connection con) throws SQLException {
+    public DbAbstract(Connection con) throws SQLException {
         this.con = con;
         this.meta = con.getMetaData();
         String[] MSSQL = {
@@ -44,7 +44,8 @@ public class DbModelBuilder {
         systemSchemas = Arrays.asList(MSSQL);
     }
 
-    public DbModel getDbModel() throws SQLException {
+    @Override
+    public DbModel queryModelFromDB() throws SQLException {
         String dbName = con.getCatalog();
         String productName      = meta.getDatabaseProductName();
         String productVersion   = meta.getDatabaseProductVersion();
@@ -140,11 +141,5 @@ public class DbModelBuilder {
             fk.setOnUpdate(rs.getInt("DELETE_RULE"));
         }
         return dbTable;
-    }
-
-    public void getDatabaseInfo() throws SQLException {
-        logger.info("Product_Name: " + meta.getDatabaseProductName());
-        logger.info("Driver_Name: " + meta.getDriverName());
-        logger.info("Catalog_Name: " + con.getCatalog());
     }
 }

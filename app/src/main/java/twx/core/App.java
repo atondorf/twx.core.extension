@@ -14,6 +14,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import com.microsoft.sqlserver.jdbc.SQLServerDriver;
 
+import twx.core.db.IDatabase;
+import twx.core.db.imp.DbAbstract;
+
 public class App {
 
     final static Logger logger = LoggerFactory.getLogger(App.class);
@@ -33,9 +36,9 @@ public class App {
             con = DriverManager.getConnection(DB_URL, USER, PASS);
             con.setAutoCommit(false);
 
-            var meta = new DbModelBuilder(con);
+            var meta = new DbAbstract(con);
 
-            var model = meta.getDbModel();
+            var model = meta.queryModelFromDB();
             var tab = model.getDefaultSchema().getTable("Tab_2");
 
             logger.info(tab.toJSON().toString(2));

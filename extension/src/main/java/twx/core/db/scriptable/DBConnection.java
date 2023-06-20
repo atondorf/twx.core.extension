@@ -70,7 +70,21 @@ public class DBConnection extends ScriptableObject {
         if( this.databaseThing == null ) 
             throw new ThingworxRuntimeException("Thing:" + dbThingName + " is not a database");
         connection = databaseThing.getConnection();
-        connection.setAutoCommit(false);
+        connection.setAutoCommit(true);
+    }
+
+    @JSConstructor
+    public DBConnection(String dbThingName, Boolean autoCommit) throws Exception {
+        this.databaseThing = DBUtil.getAbstractDatabaseDirect(dbThingName);
+        if( this.databaseThing == null ) 
+            throw new ThingworxRuntimeException("Thing:" + dbThingName + " is not a database");
+        connection = databaseThing.getConnection();
+        connection.setAutoCommit(autoCommit);
+    }
+
+    @JSFunction 
+    public DBStatement createStatement() throws SQLException {
+        return new DBStatement( this );
     }
 
     @JSFunction
@@ -92,7 +106,9 @@ public class DBConnection extends ScriptableObject {
         connection = null;
     }
 
-
+    protected Statement createJDBCStatement() throws SQLException {
+        return connection.createStatement();
+    }
 
 
 }
