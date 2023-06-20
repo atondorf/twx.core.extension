@@ -21,6 +21,7 @@ dependencies {
     implementation group: 'org.json', name: 'json', version: '20171018'
     implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
     implementation fileTree(dir: rootProject.ext.commonJarDir, include: ['*.jar'])
+    implementation fileTree(dir: rootProject.ext.localJarDir, include: ['*.jar'])
     packageDependencies fileTree(dir: rootProject.ext.localJarDir, include: ['*.jar'])
 }
 
@@ -49,13 +50,19 @@ def updateMetadata() {
     def parser = new XmlParser()
     def xml = parser.parse(file)
     // update the version number to current one ...
-    xml.ExtensionPackages.ExtensionPackage.@packageVersion = rootProject.ext.base_version
-    xml.ExtensionPackages.ExtensionPackage.@name = projectName
+    xml.ExtensionPackages.ExtensionPackage.@packageVersion  = rootProject.ext.base_version
+    xml.ExtensionPackages.ExtensionPackage.@buildNumber     = rootProject.ext.commit_distance
+    xml.ExtensionPackages.ExtensionPackage.@name            = projectName
+    xml.ExtensionPackages.ExtensionPackage.@description     = rootProject.ext.packageDescription
+    xml.ExtensionPackages.ExtensionPackage.@vendor          = rootProject.ext.packageVendor
+    xml.ExtensionPackages.ExtensionPackage.@dependsOn       = rootProject.ext.packageDependsOn
+      
     // add dependency to own jar
     xml.ExtensionPackages.ExtensionPackage.JarResources[0]?.appendNode('FileResource', [type: 'JAR', file: project.ext.extensionJar])
 
     // add dependencies to required external jars
     for (File f: configurations.packageDependencies) {
+        // exception list ... to avoid version conflicts ...
         if (f.getName().startsWith('commons-codec') ||
             f.getName().startsWith('commons-io') ||
             f.getName().startsWith('commons-logging') ||
@@ -63,6 +70,7 @@ def updateMetadata() {
             f.getName().startsWith('log4j') ||
             f.getName().startsWith('httpclient') ||
             f.getName().startsWith('httpcore') ||
+            f.getName().startsWith('gson') ||
             f.getName().startsWith('slf4j')) {
             continue
         } // these are the default, provided by thingworx allready ...

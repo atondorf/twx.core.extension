@@ -21,32 +21,35 @@ import org.joda.time.DateTimeZone;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import twx.core.utils.scriptable.MultiTimer;
+
 public class UtilScriptLibrary {
   protected static final Logger _logger = LogUtilities.getInstance().getScriptLogger(UtilScriptLibrary.class);
   
-  //// Require  ////
-
+  // Scriptable Interface for contrsution
+  // --------------------------------------------------------------------------------
   public static void require_core_util(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
-    // AuthenticationUtilities.validateUserSecurityContext();
+    AuthenticationUtilities.validateUserSecurityContext();
+    // Check if the class is already registered ...
+    var obj = ScriptableObject.getProperty(me, "MultiTimer");
+    if (obj == Scriptable.NOT_FOUND)
     ScriptableObject.defineClass(me, MultiTimer.class);
   }
 
   public static Object core_getMultiTimer(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
+    require_core_util(cx, me, args, funObj);
     // AuthenticationUtilities.validateUserSecurityContext();
     if (args.length != 1)
         throw new Exception("Invalid Number of Arguments in core_getMultiTimer");
     DSLConverter.convertValues(args, me);
-    // Check if the class is already registered ...
-    var obj  = ScriptableObject.getProperty(me,"MultiTimer");
-    if( obj == Scriptable.NOT_FOUND )
-        ScriptableObject.defineClass(me, MultiTimer.class);
     // create and return ... 
     StringPrimitive desc = (StringPrimitive)BaseTypes.ConvertToPrimitive(args[0], BaseTypes.STRING);
     Object[] args_new = { desc.getValue() };
     return cx.newObject(me, "MultiTimer", args_new);
 }
 
-  //// Internal Helpers and Tools  ////
+  // Internal Helpers and Tools 
+  // --------------------------------------------------------------------------------
   public static JSONObject core_getSrcInfo(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
     AuthenticationUtilities.validateUserSecurityContext();    
     JSONObject json = new JSONObject();
@@ -111,8 +114,8 @@ public class UtilScriptLibrary {
     throw new RuntimeException(message);
   }
 
-  //// System  ////
-
+  // System  
+  // --------------------------------------------------------------------------------
   protected static Object[] callPowerShell(String script) throws Exception {
     List<String> list = new LinkedList<>();
 

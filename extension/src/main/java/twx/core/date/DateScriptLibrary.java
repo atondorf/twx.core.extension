@@ -19,13 +19,15 @@ import twx.core.date.scriptable.TimeZone;
 
 public class DateScriptLibrary {
     
-	//// Require  ////
-
+    // Scriptable Interface for contrsution
+    // --------------------------------------------------------------------------------
     public static void requrire_core_date(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
         AuthenticationUtilities.validateUserSecurityContext();
         ScriptableObject.defineClass(me, TimeZone.class);
     }
 
+    // Scriptable TimeZones 
+    // --------------------------------------------------------------------------------
     public static Object core_getTimeZone(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
         AuthenticationUtilities.validateUserSecurityContext();
         if (args.length != 1)
@@ -40,8 +42,6 @@ public class DateScriptLibrary {
         Object[] args_new = { id.getValue() };
         return cx.newObject(me, "TimeZone", args_new);
     }
-
-    //// String Format and Tools  ////
 
     public static Object core_getAvailableTimeZones(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
         AuthenticationUtilities.validateUserSecurityContext();

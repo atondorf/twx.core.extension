@@ -3,7 +3,6 @@
 	<ThingShapes>
 		<ThingShape aspect.isEditableExtensionObject="true"
 		            aspect.isExtension="true"
-		            className="twx.core.concurrency.ActorTS"
 		            description=""
 		            name="TWX.Core.Actor_TS"
 		            projectName="TWX.Core">

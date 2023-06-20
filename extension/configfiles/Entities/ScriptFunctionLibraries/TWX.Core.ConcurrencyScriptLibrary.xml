@@ -11,6 +11,7 @@
 				description="Registers the Classes of TWX.Core.Concurrency to the context and makes them usable ...">
 					<ResultType baseType="NOTHING" name="result" ordinal="0" />
 				</FunctionDefinition>
+				<!-- Atomics -->
 				<FunctionDefinition name="core_getAtomic"
 					description="Returns the atomic for the given stringId">
 					<ResultType baseType="VARIANT" name="result" ordinal="0" />
@@ -18,7 +19,59 @@
 						<FieldDefinition baseType="STRING" name="id" ordinal="0" />
 					</ParameterDefinitions>
 				</FunctionDefinition>
-				<!-- Basic date functions -->
+				<FunctionDefinition name="atomic_exists">
+					<ResultType baseType="BOOLEAN" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<FunctionDefinition name="atomic_delete">
+					<ResultType baseType="NOTHING" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<FunctionDefinition name="atomic_get">
+					<ResultType baseType="LONG" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<FunctionDefinition name="atomic_set">
+					<ResultType baseType="NOTHING" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
+						<FieldDefinition baseType="LONG" name="value" ordinal="1" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<FunctionDefinition name="atomic_incrementAndGet">
+					<ResultType baseType="LONG" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<FunctionDefinition name="atomic_decrementAndGet">
+					<ResultType baseType="LONG" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<FunctionDefinition name="atomic_addAndGet">
+					<ResultType baseType="LONG" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
+						<FieldDefinition baseType="LONG" name="delta" ordinal="1" />
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<FunctionDefinition name="atomic_compareAndSet">
+					<ResultType baseType="BOOLEAN" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
+						<FieldDefinition baseType="LONG" name="expect" ordinal="1" />
+						<FieldDefinition baseType="LONG" name="update" ordinal="2" />
+					</ParameterDefinitions>
+				</FunctionDefinition>				
+				<!-- JSON - Queue -->
 				<FunctionDefinition name="queue_exists">
 					<ResultType baseType="BOOLEAN" name="result" ordinal="0" />
 					<ParameterDefinitions>
@@ -68,6 +121,7 @@
 						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
 					</ParameterDefinitions>
 				</FunctionDefinition>
+				<!-- Mutex Global -->				
 				<FunctionDefinition name="mtx_getTotalActiveLocks">
 					<ResultType baseType="LONG" description="Count" name="result" ordinal="0" />
 				</FunctionDefinition>
@@ -77,6 +131,7 @@
 				<FunctionDefinition name="mtx_getTotalThingsLocksUsage">
 					<ResultType baseType="LONG" description="Count" name="result" ordinal="0" />
 				</FunctionDefinition>
+				<!-- Mutex -->								
 				<FunctionDefinition name="mtx_exists">
 					<ResultType baseType="BOOLEAN" name="result" ordinal="0" />
 					<ParameterDefinitions>
@@ -133,58 +188,6 @@
 							ordinal="0" />
 						<FieldDefinition baseType="STRING" description="Function body to execute"
 							name="function" ordinal="1" />
-					</ParameterDefinitions>
-				</FunctionDefinition>
-				<FunctionDefinition name="atomic_exists">
-					<ResultType baseType="BOOLEAN" name="result" ordinal="0" />
-					<ParameterDefinitions>
-						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
-					</ParameterDefinitions>
-				</FunctionDefinition>
-				<FunctionDefinition name="atomic_delete">
-					<ResultType baseType="NOTHING" name="result" ordinal="0" />
-					<ParameterDefinitions>
-						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
-					</ParameterDefinitions>
-				</FunctionDefinition>
-				<FunctionDefinition name="atomic_get">
-					<ResultType baseType="LONG" name="result" ordinal="0" />
-					<ParameterDefinitions>
-						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
-					</ParameterDefinitions>
-				</FunctionDefinition>
-				<FunctionDefinition name="atomic_set">
-					<ResultType baseType="NOTHING" name="result" ordinal="0" />
-					<ParameterDefinitions>
-						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
-						<FieldDefinition baseType="LONG" name="value" ordinal="1" />
-					</ParameterDefinitions>
-				</FunctionDefinition>
-				<FunctionDefinition name="atomic_incrementAndGet">
-					<ResultType baseType="LONG" name="result" ordinal="0" />
-					<ParameterDefinitions>
-						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
-					</ParameterDefinitions>
-				</FunctionDefinition>
-				<FunctionDefinition name="atomic_decrementAndGet">
-					<ResultType baseType="LONG" name="result" ordinal="0" />
-					<ParameterDefinitions>
-						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
-					</ParameterDefinitions>
-				</FunctionDefinition>
-				<FunctionDefinition name="atomic_addAndGet">
-					<ResultType baseType="LONG" name="result" ordinal="0" />
-					<ParameterDefinitions>
-						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
-						<FieldDefinition baseType="LONG" name="delta" ordinal="1" />
-					</ParameterDefinitions>
-				</FunctionDefinition>
-				<FunctionDefinition name="atomic_compareAndSet">
-					<ResultType baseType="BOOLEAN" name="result" ordinal="0" />
-					<ParameterDefinitions>
-						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
-						<FieldDefinition baseType="LONG" name="expect" ordinal="1" />
-						<FieldDefinition baseType="LONG" name="update" ordinal="2" />
 					</ParameterDefinitions>
 				</FunctionDefinition>
 			</FunctionDefinitions>
