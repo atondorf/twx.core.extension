@@ -25,26 +25,11 @@ import twx.core.concurrency.scriptable.Atomic;
 
 public class ConcurrencyScriptLibrary {
 
-	//// Require  ////
-
+    // Scriptable Interface for contrsution
+    // --------------------------------------------------------------------------------
     public static void require_core_concurrency(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
         AuthenticationUtilities.validateUserSecurityContext();
         ScriptableObject.defineClass(me, Atomic.class);
-    }
-
-    public static Object core_getAtomic(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
-        AuthenticationUtilities.validateUserSecurityContext();
-        if (args.length != 1)
-            throw new Exception("Invalid Number of Arguments in queue_exists");
-        DSLConverter.convertValues(args, me);
-        // Check if the class is already registered ...
-        var obj  = ScriptableObject.getProperty(me,"Atomic");
-        if( obj == Scriptable.NOT_FOUND )
-            ScriptableObject.defineClass(me, Atomic.class);
-        // create and return ... 
-        StringPrimitive atomicId = (StringPrimitive)BaseTypes.ConvertToPrimitive(args[0], BaseTypes.STRING);
-        Object[] args_new = { atomicId.getValue() };
-        return cx.newObject(me, "Atomic", args_new);
     }
 
     protected static Long argToLong(Object arg) throws Exception {
@@ -65,8 +50,105 @@ public class ConcurrencyScriptLibrary {
         throw new Exception("Invalid arg is not an Number: Type is: " + arg.getClass().getName() );
     }
 
-    // region queue Services Thingworx
+    // region atomic Services Thingworx
+    // --------------------------------------------------------------------------------
+    public static Object core_getAtomic(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
+        AuthenticationUtilities.validateUserSecurityContext();
+        if (args.length != 1)
+            throw new Exception("Invalid Number of Arguments in queue_exists");
+        DSLConverter.convertValues(args, me);
+        // Check if the class is already registered ...
+        var obj  = ScriptableObject.getProperty(me,"Atomic");
+        if( obj == Scriptable.NOT_FOUND )
+            ScriptableObject.defineClass(me, Atomic.class);
+        // create and return ... 
+        StringPrimitive atomicId = (StringPrimitive)BaseTypes.ConvertToPrimitive(args[0], BaseTypes.STRING);
+        Object[] args_new = { atomicId.getValue() };
+        return cx.newObject(me, "Atomic", args_new);
+    }
 
+    public static Boolean atomic_exists(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
+        if (args.length != 1)
+            throw new Exception("Invalid Number of Arguments in atomic_get");
+        if (!(args[0] instanceof String))
+            throw new Exception("The first atomic_get argument must be a string with atomic name");
+        String name = (String) args[0];
+        return AtomicManager.getInstance().exists(name);
+    }
+
+    public static void atomic_delete(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
+        if (args.length != 1)
+            throw new Exception("Invalid Number of Arguments in atomic_get");
+        if (!(args[0] instanceof String))
+            throw new Exception("The first atomic_get argument must be a string with atomic name");
+        String name = (String) args[0];
+        AtomicManager.getInstance().deleteById(name);    
+    }
+
+    public static Object atomic_get(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
+        if (args.length != 1)
+            throw new Exception("Invalid Number of Arguments in atomic_get");
+        if (!(args[0] instanceof String))
+            throw new Exception("The first atomic_get argument must be a string with atomic name");
+        String name = (String) args[0];
+        return AtomicManager.getInstance().get(name);    
+    }
+
+    public static void atomic_set(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
+        if (args.length != 2)
+            throw new Exception("Invalid Number of Arguments in atomic_set");
+        if (!(args[0] instanceof String))
+            throw new Exception("The first atomic_set argument must be a string with atomic name");
+        if (!(args[1] instanceof Integer) && !(args[1] instanceof Double) )
+            throw new Exception("Invalid Argument Type (not a Number) in atomic_set");
+        String name = (String) args[0];
+        int value = argToInt(args[1]);
+        AtomicManager.getInstance().set(name,value);    
+    }
+
+    public static Object atomic_incrementAndGet(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
+        if (args.length != 1)
+            throw new Exception("Invalid Number of Arguments in atomic_incrementAndGet");
+        if (!(args[0] instanceof String))
+            throw new Exception("The first atomic_incrementAndGet argument must be a string with atomic name");
+        String name = (String) args[0];
+        return AtomicManager.getInstance().incrementAndGet(name);    
+    }
+
+    public static Object atomic_decrementAndGet(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
+        if (args.length != 1)
+            throw new Exception("Invalid Number of Arguments in atomic_decrementAndGet");
+        if (!(args[0] instanceof String))
+            throw new Exception("The first atomic_decrementAndGet argument must be a string with atomic name");
+        String name = (String) args[0];
+        return AtomicManager.getInstance().decrementAndGet(name);    
+    }
+
+    public static Object atomic_addAndGet(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
+        if (args.length != 2)
+            throw new Exception("Invalid Number of Arguments in atomic_addAndGet");
+        if (!(args[0] instanceof String))
+            throw new Exception("The first atomic_addAndGet argument must be a string with atomic name.");
+        if (!(args[1] instanceof Integer) && !(args[1] instanceof Double) )
+            throw new Exception("Invalid Argument Type (not a Number) in atomic_addAndGet");
+        String name = (String) args[0];
+        int delta = argToInt(args[1]);
+        return AtomicManager.getInstance().addAndGet(name,delta);    
+    }
+
+    public static Object atomic_compareAndSet(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
+        if (args.length != 3)
+            throw new Exception("Invalid Number of Arguments in atomic_compareAndSet");
+        if (!(args[0] instanceof String))
+            throw new Exception("The first atomic_compareAndSet argument must be a string with atomic name");
+        String name = (String) args[0];
+        int expected = argToInt(args[1]);
+        int update = argToInt(args[2]);
+        return AtomicManager.getInstance().compareAndSet(name,expected,update);    
+    }
+    // endregion
+    // region queue Services Thingworx
+    // --------------------------------------------------------------------------------
     public static Boolean queue_exists(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
         if (args.length != 1)
             throw new Exception("Invalid Number of Arguments in queue_exists");
@@ -146,7 +228,7 @@ public class ConcurrencyScriptLibrary {
     // endregion
 
     // region Lock Services Thingworx
-
+    // --------------------------------------------------------------------------------
     public static Object mtx_getTotalActiveLocks(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
         return MutexManager.getInstance().getTotalActiveLocks();
     }
@@ -262,85 +344,4 @@ public class ConcurrencyScriptLibrary {
     }
     // endregion
 
-    // region atomic Services Thingworx
-    public static Boolean atomic_exists(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
-        if (args.length != 1)
-            throw new Exception("Invalid Number of Arguments in atomic_get");
-        if (!(args[0] instanceof String))
-            throw new Exception("The first atomic_get argument must be a string with atomic name");
-        String name = (String) args[0];
-        return AtomicManager.getInstance().exists(name);
-    }
-
-    public static void atomic_delete(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
-        if (args.length != 1)
-            throw new Exception("Invalid Number of Arguments in atomic_get");
-        if (!(args[0] instanceof String))
-            throw new Exception("The first atomic_get argument must be a string with atomic name");
-        String name = (String) args[0];
-        AtomicManager.getInstance().deleteById(name);    
-    }
-
-    public static Object atomic_get(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
-        if (args.length != 1)
-            throw new Exception("Invalid Number of Arguments in atomic_get");
-        if (!(args[0] instanceof String))
-            throw new Exception("The first atomic_get argument must be a string with atomic name");
-        String name = (String) args[0];
-        return AtomicManager.getInstance().get(name);    
-    }
-
-    public static void atomic_set(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
-        if (args.length != 2)
-            throw new Exception("Invalid Number of Arguments in atomic_set");
-        if (!(args[0] instanceof String))
-            throw new Exception("The first atomic_set argument must be a string with atomic name");
-        if (!(args[1] instanceof Integer) && !(args[1] instanceof Double) )
-            throw new Exception("Invalid Argument Type (not a Number) in atomic_set");
-        String name = (String) args[0];
-        int value = argToInt(args[1]);
-        AtomicManager.getInstance().set(name,value);    
-    }
-
-    public static Object atomic_incrementAndGet(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
-        if (args.length != 1)
-            throw new Exception("Invalid Number of Arguments in atomic_incrementAndGet");
-        if (!(args[0] instanceof String))
-            throw new Exception("The first atomic_incrementAndGet argument must be a string with atomic name");
-        String name = (String) args[0];
-        return AtomicManager.getInstance().incrementAndGet(name);    
-    }
-
-    public static Object atomic_decrementAndGet(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
-        if (args.length != 1)
-            throw new Exception("Invalid Number of Arguments in atomic_decrementAndGet");
-        if (!(args[0] instanceof String))
-            throw new Exception("The first atomic_decrementAndGet argument must be a string with atomic name");
-        String name = (String) args[0];
-        return AtomicManager.getInstance().decrementAndGet(name);    
-    }
-
-    public static Object atomic_addAndGet(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
-        if (args.length != 2)
-            throw new Exception("Invalid Number of Arguments in atomic_addAndGet");
-        if (!(args[0] instanceof String))
-            throw new Exception("The first atomic_addAndGet argument must be a string with atomic name.");
-        if (!(args[1] instanceof Integer) && !(args[1] instanceof Double) )
-            throw new Exception("Invalid Argument Type (not a Number) in atomic_addAndGet");
-        String name = (String) args[0];
-        int delta = argToInt(args[1]);
-        return AtomicManager.getInstance().addAndGet(name,delta);    
-    }
-
-    public static Object atomic_compareAndSet(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
-        if (args.length != 3)
-            throw new Exception("Invalid Number of Arguments in atomic_compareAndSet");
-        if (!(args[0] instanceof String))
-            throw new Exception("The first atomic_compareAndSet argument must be a string with atomic name");
-        String name = (String) args[0];
-        int expected = argToInt(args[1]);
-        int update = argToInt(args[2]);
-        return AtomicManager.getInstance().compareAndSet(name,expected,update);    
-    }
-    // endregion
 }

@@ -11,37 +11,37 @@ class TopicMatchTest {
 		@Test
 		void EmptyFilterShouldThrow() {
 			assertThrows(IllegalArgumentException.class, () -> {
-				StringTopicMatcher.match("", "SIG");
+				StringTopicMatcher.match("", "TWX");
 			});
 		}
 
 		@Test
 		void EmptyTopicShouldThrow() {
 			assertThrows(IllegalArgumentException.class, () -> {
-				StringTopicMatcher.match("SIG", "");
+				StringTopicMatcher.match("TWX", "");
 			});
 		}
 
 		@Test
 		void TopicWithWildcardShouldThrow() {
 			assertThrows(IllegalArgumentException.class, () -> {
-				StringTopicMatcher.match("SIG", "+");
+				StringTopicMatcher.match("TWX", "+");
 			});
 			assertThrows(IllegalArgumentException.class, () -> {
-				StringTopicMatcher.match("SIG", "SIG/+/PP");
+				StringTopicMatcher.match("TWX", "TWX/+/PP");
 			});
 			assertThrows(IllegalArgumentException.class, () -> {
-				StringTopicMatcher.match("SIG", "#");
+				StringTopicMatcher.match("TWX", "#");
 			});
 			assertThrows(IllegalArgumentException.class, () -> {
-				StringTopicMatcher.match("SIG", "SIG/#");
+				StringTopicMatcher.match("TWX", "TWX/#");
 			});
 		}
 	}
 
 	@Nested
 	class GivenTopic_SIG {
-		private String topic = "SIG";
+		private String topic = "TWX";
 
 		@Test
 		void whenComparedSelf_shouldMatch() {
@@ -50,40 +50,40 @@ class TopicMatchTest {
 
 		@Test
 		void whenMatchesWildcard_shouldMatch() {
-			assertTrue(StringTopicMatcher.match("SIG/#", topic));
+			assertTrue(StringTopicMatcher.match("TWX/#", topic));
 			assertTrue(StringTopicMatcher.match("+", topic));
 		}
 	}
 
 	@Nested
 	class GivenTopic_SIGPlant {
-		private String topic = "SIG/Plant/Machine/Message/Reel";
+		private String topic = "TWX/Plant/Machine/Message/Reel";
 
 		@Test
 		void thenSubLevelsShouldNotMatch() {
-			assertFalse(StringTopicMatcher.match("SIG", topic));
-			assertFalse(StringTopicMatcher.match("SIG/Plant", topic));
-			assertFalse(StringTopicMatcher.match("SIG/Plant/Machine", topic));
-			assertFalse(StringTopicMatcher.match("SIG/Plant/Machine/Message", topic));
+			assertFalse(StringTopicMatcher.match("TWX", topic));
+			assertFalse(StringTopicMatcher.match("TWX/Plant", topic));
+			assertFalse(StringTopicMatcher.match("TWX/Plant/Machine", topic));
+			assertFalse(StringTopicMatcher.match("TWX/Plant/Machine/Message", topic));
 		}
 
 		@Test
 		void thenSubLevelsWithMultiLevelWildcardShouldMatch() {
-			assertTrue(StringTopicMatcher.match("SIG/#", topic));
-			assertTrue(StringTopicMatcher.match("SIG/Plant/#", topic));
-			assertTrue(StringTopicMatcher.match("SIG/Plant/Machine/#", topic));
-			assertTrue(StringTopicMatcher.match("SIG/Plant/Machine/Message/#", topic));
-			assertTrue(StringTopicMatcher.match("SIG/Plant/Machine/Message/Reel", topic));
+			assertTrue(StringTopicMatcher.match("TWX/#", topic));
+			assertTrue(StringTopicMatcher.match("TWX/Plant/#", topic));
+			assertTrue(StringTopicMatcher.match("TWX/Plant/Machine/#", topic));
+			assertTrue(StringTopicMatcher.match("TWX/Plant/Machine/Message/#", topic));
+			assertTrue(StringTopicMatcher.match("TWX/Plant/Machine/Message/Reel", topic));
 		}
 
 		@Test
 		void thenSubLevelsWithSingleLevelWildcardShouldMatch() {
 			assertTrue(StringTopicMatcher.match("+/Plant/Machine/Message/Reel", topic));
-			assertTrue(StringTopicMatcher.match("SIG/+/Machine/Message/Reel", topic));
-			assertTrue(StringTopicMatcher.match("SIG/Plant/+/Message/Reel", topic));
-			assertTrue(StringTopicMatcher.match("SIG/Plant/Machine/+/Reel", topic));
+			assertTrue(StringTopicMatcher.match("TWX/+/Machine/Message/Reel", topic));
+			assertTrue(StringTopicMatcher.match("TWX/Plant/+/Message/Reel", topic));
+			assertTrue(StringTopicMatcher.match("TWX/Plant/Machine/+/Reel", topic));
 			assertTrue(StringTopicMatcher.match("+/+/Machine/Message/Reel", topic));
-			assertTrue(StringTopicMatcher.match("SIG/Plant/+/+/Reel", topic));
+			assertTrue(StringTopicMatcher.match("TWX/Plant/+/+/Reel", topic));
 			assertTrue(StringTopicMatcher.match("+/Plant/Machine/+/Reel", topic));
 		}
 
@@ -95,14 +95,14 @@ class TopicMatchTest {
 
 	@Nested
 	class GivenTwoMachines {
-		private String filterSinglelevel = "SIG/Prod/PP/+";
-		private String filterFixed = "SIG/Prod/PP/1131";
+		private String filterSinglelevel = "TWX/Prod/PP/+";
+		private String filterFixed = "TWX/Prod/PP/1131";
 
 		@Test
 		void TopicsFromBothMachines() {
-			assertTrue(StringTopicMatcher.match(filterSinglelevel, "SIG/Prod/PP/1131"));
-			assertTrue(StringTopicMatcher.match(filterSinglelevel, "SIG/Prod/PP/1132"));
-			assertFalse(StringTopicMatcher.match(filterFixed, "SIG/Prod/PP/1132"));
+			assertTrue(StringTopicMatcher.match(filterSinglelevel, "TWX/Prod/PP/1131"));
+			assertTrue(StringTopicMatcher.match(filterSinglelevel, "TWX/Prod/PP/1132"));
+			assertFalse(StringTopicMatcher.match(filterFixed, "TWX/Prod/PP/1132"));
 		}
 	}
 
