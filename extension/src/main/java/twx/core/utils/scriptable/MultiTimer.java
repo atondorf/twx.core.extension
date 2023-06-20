@@ -1,4 +1,4 @@
-package twx.core.utils;
+package twx.core.utils.scriptable;
 
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.annotations.JSConstructor;
@@ -28,7 +28,7 @@ public class MultiTimer extends ScriptableObject {
     @JSConstructor
     public MultiTimer(String desc) { 
         this.push(desc);
-    }
+    }    
     // The class name is defined by the getClassName method
     @Override
     public String getClassName() { return "MultiTimer"; }

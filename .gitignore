@@ -17,3 +17,4 @@ lib/common/*.jar
 
 ### VS Code ###
 .vscode/
+.fake
