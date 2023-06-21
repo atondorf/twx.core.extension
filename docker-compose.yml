@@ -2,12 +2,12 @@ version: "3"
 services:
   db:
     # build: ./IMG_MS_SQL
-    image: twx9_db
+    image: twx93_db
     ports:
       - "1433:1433"
   twx:
     # build: ./IMG_TWX_9_SQL
-    image: twx9_twx
+    image: twx93_ms
     # image: twx9ms
     links:
       - db
