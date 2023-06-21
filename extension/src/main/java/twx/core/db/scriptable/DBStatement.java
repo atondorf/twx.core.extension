@@ -1,76 +1,72 @@
 package twx.core.db.scriptable;
 
-import org.mozilla.javascript.ScriptableObject;
-import org.mozilla.javascript.annotations.JSConstructor;
-import org.mozilla.javascript.annotations.JSFunction;
-import org.mozilla.javascript.annotations.JSGetter;
-
-import com.thingworx.dsl.utils.ValueConverter;
-import com.thingworx.types.InfoTable;
-import com.thingworx.types.collections.ValueCollection;
-import com.thingworx.types.BaseTypes;
-import com.thingworx.types.primitives.DatetimePrimitive;
-import com.thingworx.types.primitives.LongPrimitive;
-import com.thingworx.types.primitives.NumberPrimitive;
-import com.thingworx.security.authentication.AuthenticationUtilities;
-import com.thingworx.datashape.DataShape;
-import com.thingworx.common.exceptions.ThingworxRuntimeException;
-import com.thingworx.dsl.engine.DSLConverter;
-import com.thingworx.dsl.engine.adapters.ThingworxEntityAdapter;
-import com.thingworx.dsl.engine.adapters.ThingworxJSONObjectAdapter;
-import com.thingworx.things.database.AbstractDatabase;
-
-import org.json.JSONObject;
-
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import org.mozilla.javascript.*;
-import org.mozilla.javascript.annotations.JSStaticFunction;
 
-import org.json.JSONObject;
-import org.json.JSONArray;
+import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.annotations.JSFunction;
 
-import java.sql.Connection;
-import twx.core.db.imp.DBUtil;
+import com.thingworx.things.database.SQLToInfoTableConversion;
+import com.thingworx.types.InfoTable;
 
 public class DBStatement extends ScriptableObject {
 
     private static final long serialVersionUID = 1L;
     
-    protected DBConnection  connection;
+    protected DBConnection  dbCon;
     protected Statement     stmt;
 
     @Override
     public String getClassName() { return "DBStatement"; }
     
+    @Override
+    protected void finalize() throws Throwable {
+        if( stmt != null)
+            stmt.close();
+        stmt = null;
+    }
+
     public DBStatement() {
-        this.connection = null;
+        this.dbCon = null;
         this.stmt = null;
     }
 
-    public DBStatement(DBConnection connection) throws SQLException {
-        this.connection = connection;
-        this.stmt = connection.createJDBCStatement();
+    public DBStatement(DBConnection connection) throws Exception {
+        this.dbCon = connection;
+        this.stmt = this.getConnection().createStatement();
+    }
+
+    protected Connection getConnection() throws Exception {
+        return this.dbCon.getConnection();
+    }
+
+    protected Statement getStatement() {
+        return this.stmt;
+    }
+    
+    @JSFunction
+    public void close() throws SQLException {
+        if( stmt != null)
+            stmt.close();
+        stmt = null;
+    }
+    
+    @JSFunction
+    public int executeUpdate (String sql) throws Exception {
+        if( stmt == null )
+            return -1;
+        return stmt.executeUpdate(sql);
     }
 
     @JSFunction
-    public void executeUpdate(String sql) throws Exception {
-        if( this.connection == null)
-             throw new ThingworxRuntimeException("Statement: Has no valid Connection");
-        stmt.executeUpdate(sql);
+    public InfoTable executeQuery(String sql) throws Exception {
+        InfoTable result = null;
+        if( stmt != null ) {
+            ResultSet rs = stmt.executeQuery(sql);
+            result = SQLToInfoTableConversion.createInfoTableFromResultset(rs,null);
+        }
+        return result;
     }
 }

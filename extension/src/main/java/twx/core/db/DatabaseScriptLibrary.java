@@ -14,6 +14,7 @@ import com.thingworx.security.authentication.AuthenticationUtilities;
 
 import twx.core.db.scriptable.QueryBuilder;
 import twx.core.db.scriptable.DBConnection;
+import twx.core.db.scriptable.DBPreparedStatement;
 import twx.core.db.scriptable.DBStatement;
 
 public class DatabaseScriptLibrary {
@@ -32,6 +33,11 @@ public class DatabaseScriptLibrary {
             var obj = ScriptableObject.getProperty(me, "DBStatement");
             if (obj == Scriptable.NOT_FOUND)
                 ScriptableObject.defineClass(me, DBStatement.class);
+        }
+        {
+            var obj = ScriptableObject.getProperty(me, "DBPreparedStatement");
+            if (obj == Scriptable.NOT_FOUND)
+                ScriptableObject.defineClass(me, DBPreparedStatement.class);
         }
         {
             var obj = ScriptableObject.getProperty(me, "QueryBuilder");

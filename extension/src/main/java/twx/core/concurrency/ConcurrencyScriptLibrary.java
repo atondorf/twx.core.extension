@@ -22,6 +22,7 @@ import twx.core.concurrency.imp.MutexManager;
 import twx.core.concurrency.imp.QueueManager;
 import twx.core.concurrency.imp.AtomicManager;
 import twx.core.concurrency.scriptable.Atomic;
+import twx.core.db.scriptable.DBConnection;
 
 public class ConcurrencyScriptLibrary {
 
@@ -29,7 +30,12 @@ public class ConcurrencyScriptLibrary {
     // --------------------------------------------------------------------------------
     public static void require_core_concurrency(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
         AuthenticationUtilities.validateUserSecurityContext();
-        ScriptableObject.defineClass(me, Atomic.class);
+        // Check if the class is already registered ...
+        {
+            var obj = ScriptableObject.getProperty(me, "Atomic");
+            if (obj == Scriptable.NOT_FOUND)
+                ScriptableObject.defineClass(me, Atomic.class);
+        }
     }
 
     protected static Long argToLong(Object arg) throws Exception {

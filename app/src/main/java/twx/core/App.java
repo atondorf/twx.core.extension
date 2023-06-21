@@ -32,7 +32,10 @@ public class App {
         logger.info("---------- Start-App ----------");
         Connection con = null;
         try {
+            app.test_1();
+
             DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
+/* 
             con = DriverManager.getConnection(DB_URL, USER, PASS);
             con.setAutoCommit(false);
 
@@ -40,9 +43,8 @@ public class App {
 
             var model = meta.queryModelFromDB();
             var tab = model.getDefaultSchema().getTable("Tab_2");
-
             logger.info(tab.toJSON().toString(2));
-
+*/            
         } catch (SQLException e) {
             printSQLException(e);
         } finally {
@@ -55,6 +57,25 @@ public class App {
             }
         }
         logger.info("---------- Exit-App ----------");
+    }
+
+
+    public void test_1() {
+        logger.info("---------- Test-1 ----------");
+
+        logger.info( "Float   : " + testParam(3.141f) );
+        logger.info( "Double  : " + testParam(3.141) );
+        logger.info( "Integer : " + testParam(3 ) );
+        logger.info( "Long    : " + testParam(3L ) );        
+    }
+
+    public Integer testParam(Object val) {
+        logger.info("Classname: " + val.getClass().getName() );
+        Integer ret = 0;
+        if ( val instanceof Number ) {
+            ret = ((Number)val).intValue();
+        }
+        return ret;
     }
 
     public static void printSQLException(SQLException ex) {
