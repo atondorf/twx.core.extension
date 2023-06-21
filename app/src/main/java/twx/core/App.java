@@ -7,41 +7,90 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.healthmarketscience.sqlbuilder.CreateTableQuery;
-import com.healthmarketscience.sqlbuilder.dbspec.*;
-import com.healthmarketscience.sqlbuilder.dbspec.basic.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import com.microsoft.sqlserver.jdbc.SQLServerDriver;
+
+import twx.core.db.IDatabase;
+import twx.core.db.imp.DbAbstract;
+
 public class App {
 
-	final static Logger 		logger  = LoggerFactory.getLogger(App.class);
-  
-    public String getTableCreate() {
-        DbSpec      spec    = new DbSpec();
-        DbSchema    schema  = spec.addDefaultSchema();
+    final static Logger logger = LoggerFactory.getLogger(App.class);
 
-        DbTable     customerTable   = schema.addTable("test");
-        customerTable.addColumn("UID", "bigint", null);
-        customerTable.addColumn("cust_id", "number", null);
-        customerTable.addColumn("name", "varchar", 255);
-        customerTable.primaryKey("Customer_UID_PK", "UID");
-        customerTable.unique("Customer_UID_UN", "UID");   
-
-        String createCustomerTable = new CreateTableQuery(customerTable, true)
-            .validate().toString();
-        
-        return createCustomerTable;
-    }
+    static final String DB_URL = "jdbc:sqlserver://localhost:1433;database=twdata;";
+    static final String USER = "twx";
+    static final String PASS = "twx@1234";
+    Connection con = null;
 
     public static void main(String[] args) {
-    	var app 	= new App();
-        var scanner	= new Scanner(System.in);
-        
+        var app = new App();
+        var scanner = new Scanner(System.in);
         logger.info("---------- Start-App ----------");
+        Connection con = null;
         try {
-            logger.info( app.getTableCreate() );
-		}
-        catch(Exception ex) {
-        	logger.error(ex.getMessage());
+            app.test_1();
+
+            DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
+/* 
+            con = DriverManager.getConnection(DB_URL, USER, PASS);
+            con.setAutoCommit(false);
+
+            var meta = new DbAbstract(con);
+
+            var model = meta.queryModelFromDB();
+            var tab = model.getDefaultSchema().getTable("Tab_2");
+            logger.info(tab.toJSON().toString(2));
+*/            
+        } catch (SQLException e) {
+            printSQLException(e);
+        } finally {
+            if (con != null) {
+                try {
+                    con.close();
+                } catch (SQLException e) {
+                    printSQLException(e);
+                }
+            }
         }
-        logger.info( "---------- Exit-App ----------");
+        logger.info("---------- Exit-App ----------");
+    }
+
+
+    public void test_1() {
+        logger.info("---------- Test-1 ----------");
+
+        logger.info( "Float   : " + testParam(3.141f) );
+        logger.info( "Double  : " + testParam(3.141) );
+        logger.info( "Integer : " + testParam(3 ) );
+        logger.info( "Long    : " + testParam(3L ) );        
+    }
+
+    public Integer testParam(Object val) {
+        logger.info("Classname: " + val.getClass().getName() );
+        Integer ret = 0;
+        if ( val instanceof Number ) {
+            ret = ((Number)val).intValue();
+        }
+        return ret;
+    }
+
+    public static void printSQLException(SQLException ex) {
+        for (Throwable e : ex) {
+            if (e instanceof SQLException) {
+                e.printStackTrace(System.err);
+                System.err.println("SQLState: " + ((SQLException) e).getSQLState());
+                System.err.println("Error Code: " + ((SQLException) e).getErrorCode());
+                System.err.println("Message: " + e.getMessage());
+                Throwable t = ex.getCause();
+                while (t != null) {
+                    System.out.println("Cause: " + t);
+                    t = t.getCause();
+                }
+            }
+        }
     }
 }

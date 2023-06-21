@@ -33,7 +33,7 @@ public class MathScriptLibrary {
         DSLConverter.convertValues(args, me);
         StringPrimitive  fmt = (StringPrimitive)BaseTypes.ConvertToPrimitive(args[0], BaseTypes.STRING);
 		IntegerPrimitive val = (IntegerPrimitive)BaseTypes.ConvertToPrimitive(args[1], BaseTypes.INTEGER);
-		return String.format( fmt.getValue(),val.getValue() );
+		return String.format( fmt.getValue(), val.getValue() );
     }
 	
     public static Object core_formatLong(Context cx, Scriptable me, Object[] args, Function func) throws Exception {

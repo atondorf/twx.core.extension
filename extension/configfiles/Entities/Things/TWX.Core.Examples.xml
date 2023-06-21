@@ -5,8 +5,8 @@
     universal="password">
     <Things>
         <Thing
-         aspect.isEditableExtensionObject="true"
-         aspect.isExtension="true"
+            aspect.isEditableExtensionObject="true"
+            aspect.isExtension="true"
             description=""
             documentationContent=""
             effectiveThingPackage="ConfiguredThing"
@@ -19,7 +19,7 @@
             published="false"
             tags=""
             thingTemplate="GenericThing"
-         valueStream="">
+            valueStream="">
             <avatar></avatar>
             <DesignTimePermissions>
                 <Create></Create>
@@ -45,67 +45,45 @@
                         isLocalOnly="false"
                         isOpen="false"
                         isPrivate="false"
-                     name="exAtomic">
+                        name="exAtomic">
                         <ResultType
-                         baseType="INTEGER"
-                         description=""
-                         name="result"
-                         ordinal="0"></ResultType>
+                            baseType="INTEGER"
+                            description=""
+                            name="result"
+                            ordinal="0"></ResultType>
                         <ParameterDefinitions></ParameterDefinitions>
                     </ServiceDefinition>
                     <ServiceDefinition
-                     aspect.isAsync="false"
-                     category=""
-                     description=""
-                     isAllowOverride="false"
-                     isLocalOnly="false"
-                     isOpen="false"
-                     isPrivate="false"
-                     name="exDate">
-                        <ResultType
-                         baseType="JSON"
-                         description=""
-                         name="result"
-                         ordinal="0"></ResultType>
-                        <ParameterDefinitions></ParameterDefinitions>
-                    </ServiceDefinition>
-                    <ServiceDefinition
-                     aspect.isAsync="false"
-                     category=""
-                     description=""
-                     isAllowOverride="false"
-                     isLocalOnly="false"
-                     isOpen="false"
-                     isPrivate="false"
-                     name="exDateTimeZones">
-                        <ResultType
-                         baseType="INFOTABLE"
-                         description=""
-                         name="result"
-                         ordinal="0"></ResultType>
-                        <ParameterDefinitions></ParameterDefinitions>
-                    </ServiceDefinition>
-                    <ServiceDefinition
-                     aspect.isAsync="false"
-                     category=""
-                     description=""
-                     isAllowOverride="false"
-                     isLocalOnly="false"
-                     isOpen="false"
-                     isPrivate="false"
-                        name="exDB">
+                        aspect.isAsync="false"
+                        category=""
+                        description=""
+                        isAllowOverride="false"
+                        isLocalOnly="false"
+                        isOpen="false"
+                        isPrivate="false"
+                        name="exDate">
                         <ResultType
                             baseType="JSON"
                             description=""
                             name="result"
                             ordinal="0"></ResultType>
-                        <ParameterDefinitions>
-                            <FieldDefinition
-                                baseType="JSON"
-                                description=""
-                                name="param"
-                                ordinal="1"></FieldDefinition>
-                        </ParameterDefinitions>
+                        <ParameterDefinitions></ParameterDefinitions>
+                    </ServiceDefinition>
+                    <ServiceDefinition
+                        aspect.isAsync="false"
+                        category=""
+                        description=""
+                        isAllowOverride="false"
+                        isLocalOnly="false"
+                        isOpen="false"
+                        isPrivate="false"
+                        name="exDateTimeZones">
+                        <ResultType
+                            baseType="INFOTABLE"
+                            description=""
+                            name="result"
+                            ordinal="0"></ResultType>
+                        <ParameterDefinitions></ParameterDefinitions>
                     </ServiceDefinition>
                     <ServiceDefinition
                         aspect.isAsync="false"
@@ -117,58 +95,58 @@
                         isPrivate="false"
                         name="exMultitimer">
                         <ResultType
-                         baseType="JSON"
+                            baseType="JSON"
                             description=""
                             name="result"
                             ordinal="0"></ResultType>
                         <ParameterDefinitions></ParameterDefinitions>
                     </ServiceDefinition>
                     <ServiceDefinition
-                     aspect.isAsync="false"
-                     category=""
-                     description=""
-                     isAllowOverride="false"
-                     isLocalOnly="false"
-                     isOpen="false"
-                     isPrivate="false"
-                     name="exPostActor">
+                        aspect.isAsync="false"
+                        category=""
+                        description=""
+                        isAllowOverride="false"
+                        isLocalOnly="false"
+                        isOpen="false"
+                        isPrivate="false"
+                        name="exPostActor">
                         <ResultType
-                         baseType="NOTHING"
-                         description=""
-                         name="result"
-                         ordinal="0"></ResultType>
+                            baseType="NOTHING"
+                            description=""
+                            name="result"
+                            ordinal="0"></ResultType>
                         <ParameterDefinitions></ParameterDefinitions>
                     </ServiceDefinition>
                     <ServiceDefinition
-                     aspect.isAsync="false"
-                     category=""
-                     description=""
-                     isAllowOverride="false"
-                     isLocalOnly="false"
-                     isOpen="false"
-                     isPrivate="false"
-                     name="exString">
+                        aspect.isAsync="false"
+                        category=""
+                        description=""
+                        isAllowOverride="false"
+                        isLocalOnly="false"
+                        isOpen="false"
+                        isPrivate="false"
+                        name="exString">
                         <ResultType
-                         baseType="JSON"
-                         description=""
-                         name="result"
-                         ordinal="0"></ResultType>
+                            baseType="JSON"
+                            description=""
+                            name="result"
+                            ordinal="0"></ResultType>
                         <ParameterDefinitions></ParameterDefinitions>
                     </ServiceDefinition>
                     <ServiceDefinition
-                     aspect.isAsync="false"
-                     category=""
-                     description=""
-                     isAllowOverride="false"
-                     isLocalOnly="false"
-                     isOpen="false"
-                     isPrivate="false"
-                     name="exUtil_SrcInfo">
+                        aspect.isAsync="false"
+                        category=""
+                        description=""
+                        isAllowOverride="false"
+                        isLocalOnly="false"
+                        isOpen="false"
+                        isPrivate="false"
+                        name="exUtil_SrcInfo">
                         <ResultType
-                         baseType="JSON"
-                         description=""
-                         name="result"
-                         ordinal="0"></ResultType>
+                            baseType="JSON"
+                            description=""
+                            name="result"
+                            ordinal="0"></ResultType>
                         <ParameterDefinitions></ParameterDefinitions>
                     </ServiceDefinition>
                 </ServiceDefinitions>
@@ -178,21 +156,21 @@
                     <ServiceImplementation
                         description=""
                         handlerName="Script"
-                     name="exAtomic">
+                        name="exAtomic">
                         <ConfigurationTables>
                             <ConfigurationTable
-                             dataShapeName=""
-                             description=""
-                             isMultiRow="false"
-                             name="Script"
-                             ordinal="0">
+                                dataShapeName=""
+                                description=""
+                                isMultiRow="false"
+                                name="Script"
+                                ordinal="0">
                                 <DataShape>
                                     <FieldDefinitions>
                                         <FieldDefinition
-                                         baseType="STRING"
-                                         description="code"
-                                         name="code"
-                                         ordinal="0"></FieldDefinition>
+                                            baseType="STRING"
+                                            description="code"
+                                            name="code"
+                                            ordinal="0"></FieldDefinition>
                                     </FieldDefinitions>
                                 </DataShape>
                                 <Rows>
@@ -230,23 +208,23 @@
                         </ConfigurationTables>
                     </ServiceImplementation>
                     <ServiceImplementation
-                     description=""
-                     handlerName="Script"
-                     name="exDate">
+                        description=""
+                        handlerName="Script"
+                        name="exDate">
                         <ConfigurationTables>
                             <ConfigurationTable
-                             dataShapeName=""
-                             description=""
-                             isMultiRow="false"
-                             name="Script"
-                             ordinal="0">
+                                dataShapeName=""
+                                description=""
+                                isMultiRow="false"
+                                name="Script"
+                                ordinal="0">
                                 <DataShape>
                                     <FieldDefinitions>
                                         <FieldDefinition
-                                         baseType="STRING"
-                                         description="code"
-                                         name="code"
-                                         ordinal="0"></FieldDefinition>
+                                            baseType="STRING"
+                                            description="code"
+                                            name="code"
+                                            ordinal="0"></FieldDefinition>
                                     </FieldDefinitions>
                                 </DataShape>
                                 <Rows>
@@ -297,42 +275,9 @@
                         </ConfigurationTables>
                     </ServiceImplementation>
                     <ServiceImplementation
-                     description=""
-                     handlerName="Script"
-                     name="exDateTimeZones">
-                        <ConfigurationTables>
-                            <ConfigurationTable
-                             dataShapeName=""
-                             description=""
-                             isMultiRow="false"
-                             name="Script"
-                             ordinal="0">
-                                <DataShape>
-                                    <FieldDefinitions>
-                                        <FieldDefinition
-                                         baseType="STRING"
-                                         description="code"
-                                         name="code"
-                                         ordinal="0"></FieldDefinition>
-                                    </FieldDefinitions>
-                                </DataShape>
-                                <Rows>
-                                    <Row>
-                                        <code>
-                                        <![CDATA[
-                                        // get infotable containing all available timezones ...
-                                        result = core_getAvailableTimeZones();
-                                        ]]>
-                                        </code>
-                                    </Row>
-                                </Rows>
-                            </ConfigurationTable>
-                        </ConfigurationTables>
-                    </ServiceImplementation>
-                    <ServiceImplementation
-                     description=""
-                     handlerName="Script"
-                        name="exDB">
+                        description=""
+                        handlerName="Script"
+                        name="exDateTimeZones">
                         <ConfigurationTables>
                             <ConfigurationTable
                                 dataShapeName=""
@@ -353,19 +298,8 @@
                                     <Row>
                                         <code>
                                         <![CDATA[
-                                        require_core_db();
-                                        let builder = new SQLBuilder();
-                                        result = {};
-                                        
-                                        let dataShape = DataShapes["NamedVTQ"];
-                                        let obj = {
-                                        	value: 1234
-                                        };
-                                        let json = JSON.stringify(obj);
-                                        
-                                        result.name = builder.getObjClassName(dataShape);
-                                        result.desc = builder.getObjToString(dataShape);
-                                        result.string = builder.append("Hallo").append(" Welt").create();
+                                        // get infotable containing all available timezones ...
+                                        result = core_getAvailableTimeZones();
                                         ]]>
                                         </code>
                                     </Row>
@@ -418,23 +352,23 @@
                         </ConfigurationTables>
                     </ServiceImplementation>
                     <ServiceImplementation
-                     description=""
-                     handlerName="Script"
-                     name="exPostActor">
+                        description=""
+                        handlerName="Script"
+                        name="exPostActor">
                         <ConfigurationTables>
                             <ConfigurationTable
-                             dataShapeName=""
-                             description=""
-                             isMultiRow="false"
-                             name="Script"
-                             ordinal="0">
+                                dataShapeName=""
+                                description=""
+                                isMultiRow="false"
+                                name="Script"
+                                ordinal="0">
                                 <DataShape>
                                     <FieldDefinitions>
                                         <FieldDefinition
-                                         baseType="STRING"
-                                         description="code"
-                                         name="code"
-                                         ordinal="0"></FieldDefinition>
+                                            baseType="STRING"
+                                            description="code"
+                                            name="code"
+                                            ordinal="0"></FieldDefinition>
                                     </FieldDefinitions>
                                 </DataShape>
                                 <Rows>
@@ -454,23 +388,23 @@
                         </ConfigurationTables>
                     </ServiceImplementation>
                     <ServiceImplementation
-                     description=""
-                     handlerName="Script"
-                     name="exString">
+                        description=""
+                        handlerName="Script"
+                        name="exString">
                         <ConfigurationTables>
                             <ConfigurationTable
-                             dataShapeName=""
-                             description=""
-                             isMultiRow="false"
-                             name="Script"
-                             ordinal="0">
+                                dataShapeName=""
+                                description=""
+                                isMultiRow="false"
+                                name="Script"
+                                ordinal="0">
                                 <DataShape>
                                     <FieldDefinitions>
                                         <FieldDefinition
-                                         baseType="STRING"
-                                         description="code"
-                                         name="code"
-                                         ordinal="0"></FieldDefinition>
+                                            baseType="STRING"
+                                            description="code"
+                                            name="code"
+                                            ordinal="0"></FieldDefinition>
                                     </FieldDefinitions>
                                 </DataShape>
                                 <Rows>
@@ -500,23 +434,23 @@
                         </ConfigurationTables>
                     </ServiceImplementation>
                     <ServiceImplementation
-                     description=""
-                     handlerName="Script"
-                     name="exUtil_SrcInfo">
+                        description=""
+                        handlerName="Script"
+                        name="exUtil_SrcInfo">
                         <ConfigurationTables>
                             <ConfigurationTable
-                             dataShapeName=""
-                             description=""
-                             isMultiRow="false"
-                             name="Script"
-                             ordinal="0">
+                                dataShapeName=""
+                                description=""
+                                isMultiRow="false"
+                                name="Script"
+                                ordinal="0">
                                 <DataShape>
                                     <FieldDefinitions>
                                         <FieldDefinition
-                                         baseType="STRING"
-                                         description="code"
-                                         name="code"
-                                         ordinal="0"></FieldDefinition>
+                                            baseType="STRING"
+                                            description="code"
+                                            name="code"
+                                            ordinal="0"></FieldDefinition>
                                     </FieldDefinitions>
                                 </DataShape>
                                 <Rows>
@@ -559,8 +493,8 @@
             <AlertConfigurations></AlertConfigurations>
             <ImplementedShapes>
                 <ImplementedShape
-                 name="TWX.Core.Actor_TS"
-                 type="ThingShape"></ImplementedShape>
+                    name="TWX.Core.Actor_TS"
+                    type="ThingShape"></ImplementedShape>
             </ImplementedShapes>
             <ThingProperties>
                 <ActorManager>
