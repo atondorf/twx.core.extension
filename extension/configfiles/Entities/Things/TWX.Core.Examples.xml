@@ -496,17 +496,7 @@
                     name="TWX.Core.Actor_TS"
                     type="ThingShape"></ImplementedShape>
             </ImplementedShapes>
-            <ThingProperties>
-                <ActorManager>
-                    <Value>
-                    <![CDATA[
-                    TWX.Core.ActorManager
-                    ]]>
-                    </Value>
-                    <Timestamp>1970-01-01T00:00:00.000Z</Timestamp>
-                    <Quality>UNKNOWN</Quality>
-                </ActorManager>
-            </ThingProperties>
+            <ThingProperties></ThingProperties>
         </Thing>
     </Things>
 </Entities>
