@@ -1,6 +1,9 @@
 package twx.core.utils;
 
 import ch.qos.logback.classic.Logger;
+import twx.core.db.scriptable.QueryBuilder;
+import twx.core.utils.scriptable.MultiTimer;
+
 import com.thingworx.logging.LogUtilities;
 import com.thingworx.common.utils.DateUtilities;
 import com.thingworx.dsl.engine.DSLConverter;
@@ -33,7 +36,7 @@ public class UtilScriptLibrary {
     // Check if the class is already registered ...
     var obj = ScriptableObject.getProperty(me, "MultiTimer");
     if (obj == Scriptable.NOT_FOUND)
-    ScriptableObject.defineClass(me, MultiTimer.class);
+        ScriptableObject.defineClass(me, MultiTimer.class);
   }
 
   public static Object core_getMultiTimer(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {

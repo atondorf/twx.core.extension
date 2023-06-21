@@ -12,7 +12,7 @@ import twx.core.concurrency.imp.AtomicManager;
 public class Atomic extends ScriptableObject {
     private static final long serialVersionUID = 1L;
     private AtomicInteger  atomic = null;
-    private String          atomic_id = "";
+    private String         atomic_id = "";
 
     @Override
     public String getClassName() {
