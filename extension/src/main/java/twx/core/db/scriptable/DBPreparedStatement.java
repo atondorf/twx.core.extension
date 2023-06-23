@@ -17,11 +17,16 @@ import com.thingworx.things.database.SQLToInfoTableConversion;
 import com.thingworx.types.InfoTable;
 
 public class DBPreparedStatement extends ScriptableObject {
+    // region ScriptableObject basics
+    // --------------------------------------------------------------------------------
     private static final long serialVersionUID = 1L;
 
-    protected DBConnection dbCon;
-    protected String sql;
-    protected PreparedStatement pstmt;
+    public DBPreparedStatement() { }
+
+    public DBPreparedStatement(DBConnection dbCon, String sql) throws Exception {
+        this.dbCon  = dbCon;
+        this.pstmt  = this.dbCon.getConnection().prepareStatement(sql);
+    }
 
     @Override
     public String getClassName() {
@@ -35,28 +40,19 @@ public class DBPreparedStatement extends ScriptableObject {
         pstmt = null;
     }
 
-    public DBPreparedStatement() {
-        this.dbCon = null;
-        this.pstmt = null;
+    // endregion 
+    // region Statement Handling 
+    // --------------------------------------------------------------------------------
+    @JSFunction
+    public void close() throws SQLException {
+        if( pstmt != null)
+            pstmt.close();
+        pstmt = null;
     }
 
-    public DBPreparedStatement(DBConnection connection, String sql) throws Exception {
-        this.dbCon = connection;
-        this.sql = sql;
-        this.pstmt = this.getConnection().prepareStatement(this.sql);
-    }
-
-    protected Connection getConnection() throws Exception {
-        return this.dbCon.getConnection();
-    }
-
-    protected PreparedStatement getStatement() {
-        return this.pstmt;
-    }
-
-    protected static PreparedStatement getStatement(Scriptable me) {
-        DBPreparedStatement dbStatement = (DBPreparedStatement) me;
-        return dbStatement.getStatement();
+    @JSFunction
+    public Boolean execute() throws Exception {
+        return pstmt.execute();
     }
 
     @JSFunction
@@ -74,6 +70,16 @@ public class DBPreparedStatement extends ScriptableObject {
             result = SQLToInfoTableConversion.createInfoTableFromResultset(rs, null);
         }
         return result;
+    }
+
+    @JSFunction
+    public void executeBatch() throws Exception {
+        
+    }
+
+    @JSFunction
+    public void addBatch() throws Exception {
+        pstmt.addBatch();
     }
 
     @JSFunction
@@ -103,11 +109,24 @@ public class DBPreparedStatement extends ScriptableObject {
                 pstmt.setString(idx, (String) obj);
                 break;
             case "org.mozilla.javascript.NativeDate":
-                long time = ((Date) cx.jsToJava(obj, Date.class)).getTime();
+                long time = ((Date) Context.jsToJava(obj, Date.class)).getTime();
                 pstmt.setTimestamp(idx, new Timestamp(time));
                 break;
             default:
                 throw new IllegalArgumentException("Invalid Argument in DBPreparedStatement.set(), " + className + " is not supported!");
         }
     }
+
+    // endregion 
+    // region Private Members ...
+    // --------------------------------------------------------------------------------
+    protected DBConnection      dbCon = null;
+    protected PreparedStatement pstmt = null;
+
+    protected static PreparedStatement getStatement(Scriptable me) {
+        DBPreparedStatement dbStatement = (DBPreparedStatement)me;
+        return dbStatement.pstmt;
+    }
+
+    // endregion
 }
