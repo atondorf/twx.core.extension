@@ -19,6 +19,7 @@ public class DbModel extends DbObject<DbObject<?>> {
 
     public DbModel(String name) {
         super(null, name);
+        addSchema(DEFAULT_SCHEMA_NAME);
     };
 
     public List<DbSchema> getSchemas() {
@@ -33,13 +34,21 @@ public class DbModel extends DbObject<DbObject<?>> {
         return this.schemas.get(name);
     }
 
+    public Boolean hasSchema(String name) {
+        return this.schemas.get(name) != null;
+    }
+
     public DbSchema addSchema(String name) {
         DbSchema schema = createSchema(name);
         return addSchema(schema);
     }
 
-    public DbSchema addDefaultSchema() {
-        return addSchema(DEFAULT_SCHEMA_NAME);
+    public DbSchema getOrAddSchema(String name) {
+        DbSchema schema = this.schemas.get(name);
+        if( schema == null ) {
+            schema = addSchema(name);
+        }
+        return schema;
     }
 
     public DbSchema createSchema(String name) {

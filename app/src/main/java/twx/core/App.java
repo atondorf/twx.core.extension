@@ -14,8 +14,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import com.microsoft.sqlserver.jdbc.SQLServerDriver;
 
-import twx.core.db.IDatabase;
-import twx.core.db.imp.DbAbstract;
+import twx.core.db.IDatabaseHandler;
+import twx.core.db.imp.AbstractDatabaseHandler;
+import twx.core.db.imp.MsSQLDatabaseHandler;
 
 public class App {
 
@@ -32,19 +33,17 @@ public class App {
         logger.info("---------- Start-App ----------");
         Connection con = null;
         try {
-            app.test_1();
-
+            app.test_2();
             DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
-/* 
             con = DriverManager.getConnection(DB_URL, USER, PASS);
+/*
             con.setAutoCommit(false);
 
-            var meta = new DbAbstract(con);
+            IDatabaseHandler twxDB = new MsSQLDatabaseHandler();
 
-            var model = meta.queryModelFromDB();
-            var tab = model.getDefaultSchema().getTable("Tab_2");
-            logger.info(tab.toJSON().toString(2));
-*/            
+            var model = twxDB.queryModelFromDB(con);
+            logger.info(model.toJSON().toString(2));
+*/
         } catch (SQLException e) {
             printSQLException(e);
         } finally {
@@ -68,6 +67,23 @@ public class App {
         logger.info( "Integer : " + testParam(3 ) );
         logger.info( "Long    : " + testParam(3L ) );        
     }
+
+    public void test_2() {
+        logger.info("---------- Test-2 ----------");
+        String jdbc = "jdbc:sqlserver://delinvmdb223:1437;databaseName=thingworx_data;"; // applicationName=ThingworxData;";
+
+        logger.info(jdbc);
+
+        int startIndex = jdbc.indexOf("databaseName=") + 13;
+        int endIndex = jdbc.indexOf(';', startIndex);
+        logger.info("databaseName  [" + startIndex + " " + endIndex + "]: " + jdbc.substring(startIndex, endIndex) );
+
+        startIndex = jdbc.indexOf("applicationName=") + 16;
+        endIndex = jdbc.indexOf(';', startIndex);
+        logger.info("applicationName [" + startIndex + " " + endIndex + "]: " + jdbc.substring(startIndex, endIndex) );
+
+    }
+
 
     public Integer testParam(Object val) {
         logger.info("Classname: " + val.getClass().getName() );

@@ -1,4 +1,4 @@
-package twx.core.impl;
+package twx.core.imp;
 
 import com.thingworx.common.exceptions.ThingworxRuntimeException;
 import com.thingworx.datashape.DataShape;

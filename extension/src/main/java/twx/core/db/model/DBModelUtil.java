@@ -1,52 +1,26 @@
-package twx.core.db.imp;
+package twx.core.db.model;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-import twx.core.db.IDatabase;
-import twx.core.db.model.*;
+import twx.core.db.IDatabaseHandler;
 
-import java.util.Scanner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class DBModelUtil {
+    
+    IDatabaseHandler           db = null;
+    Connection          con = null;
+    DatabaseMetaData    meta = null;
 
-public class DbAbstract implements IDatabase {
-    final static Logger logger = LoggerFactory.getLogger(DbAbstract.class);
-
-    private Connection con;
-    private DatabaseMetaData meta;
-    private List<String> systemSchemas;
-    private List<String> systemTables;
-
-    public DbAbstract(Connection con) throws SQLException {
+    public DBModelUtil(IDatabaseHandler db, Connection con) throws SQLException {
+        this.db = db;
         this.con = con;
         this.meta = con.getMetaData();
-        String[] MSSQL = {
-                "DB_ACCESSADMIN",
-                "DB_BACKUPOPERATOR",
-                "DB_DATAREADER",
-                "DB_DATAWRITER",
-                "DB_DDLADMIN",
-                "DB_DENYDATAREADER",
-                "DB_DENYDATAWRITER",
-                "DB_OWNER",
-                "DB_SECURITYADMIN",
-                "GUEST",
-                "INFORMATION_SCHEMA",
-                "SYS" };
-        systemSchemas = Arrays.asList(MSSQL);
     }
 
-    @Override
     public DbModel queryModelFromDB() throws SQLException {
-        String dbName = con.getCatalog();
+        String dbName = this.con.getCatalog();
         String productName      = meta.getDatabaseProductName();
         String productVersion   = meta.getDatabaseProductVersion();
         String driverName       = meta.getDriverName();
@@ -56,18 +30,15 @@ public class DbAbstract implements IDatabase {
         return this.addSchemas(dbModel);
     }
 
-    public boolean isSystemSchema(String schemaName) {
-        return systemSchemas.contains(schemaName.toUpperCase());
-    }
-
     protected DbModel addSchemas(DbModel dbModel) throws SQLException {
         ResultSet rs = meta.getSchemas();
         while (rs.next()) {
             String schemaName = rs.getString("TABLE_SCHEM");
-            if (!isSystemSchema(schemaName)) {
+/*/            if (!isSystemSchema(schemaName)) {
                 DbSchema dbSchema = dbModel.addSchema(schemaName);
-                this.addTables(dbSchema);
+                // this.addTables(dbSchema);
             }
+*/            
         }
         return dbModel;
     }
@@ -141,5 +112,5 @@ public class DbAbstract implements IDatabase {
             fk.setOnUpdate(rs.getInt("DELETE_RULE"));
         }
         return dbTable;
-    }
+    }  
 }
