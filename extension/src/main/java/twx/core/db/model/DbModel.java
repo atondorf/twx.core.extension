@@ -1,49 +1,33 @@
 package twx.core.db.model;
 
+
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class DbModel extends DbObject<DbObject<?>> {
 
+public class DbModel extends DbObject<DbObject<?>> {
+    
     public static final String DEFAULT_SCHEMA_NAME = "dbo";
 
-    private final LinkedHashMap<String, DbSchema> schemas = new LinkedHashMap<String, DbSchema>();
-
-    protected String application;
+    private final LinkedHashMap<String,DbSchema> schemas = new LinkedHashMap<String,DbSchema>();
 
     public DbModel(String name) {
         super(null, name);
-        this.application = name;
+        addSchema(DEFAULT_SCHEMA_NAME);
     };
-
-    public DbModel(String name,String application) {
-        super(null, name);
-        this.application = application;
-    };
-
-    public String getApplication() {
-        return this.application;
-    }
-
-    public void setApplication(String name) {
-        this.application = name;
-    }
 
     public List<DbSchema> getSchemas() {
-        return new ArrayList<DbSchema>(this.schemas.values());
+        return new ArrayList<DbSchema>( this.schemas.values() );
     }
 
     public DbSchema getDefaultSchema() {
         return getSchema(DEFAULT_SCHEMA_NAME);
-    }
-
-    public Set<String> getSchemaNames() {
-        return schemas.keySet();
     }
 
     public DbSchema getSchema(String name) {
@@ -54,14 +38,6 @@ public class DbModel extends DbObject<DbObject<?>> {
         return this.schemas.get(name) != null;
     }
 
-    public Boolean removeSchema(String name) {
-        DbSchema schema = this.schemas.get(name);
-        if (schema != null) {
-            removeSchema(schema);
-        }
-        return false;
-    }
-
     public DbSchema addSchema(String name) {
         DbSchema schema = createSchema(name);
         return addSchema(schema);
@@ -69,7 +45,7 @@ public class DbModel extends DbObject<DbObject<?>> {
 
     public DbSchema getOrAddSchema(String name) {
         DbSchema schema = this.schemas.get(name);
-        if (schema == null) {
+        if( schema == null ) {
             schema = addSchema(name);
         }
         return schema;
@@ -84,30 +60,15 @@ public class DbModel extends DbObject<DbObject<?>> {
         return schema;
     }
 
-    protected <T extends DbSchema> T removeSchema(T schema) {
-        this.schemas.remove(schema.getName());
-        return schema;
-    }
-
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();
         var array = new JSONArray();
-        for (DbSchema schema : this.schemas.values()) {
+        for ( DbSchema schema : this.schemas.values() ) {
             array.put(schema.toJSON());
         }
-        json.put("application", application );
-        json.put("schemas", array);
-        return json;
-    }
-
-    @Override
-    public DbModel fromJSON(JSONObject json) {
-        super.fromJSON(json);
-        this.application = json.optString("application");
-        JSONArray schemas = json.optJSONArray("schemas");
-        
-        return this;
+        json.put("schemas",array);
+        return json;        
     }
 
     @Override

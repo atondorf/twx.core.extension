@@ -9,7 +9,7 @@ import twx.core.db.IDatabaseHandler;
 
 public class DBModelUtil {
     
-    IDatabaseHandler    db = null;
+    IDatabaseHandler           db = null;
     Connection          con = null;
     DatabaseMetaData    meta = null;
 

@@ -3,19 +3,20 @@
  */
 package twx.core;
 
+import java.util.Scanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Scanner;
-
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.sql.Statement;
+import com.microsoft.sqlserver.jdbc.SQLServerDriver;
 
 import twx.core.db.IDatabaseHandler;
+import twx.core.db.imp.AbstractDatabaseHandler;
 import twx.core.db.imp.MsSQLDatabaseHandler;
-import twx.core.db.model.DbModel;
 
 public class App {
 
@@ -32,20 +33,19 @@ public class App {
         logger.info("---------- Start-App ----------");
         Connection con = null;
         try {
+            app.test_2();
             DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
             con = DriverManager.getConnection(DB_URL, USER, PASS);
-            IDatabaseHandler handler = new MsSQLDatabaseHandler(con, "TWX_DATA"); // MsSQLDatabaseHandler
-            // app.queryMeta(handler);
-           // app.queryModelFromDB(handler);
-           app.createModelFromJSON();
-/*             var model = handler.queryModel();
+/*
+            con.setAutoCommit(false);
+
+            IDatabaseHandler twxDB = new MsSQLDatabaseHandler();
+
+            var model = twxDB.queryModelFromDB(con);
             logger.info(model.toJSON().toString(2));
-            
-*/            
+*/
         } catch (SQLException e) {
             printSQLException(e);
-        } catch (Exception e) {
-            logger.error("Exception: " + e.toString() );
         } finally {
             if (con != null) {
                 try {
@@ -58,43 +58,32 @@ public class App {
         logger.info("---------- Exit-App ----------");
     }
 
-    public void queryModelFromDB(IDatabaseHandler handler) throws SQLException {
-        var model = handler.queryModel();
-        logger.info(model.toJSON().toString(2));  
+
+    public void test_1() {
+        logger.info("---------- Test-1 ----------");
+
+        logger.info( "Float   : " + testParam(3.141f) );
+        logger.info( "Double  : " + testParam(3.141) );
+        logger.info( "Integer : " + testParam(3 ) );
+        logger.info( "Long    : " + testParam(3L ) );        
     }
 
-    public void createModelFromJSON()  {
-        JSONObject dbInfo = new JSONObject(
-        "{\"name\":\"test\",\"description\":\"jon doe\"}"
-        );
-        var model = new DbModel("");
-        model.fromJSON(dbInfo);
+    public void test_2() {
+        logger.info("---------- Test-2 ----------");
+        String jdbc = "jdbc:sqlserver://delinvmdb223:1437;databaseName=thingworx_data;"; // applicationName=ThingworxData;";
 
-        logger.info(model.toJSON().toString(2));  
+        logger.info(jdbc);
+
+        int startIndex = jdbc.indexOf("databaseName=") + 13;
+        int endIndex = jdbc.indexOf(';', startIndex);
+        logger.info("databaseName  [" + startIndex + " " + endIndex + "]: " + jdbc.substring(startIndex, endIndex) );
+
+        startIndex = jdbc.indexOf("applicationName=") + 16;
+        endIndex = jdbc.indexOf(';', startIndex);
+        logger.info("applicationName [" + startIndex + " " + endIndex + "]: " + jdbc.substring(startIndex, endIndex) );
+
     }
 
-    public void queryMeta(IDatabaseHandler handler) throws SQLException {
-        ResultSet rs = handler.getMetaData().getIndexInfo(null, "dbo","NewTable", false, false);
-        while (rs.next()) {
-            String name = rs.getString("INDEX_NAME");
-            if (name != null) {
-                String colName = rs.getString("COLUMN_NAME");
-                Boolean unique = !(rs.getBoolean("NON_UNIQUE"));
-            }
-        }
-    }
-
-    public void testJackson(IDatabaseHandler handler) {
-        try {
-            var model = handler.queryModel();
-            String str = ""; // objectMapper.writeValueAsString(model);
-            logger.info(str);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-           // e.printStackTrace();
-        }
-        // ;
-    }
 
     public Integer testParam(Object val) {
         logger.info("Classname: " + val.getClass().getName() );

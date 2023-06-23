@@ -1,22 +1,28 @@
 package twx.core.db.imp;
 
-import java.sql.Connection;
-
-import javax.sql.DataSource;
-
 import com.thingworx.common.exceptions.ThingworxRuntimeException;
-import com.thingworx.entities.RootEntity;
+import com.thingworx.entities.utils.EntityUtilities;
+import com.thingworx.things.Thing;
+import com.thingworx.webservices.context.ThreadLocalContext;
+import com.thingworx.common.exceptions.ThingworxRuntimeException;
+import com.thingworx.webservices.context.ThreadLocalContext;
 import com.thingworx.entities.utils.EntityUtilities;
 import com.thingworx.relationships.RelationshipTypes;
-import com.thingworx.things.Thing;
 import com.thingworx.things.database.AbstractDatabase;
-import com.thingworx.types.ConfigurationTable;
+import com.thingworx.types.InfoTable;
 import com.thingworx.types.collections.ConfigurationTableCollection;
-import com.thingworx.webservices.context.ThreadLocalContext;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import javax.sql.DataSource;
 
-import twx.core.db.IDatabaseHandler;
-import twx.core.db.model.DBModelManager;
-import twx.core.db.model.DbModel;
+import org.json.JSONObject;
+import org.mozilla.javascript.annotations.JSFunction;
+
+import com.thingworx.types.ConfigurationTable;
+import com.thingworx.entities.RootEntity;
 
 public class DBUtil {
 
@@ -24,7 +30,7 @@ public class DBUtil {
         Object ctx = ThreadLocalContext.getMeContext();
         if (ctx instanceof AbstractDatabase)
             return (AbstractDatabase) ctx;
-        throw new ThingworxRuntimeException("Object : " + ctx + " is not a Database Thing");
+        throw new ThingworxRuntimeException("Object : " + ctx + " is not Database.");
     }
 
     public static AbstractDatabase getAbstractDatabase(String thingName) {
@@ -57,17 +63,43 @@ public class DBUtil {
     }
 
     public static Connection getConnection() throws Exception {
-        return getAbstractDatabase().getConnection();
+        AbstractDatabase abstractDatabase = getAbstractDatabase();
+        if (abstractDatabase != null) {
+            return abstractDatabase.getConnection();
+        }
+        return null;
     }
 
-    public static IDatabaseHandler getDatabaseHandler() throws Exception {
-        // TODO ... change this in future to implement other DBs than SQL-Server ... 
-        return new MsSQLDatabaseHandler( getAbstractDatabase(), getConfiguredApplication() );
+    public static Connection beginTransaction() throws Exception {
+        AbstractDatabase abstractDatabase = getAbstractDatabase();
+        abstractDatabase.beginTransaction();
+        return abstractDatabase.getConnection();
     }
-  
-    public static DbModel getDBModel() throws Exception {
-        // TODO ... change this in future to implement other DBs than SQL-Server ... 
-        return DBModelManager.getModel( getConfiguredApplication() );
+
+    public static void endTransaction(Connection conn) throws Exception {
+        AbstractDatabase abstractDatabase = getAbstractDatabase();
+        if (!conn.getAutoCommit()) {
+            abstractDatabase.commit(conn);
+        }
+        abstractDatabase.endTransaction(conn);
+    }
+
+    public static void commit(Connection conn) throws Exception {
+        AbstractDatabase abstractDatabase = getAbstractDatabase();
+        if (!conn.getAutoCommit()) {
+            abstractDatabase.commit(conn);
+        }
+    }
+
+    public static void rollback(Connection conn) throws Exception {
+        AbstractDatabase abstractDatabase = getAbstractDatabase();
+        if (!conn.getAutoCommit()) {
+            abstractDatabase.rollback(conn);
+        }
+    }
+
+    public static DatabaseMetaData getMetaData() throws Exception {
+        return getConnection().getMetaData();
     }
 
     public static String getConfiguredKey() throws Exception {
@@ -126,4 +158,31 @@ public class DBUtil {
         }
         return configValue;
     }
+
+    public static JSONObject getSpec(Connection conn) throws Exception {
+        JSONObject obj = new JSONObject();
+        var meta = conn.getMetaData();
+        obj.put("dbProductName", meta.getDatabaseProductName());
+        obj.put("dbProductVersion", meta.getDatabaseProductVersion());
+        obj.put("dbDriverName", meta.getDriverName());
+        obj.put("dbDriverVersion", meta.getDriverVersion());
+        return obj;
+    }
+
+    public static String getCatalog(Connection conn) throws Exception {
+        return conn.getCatalog();
+    }
+
+    public static String getSchemas(Connection conn) throws Exception {
+        return "";
+    }
+
+    public static String getTables() throws Exception {
+        return "";
+    }
+
+    public static String getColumns() throws Exception {
+        return "";
+    }
+
 }
