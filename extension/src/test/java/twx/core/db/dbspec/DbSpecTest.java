@@ -58,7 +58,7 @@ public class DbSpecTest {
         class afterSchemaAdd {
             @BeforeEach
             void addSchemas() {
-                sut.addDefaultSchema();
+                // sut.addDefaultSchema();
                 sut.addSchema("Test");
             }
 
