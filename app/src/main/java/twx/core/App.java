@@ -33,19 +33,15 @@ public class App {
         logger.info("---------- Start-App ----------");
         Connection con = null;
         try {
-            app.test_2();
             DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
             con = DriverManager.getConnection(DB_URL, USER, PASS);
-/*
-            con.setAutoCommit(false);
-
-            IDatabaseHandler twxDB = new MsSQLDatabaseHandler();
-
-            var model = twxDB.queryModelFromDB(con);
+            IDatabaseHandler handler = new MsSQLDatabaseHandler(con, "TWX_DATA"); // MsSQLDatabaseHandler
+            var model = handler.queryModel();
             logger.info(model.toJSON().toString(2));
-*/
         } catch (SQLException e) {
             printSQLException(e);
+        } catch (Exception e) {
+            logger.error("Exception: " + e.toString() );
         } finally {
             if (con != null) {
                 try {
