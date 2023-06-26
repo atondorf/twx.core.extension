@@ -6,7 +6,7 @@
     <Things>
         <Thing
             aspect.isEditableExtensionObject="true"
-         aspect.isExtension="true"
+            aspect.isExtension="true"
             description=""
             documentationContent=""
             effectiveThingPackage="SQLThingPackage"
@@ -97,7 +97,7 @@
                                 name="isTransactional"
                                 ordinal="0"></FieldDefinition>
                             <FieldDefinition
-                                aspect.defaultValue="ThingworxPersistenceProvider"
+                                aspect.defaultValue="DataPersistenceProvider"
                                 aspect.friendlyName="Persistence Provider Name"
                                 baseType="PERSISTENCEPROVIDERNAME"
                                 description="The Persistence Provider from which to retrieve connections"
@@ -110,7 +110,7 @@
                             <isTransactional>false</isTransactional>
                             <persistenceProviderName>
                             <![CDATA[
-                            ThingworxPersistenceProvider
+                            DataPersistenceProvider
                             ]]>
                             </persistenceProviderName>
                         </Row>
@@ -161,67 +161,67 @@
                         <ParameterDefinitions></ParameterDefinitions>
                     </ServiceDefinition>
                     <ServiceDefinition
-                     aspect.isAsync="false"
-                     category=""
-                     description=""
-                     isAllowOverride="false"
-                     isLocalOnly="false"
-                     isOpen="false"
-                     isPrivate="false"
-                     name="Test_DBConnection">
+                        aspect.isAsync="false"
+                        category=""
+                        description=""
+                        isAllowOverride="false"
+                        isLocalOnly="false"
+                        isOpen="false"
+                        isPrivate="false"
+                        name="Test_DBConnection">
                         <ResultType
-                         baseType="INFOTABLE"
-                         description=""
-                         name="result"
-                         ordinal="0"></ResultType>
+                            baseType="INFOTABLE"
+                            description=""
+                            name="result"
+                            ordinal="0"></ResultType>
                         <ParameterDefinitions></ParameterDefinitions>
                     </ServiceDefinition>
                     <ServiceDefinition
-                     aspect.isAsync="false"
-                     category=""
-                     description=""
-                     isAllowOverride="false"
-                     isLocalOnly="false"
-                     isOpen="false"
-                     isPrivate="false"
-                     name="Test_DBInfo">
+                        aspect.isAsync="false"
+                        category=""
+                        description=""
+                        isAllowOverride="false"
+                        isLocalOnly="false"
+                        isOpen="false"
+                        isPrivate="false"
+                        name="Test_DBInfo">
                         <ResultType
-                         baseType="JSON"
-                         description=""
-                         name="result"
-                         ordinal="0"></ResultType>
+                            baseType="JSON"
+                            description=""
+                            name="result"
+                            ordinal="0"></ResultType>
                         <ParameterDefinitions></ParameterDefinitions>
                     </ServiceDefinition>
                     <ServiceDefinition
-                     aspect.isAsync="false"
-                     category=""
-                     description=""
-                     isAllowOverride="false"
-                     isLocalOnly="false"
-                     isOpen="false"
-                     isPrivate="false"
-                     name="Test_DBInsert">
+                        aspect.isAsync="false"
+                        category=""
+                        description=""
+                        isAllowOverride="false"
+                        isLocalOnly="false"
+                        isOpen="false"
+                        isPrivate="false"
+                        name="Test_DBInsert">
                         <ResultType
-                         baseType="INTEGER"
-                         description=""
-                         name="result"
-                         ordinal="0"></ResultType>
+                            baseType="INTEGER"
+                            description=""
+                            name="result"
+                            ordinal="0"></ResultType>
                         <ParameterDefinitions></ParameterDefinitions>
                     </ServiceDefinition>
                     <ServiceDefinition
-                     aspect.isAsync="false"
-                     category=""
-                     description=""
-                     isAllowOverride="false"
-                     isLocalOnly="false"
-                     isOpen="false"
-                     isPrivate="false"
-                     name="Test_DBPrepared">
+                        aspect.isAsync="false"
+                        category=""
+                        description=""
+                        isAllowOverride="false"
+                        isLocalOnly="false"
+                        isOpen="false"
+                        isPrivate="false"
+                        name="Test_DBPrepared">
                         <ResultType
-                         baseType="INFOTABLE"
-                         description=""
-                         name="result"
-                         ordinal="0"></ResultType>
+                            baseType="INFOTABLE"
+                            description=""
+                            name="result"
+                            ordinal="0"></ResultType>
                         <ParameterDefinitions></ParameterDefinitions>
                     </ServiceDefinition>
                 </ServiceDefinitions>
@@ -266,23 +266,23 @@
                         </ConfigurationTables>
                     </ServiceImplementation>
                     <ServiceImplementation
-                     description=""
-                     handlerName="Script"
-                     name="Test_DBConnection">
+                        description=""
+                        handlerName="Script"
+                        name="Test_DBConnection">
                         <ConfigurationTables>
                             <ConfigurationTable
-                             dataShapeName=""
-                             description=""
-                             isMultiRow="false"
-                             name="Script"
-                             ordinal="0">
+                                dataShapeName=""
+                                description=""
+                                isMultiRow="false"
+                                name="Script"
+                                ordinal="0">
                                 <DataShape>
                                     <FieldDefinitions>
                                         <FieldDefinition
-                                         baseType="STRING"
-                                         description="code"
-                                         name="code"
-                                         ordinal="0"></FieldDefinition>
+                                            baseType="STRING"
+                                            description="code"
+                                            name="code"
+                                            ordinal="0"></FieldDefinition>
                                     </FieldDefinitions>
                                 </DataShape>
                                 <Rows>
@@ -330,23 +330,23 @@
                         </ConfigurationTables>
                     </ServiceImplementation>
                     <ServiceImplementation
-                     description=""
-                     handlerName="Script"
-                     name="Test_DBInfo">
+                        description=""
+                        handlerName="Script"
+                        name="Test_DBInfo">
                         <ConfigurationTables>
                             <ConfigurationTable
-                             dataShapeName=""
-                             description=""
-                             isMultiRow="false"
-                             name="Script"
-                             ordinal="0">
+                                dataShapeName=""
+                                description=""
+                                isMultiRow="false"
+                                name="Script"
+                                ordinal="0">
                                 <DataShape>
                                     <FieldDefinitions>
                                         <FieldDefinition
-                                         baseType="STRING"
-                                         description="code"
-                                         name="code"
-                                         ordinal="0"></FieldDefinition>
+                                            baseType="STRING"
+                                            description="code"
+                                            name="code"
+                                            ordinal="0"></FieldDefinition>
                                     </FieldDefinitions>
                                 </DataShape>
                                 <Rows>
@@ -385,23 +385,23 @@
                         </ConfigurationTables>
                     </ServiceImplementation>
                     <ServiceImplementation
-                     description=""
-                     handlerName="Script"
-                     name="Test_DBInsert">
+                        description=""
+                        handlerName="Script"
+                        name="Test_DBInsert">
                         <ConfigurationTables>
                             <ConfigurationTable
-                             dataShapeName=""
-                             description=""
-                             isMultiRow="false"
-                             name="Script"
-                             ordinal="0">
+                                dataShapeName=""
+                                description=""
+                                isMultiRow="false"
+                                name="Script"
+                                ordinal="0">
                                 <DataShape>
                                     <FieldDefinitions>
                                         <FieldDefinition
-                                         baseType="STRING"
-                                         description="code"
-                                         name="code"
-                                         ordinal="0"></FieldDefinition>
+                                            baseType="STRING"
+                                            description="code"
+                                            name="code"
+                                            ordinal="0"></FieldDefinition>
                                     </FieldDefinitions>
                                 </DataShape>
                                 <Rows>
@@ -448,23 +448,23 @@
                         </ConfigurationTables>
                     </ServiceImplementation>
                     <ServiceImplementation
-                     description=""
-                     handlerName="Script"
-                     name="Test_DBPrepared">
+                        description=""
+                        handlerName="Script"
+                        name="Test_DBPrepared">
                         <ConfigurationTables>
                             <ConfigurationTable
-                             dataShapeName=""
-                             description=""
-                             isMultiRow="false"
-                             name="Script"
-                             ordinal="0">
+                                dataShapeName=""
+                                description=""
+                                isMultiRow="false"
+                                name="Script"
+                                ordinal="0">
                                 <DataShape>
                                     <FieldDefinitions>
                                         <FieldDefinition
-                                         baseType="STRING"
-                                         description="code"
-                                         name="code"
-                                         ordinal="0"></FieldDefinition>
+                                            baseType="STRING"
+                                            description="code"
+                                            name="code"
+                                            ordinal="0"></FieldDefinition>
                                     </FieldDefinitions>
                                 </DataShape>
                                 <Rows>

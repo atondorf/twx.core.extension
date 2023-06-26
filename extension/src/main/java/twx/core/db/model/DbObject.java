@@ -12,7 +12,7 @@ import org.json.JSONArray;
 public class DbObject<ParentType extends DbObject<?>> {
   protected ParentType parent;
 
-  protected final String name;
+  protected String name;
   protected String description;
 
   protected DbObject(ParentType parent, String name) {
@@ -47,13 +47,20 @@ public class DbObject<ParentType extends DbObject<?>> {
     return this.name;
   }
 
+  public void setName(String name) {
+    this.name = name;
+  }
+
   public String getFullName() {
     String name = getName();
     String prefix = (!(this.isRoot()) ? getParent().getFullName() : null);
     if (name == null) {
       name = prefix;
     } else if (prefix != null) {
-      name = prefix + "." + name;
+      if( name.contains(".") )
+        name = prefix + ".[" + name + "]";
+      else
+        name = prefix + "." + name;
     }
     return name;
   }
