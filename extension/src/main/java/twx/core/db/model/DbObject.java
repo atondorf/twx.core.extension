@@ -1,15 +1,9 @@
 package twx.core.db.model;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.LinkedHashMap;
 import org.json.JSONObject;
-import org.json.JSONArray;
 
 public class DbObject<ParentType extends DbObject<?>> {
+
   protected ParentType parent;
 
   protected String name;
@@ -79,5 +73,11 @@ public class DbObject<ParentType extends DbObject<?>> {
     if (description != null)
       json.put("description", this.description);
     return json;
+  }
+
+  public DbObject<?> fromJSON(JSONObject json) {
+    this.name = json.getString("name");
+    this.description = json.getString("description");
+    return this;
   }
 }

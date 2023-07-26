@@ -1,19 +1,13 @@
 package twx.core.utils.scriptable;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.annotations.JSConstructor;
 import org.mozilla.javascript.annotations.JSFunction;
-import org.mozilla.javascript.annotations.JSGetter;
-
-import com.thingworx.dsl.utils.ValueConverter;
-import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.TimeZone;
-
-import org.json.JSONArray;
 
 public class MultiTimer extends ScriptableObject {
     private static final long serialVersionUID = 1L; 
@@ -49,7 +43,8 @@ public class MultiTimer extends ScriptableObject {
 
     @JSFunction
     public void reset() {
-        var json = new JSONArray();
+        array = new JSONArray();
+        this.push("Reset");
     }
 
     @JSFunction

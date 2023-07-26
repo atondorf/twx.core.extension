@@ -1,29 +1,28 @@
 package twx.core.utils;
 
-import ch.qos.logback.classic.Logger;
-import twx.core.db.scriptable.QueryBuilder;
-import twx.core.utils.scriptable.MultiTimer;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
-import com.thingworx.logging.LogUtilities;
-import com.thingworx.common.utils.DateUtilities;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
+import org.mozilla.javascript.NativeObject;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
+
 import com.thingworx.dsl.engine.DSLConverter;
 import com.thingworx.dsl.engine.adapters.ThingworxEntityAdapter;
+import com.thingworx.logging.LogUtilities;
 import com.thingworx.security.authentication.AuthenticationUtilities;
 import com.thingworx.types.BaseTypes;
 import com.thingworx.types.primitives.StringPrimitive;
 
-import java.util.Arrays;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.text.MessageFormat;
-import java.util.LinkedList;
-import java.util.List;
-import org.mozilla.javascript.*;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
+import ch.qos.logback.classic.Logger;
 import twx.core.utils.scriptable.MultiTimer;
 
 public class UtilScriptLibrary {
@@ -94,7 +93,6 @@ public class UtilScriptLibrary {
     if (!(args[0] instanceof String))
       throw new IllegalArgumentException("The first exc_format argument must be a format string");
       
-    var format_str = (String) args[0];
     var array = Arrays.copyOfRange(args, 1, args.length);
     var message = MessageFormat.format((String) args[0], array);
 
@@ -110,7 +108,6 @@ public class UtilScriptLibrary {
     if (!(args[0] instanceof String))
       throw new IllegalArgumentException("The first exc_strFormat argument must be a format string");
 
-    var format_str = (String) args[0];
     var array = Arrays.copyOfRange(args, 1, args.length);
     var message = MessageFormat.format((String) args[0], array);
 
