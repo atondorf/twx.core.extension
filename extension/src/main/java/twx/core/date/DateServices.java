@@ -124,10 +124,7 @@ public class DateServices extends Resource {
             @ThingworxServiceParameter(name = "dt", description = "", baseType = "DATETIME", aspects = {"isRequired:true" }) DateTime dt,
             @ThingworxServiceParameter(name = "tzId", description = "", baseType = "STRING") String tzId
     ) {
-        long current = System.currentTimeMillis();
         DateTimeZone tz = _defaultTimeZone;
-        if (dt != null)
-            current = dt.getMillis();
         if (tzId != null && tzId != "")
             tz = DateTimeZone.forID(tzId);
         return dt.withZone(tz).toString();
@@ -140,10 +137,7 @@ public class DateServices extends Resource {
             @ThingworxServiceParameter(name = "fmt", description = "", baseType = "STRING", aspects = {"isRequired:true" }) String fmt,
             @ThingworxServiceParameter(name = "tzId", description = "", baseType = "STRING") String tzId
     ) {
-        long current = System.currentTimeMillis();
         DateTimeZone tz = _defaultTimeZone;
-        if (dt != null)
-            current = dt.getMillis();
         if (tzId != null && tzId != "")
             tz = DateTimeZone.forID(tzId);
         return dt.withZone(tz).toString(fmt);

@@ -1,33 +1,22 @@
 package twx.core.db.imp;
 
+import java.sql.Connection;
+
+import javax.sql.DataSource;
+
 import com.thingworx.common.exceptions.ThingworxRuntimeException;
+import com.thingworx.entities.RootEntity;
 import com.thingworx.entities.utils.EntityUtilities;
+import com.thingworx.relationships.RelationshipTypes;
 import com.thingworx.things.Thing;
+import com.thingworx.things.database.AbstractDatabase;
+import com.thingworx.types.ConfigurationTable;
+import com.thingworx.types.collections.ConfigurationTableCollection;
 import com.thingworx.webservices.context.ThreadLocalContext;
 
 import twx.core.db.IDatabaseHandler;
 import twx.core.db.model.DBModelManager;
 import twx.core.db.model.DbModel;
-
-import com.thingworx.common.exceptions.ThingworxRuntimeException;
-import com.thingworx.webservices.context.ThreadLocalContext;
-import com.thingworx.entities.utils.EntityUtilities;
-import com.thingworx.relationships.RelationshipTypes;
-import com.thingworx.things.database.AbstractDatabase;
-import com.thingworx.types.InfoTable;
-import com.thingworx.types.collections.ConfigurationTableCollection;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import javax.sql.DataSource;
-
-import org.json.JSONObject;
-import org.mozilla.javascript.annotations.JSFunction;
-
-import com.thingworx.types.ConfigurationTable;
-import com.thingworx.entities.RootEntity;
 
 public class DBUtil {
 
@@ -78,7 +67,7 @@ public class DBUtil {
   
     public static DbModel getDBModel() throws Exception {
         // TODO ... change this in future to implement other DBs than SQL-Server ... 
-        return DBModelManager.getDBModel( getConfiguredApplication() );
+        return DBModelManager.getModel( getConfiguredApplication() );
     }
 
     public static String getConfiguredKey() throws Exception {

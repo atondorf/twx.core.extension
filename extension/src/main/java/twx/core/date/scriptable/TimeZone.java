@@ -1,15 +1,10 @@
 package twx.core.date.scriptable;
 
+import org.joda.time.DateTimeZone;
+import org.mozilla.javascript.IdScriptableObject;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.annotations.JSConstructor;
 import org.mozilla.javascript.annotations.JSFunction;
-import org.mozilla.javascript.annotations.JSGetter;
-import org.mozilla.javascript.IdScriptableObject;
-
-import java.util.Date;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
 public class TimeZone extends ScriptableObject {
     
