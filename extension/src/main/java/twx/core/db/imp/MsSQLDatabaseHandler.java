@@ -1,10 +1,8 @@
 package twx.core.db.imp;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import com.thingworx.things.database.AbstractDatabase;

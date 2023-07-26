@@ -1,21 +1,15 @@
 package twx.core.db;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
+
+import com.thingworx.logging.LogUtilities;
 import com.thingworx.metadata.annotations.ThingworxServiceDefinition;
 import com.thingworx.metadata.annotations.ThingworxServiceParameter;
 import com.thingworx.metadata.annotations.ThingworxServiceResult;
-import com.thingworx.things.database.AbstractDatabase;
-import com.thingworx.logging.LogUtilities;
 
 import twx.core.db.imp.DBUtil;
-import twx.core.db.imp.MsSQLDatabaseHandler;
-import twx.core.db.model.DBModelManager;
 import twx.core.db.model.DbModel;
 import twx.core.db.model.DbSchema;
 

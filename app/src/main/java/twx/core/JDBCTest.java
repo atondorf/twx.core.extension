@@ -5,11 +5,11 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import com.microsoft.sqlserver.jdbc.SQLServerDriver;
 
 import com.healthmarketscience.sqlbuilder.CreateTableQuery;
-import com.healthmarketscience.sqlbuilder.dbspec.*;
-import com.healthmarketscience.sqlbuilder.dbspec.basic.*;
+import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSchema;
+import com.healthmarketscience.sqlbuilder.dbspec.basic.DbSpec;
+import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable;
 
 public class JDBCTest {
     static final String DB_URL = "jdbc:sqlserver://localhost:1433;database=twsys;";

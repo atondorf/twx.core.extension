@@ -2,22 +2,16 @@ package twx.core.db.imp;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-import twx.core.db.IDatabaseHandler;
-import twx.core.db.model.*;
-
-import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.thingworx.things.database.AbstractDatabase;
+
+import twx.core.db.IDatabaseHandler;
+import twx.core.db.model.DBModelManager;
+import twx.core.db.model.DbModel;
 
 public class AbstractDatabaseHandler implements IDatabaseHandler {
     final static Logger logger = LoggerFactory.getLogger(AbstractDatabaseHandler.class);
@@ -73,7 +67,7 @@ public class AbstractDatabaseHandler implements IDatabaseHandler {
 
     @Override
     public DbModel getModel()  {
-        return DBModelManager.getDBModel(this.application);
+        return DBModelManager.getModel(this.application);
     }
 
     @Override

@@ -1,15 +1,15 @@
 package twx.core.imp;
 
-import ch.qos.logback.classic.Logger;
-import com.thingworx.logging.LogUtilities;
+import java.util.Optional;
+
 import com.thingworx.common.exceptions.ThingworxRuntimeException;
-import com.thingworx.webservices.context.ThreadLocalContext;
 import com.thingworx.entities.utils.EntityUtilities;
+import com.thingworx.logging.LogUtilities;
 import com.thingworx.relationships.RelationshipTypes;
 import com.thingworx.things.Thing;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import com.thingworx.webservices.context.ThreadLocalContext;
+
+import ch.qos.logback.classic.Logger;
 
 public class ThingUtil {
     private static Logger _logger = LogUtilities.getInstance().getApplicationLogger(ThingUtil.class);
