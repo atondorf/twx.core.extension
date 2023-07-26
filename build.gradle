@@ -4,8 +4,9 @@ plugins {
 }
    
 jgitver {
-    autoIncrementPatch true
-    useDirty false
+    autoIncrementPatch   true
+    useDirty             false
+    nonQualifierBranches "main"
 }
 
 rootProject.ext {
@@ -47,6 +48,7 @@ tasks.register('versionInfo') {
         println 'Patch:   ' + rootProject.ext.current_version_patch
         println 'Distan:  ' + rootProject.ext.commit_distance
         println 'Calc:    ' + rootProject.ext.calculated_version
+        println 'Calc-S:  ' + rootProject.ext.calculated_version - "-*"
 
         println 'N_Major: ' + rootProject.ext.next_major_version
         println 'N_Minor: ' + rootProject.ext.next_minor_version
