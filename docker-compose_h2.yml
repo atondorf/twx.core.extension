@@ -1,0 +1,9 @@
+version: "3"
+services:
+  twx:
+    # build: ./IMG_TWX_9_SQL
+    image: twx94_h2
+    ports:
+      - "8080:8080"
+
+
