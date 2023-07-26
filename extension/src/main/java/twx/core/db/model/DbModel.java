@@ -1,15 +1,9 @@
 package twx.core.db.model;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -105,6 +99,15 @@ public class DbModel extends DbObject<DbObject<?>> {
         json.put("application", application );
         json.put("schemas", array);
         return json;
+    }
+
+    @Override
+    public DbModel fromJSON(JSONObject json) {
+        super.fromJSON(json);
+        this.application = json.optString("application");
+        JSONArray schemas = json.optJSONArray("schemas");
+        
+        return this;
     }
 
     @Override

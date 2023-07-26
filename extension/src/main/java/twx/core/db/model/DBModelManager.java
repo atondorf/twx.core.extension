@@ -1,24 +1,21 @@
 package twx.core.db.model;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import twx.core.concurrency.imp.AtomicManager;
+import org.json.JSONObject;
+
 import twx.core.db.IDatabaseHandler;
 
 public class DBModelManager {
 
-    // the singleton instance ...
-    private static final DBModelManager SINGLETON = new DBModelManager();
-
+    // region Handling of cached Model ... 
+    // --------------------------------------------------------------------------------
     private static final ConcurrentMap<String, DbModel> modelMap = new ConcurrentHashMap<String, DbModel>();
 
-    public static DbModel getDBModel(String application) {
+    public static DbModel getModel(String application) {
         DbModel model = modelMap.get(application);
         if (model == null) {
             model = modelMap.computeIfAbsent(application, k -> new DbModel(application));
@@ -26,6 +23,14 @@ public class DBModelManager {
         return model;
     }
 
+    public static void addTable(JSONObject dbTableInfo) {
+
+    }
+
+
+    // endregion 
+    // region TWX-Services Metadata Configuration ... 
+    // --------------------------------------------------------------------------------
     public static DbModel queryModel(IDatabaseHandler handler) throws SQLException {
         String catalog = handler.getCatalog();
         String application = handler.getApplication();
@@ -115,5 +120,5 @@ public class DBModelManager {
         }
         return dbTable;
     }
-
+    // endregion 
 }
