@@ -3,7 +3,7 @@
 		<Resource
 			name="SysUtilServices"
 			className="twx.core.utils.SysUtilServices"
-			description=""
+			description="Ressource providing basic Utils for System Analysis and Debugging, e.g. Look inside EventQueue"
 			projectName="TWX.Core"
 			tags="TWX.Core:Service"
 			aspect.isEditableExtensionObject="false"
