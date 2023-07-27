@@ -4,26 +4,20 @@ import java.lang.reflect.Field;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import org.slf4j.Logger;
 
 import com.thingworx.common.utils.MonitoredThreadPoolExecutor;
 import com.thingworx.data.util.InfoTableInstanceFactory;
-import com.thingworx.entities.utils.EntityUtilities;
 import com.thingworx.logging.LogUtilities;
 import com.thingworx.metadata.annotations.ThingworxServiceDefinition;
 import com.thingworx.metadata.annotations.ThingworxServiceResult;
-import com.thingworx.relationships.RelationshipTypes.ThingworxRelationshipTypes;
 import com.thingworx.resources.Resource;
-import com.thingworx.system.subsystems.Subsystem;
 import com.thingworx.system.subsystems.eventprocessing.EventProcessingSubsystem;
 import com.thingworx.system.subsystems.eventprocessing.EventRouter;
 import com.thingworx.things.events.ThingworxEvent;
 import com.thingworx.types.InfoTable;
-import com.thingworx.types.collections.ValueCollection;
-import com.thingworx.types.primitives.StringPrimitive;
 
 public class SysUtilServices extends Resource {
     private static final long serialVersionUID = -8659764339606932258L;
@@ -59,6 +53,7 @@ public class SysUtilServices extends Resource {
     @ThingworxServiceDefinition(name = "GetEventQueueContent", description = "Returns all entries of the event queue as Infotable", category = "TWX.EventQueue", isAllowOverride = false, aspects = {"isAsync:false" })
 	@ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
 	public InfoTable GetEventQueueContent() throws Exception {
+        _logger.trace("Entering Service: GetEventQueueContent");
         // create the result Infotable ... 
         InfoTable   resulTab = InfoTableInstanceFactory.createInfoTableFromDataShape( ThingworxEvent.getDataShape() );
         
@@ -75,6 +70,8 @@ public class SysUtilServices extends Resource {
             ThingworxEvent event = (ThingworxEvent)evFiled.get(evInstance);
             resulTab.addRow( event.toValueCollection() );
         }
+        
+        _logger.trace("Exiting Service: GetEventQueueContent");
 		return resulTab;
 	}
 

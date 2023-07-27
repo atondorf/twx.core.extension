@@ -15,7 +15,7 @@ public class DbObject<ParentType extends DbObject<?>> {
   }
 
   protected void takeOwnerShip(DbObject<?> parent) {
-    this.parent = (ParentType) parent;
+    this.parent = (ParentType)parent;
   }
 
   public boolean isRoot() {
