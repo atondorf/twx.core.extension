@@ -1,16 +1,15 @@
 package twx.core.concurrency;
 
-import org.json.JSONObject;
-
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Function;
-import org.mozilla.javascript.NativeObject;
-import org.mozilla.javascript.NativeFunction;
-import org.mozilla.javascript.Scriptable;
-import org.mozilla.javascript.ScriptableObject;
-
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
+
+import org.json.JSONObject;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
+import org.mozilla.javascript.NativeFunction;
+import org.mozilla.javascript.NativeObject;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
 
 import com.thingworx.dsl.engine.DSLConverter;
 import com.thingworx.dsl.utils.ValueConverter;
@@ -18,11 +17,10 @@ import com.thingworx.security.authentication.AuthenticationUtilities;
 import com.thingworx.types.BaseTypes;
 import com.thingworx.types.primitives.StringPrimitive;
 
+import twx.core.concurrency.imp.AtomicManager;
 import twx.core.concurrency.imp.MutexManager;
 import twx.core.concurrency.imp.QueueManager;
-import twx.core.concurrency.imp.AtomicManager;
 import twx.core.concurrency.scriptable.Atomic;
-import twx.core.db.scriptable.DBConnection;
 
 public class ConcurrencyScriptLibrary {
 
