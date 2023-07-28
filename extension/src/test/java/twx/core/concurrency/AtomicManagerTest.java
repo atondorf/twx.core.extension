@@ -3,14 +3,13 @@
  */
 package twx.core.concurrency;
 
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import twx.core.concurrency.imp.*;
+import twx.core.concurrency.imp.AtomicManager;
 
 class AtomicManagerTest {
 	AtomicManager 	sut = AtomicManager.getInstance();

@@ -1,5 +1,9 @@
 package twx.core.date;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.slf4j.Logger;
+import com.thingworx.data.util.InfoTableInstanceFactory;
 import com.thingworx.logging.LogUtilities;
 import com.thingworx.metadata.annotations.ThingworxServiceDefinition;
 import com.thingworx.metadata.annotations.ThingworxServiceParameter;
@@ -8,19 +12,30 @@ import com.thingworx.resources.Resource;
 import com.thingworx.types.InfoTable;
 import com.thingworx.types.collections.ValueCollection;
 import com.thingworx.types.primitives.StringPrimitive;
-import com.thingworx.data.util.InfoTableInstanceFactory;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.slf4j.Logger;
 
 public class DateServices extends Resource {
 
+    // Properties 
+    // --------------------------------------------------------------------------------
+    private static final long serialVersionUID = -1L;
     private static Logger _logger = LogUtilities.getInstance().getApplicationLogger(DateServices.class);
-    public static DateTimeZone _defaultTimeZone = DateTimeZone.getDefault();
 
-    @ThingworxServiceDefinition(name = "getAvailableTimeZones", description = "", category = "", isAllowOverride = false, aspects = {"isAsync:false" })
-    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = {"isEntityDataShape:true", "dataShape:GenericStringList" })
+    private  static DateTimeZone _defaultTimeZone = DateTimeZone.getDefault();
+
+    // Internal Helpers 
+    // --------------------------------------------------------------------------------
+    public static DateTimeZone get_defaultTimeZone() {
+        return _defaultTimeZone;
+    }
+
+    public static void set_defaultTimeZone(DateTimeZone _defaultTimeZone) {
+        DateServices._defaultTimeZone = _defaultTimeZone;
+    }
+    
+    // Thingworx Services
+    // --------------------------------------------------------------------------------
+    @ThingworxServiceDefinition(name = "getAvailableTimeZones", description = "", category = "", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true", "dataShape:GenericStringList" })
     public InfoTable getAvailableTimeZones() throws Exception {
         InfoTable it = InfoTableInstanceFactory.createInfoTableFromDataShape("GenericStringList");
         for (var id : DateTimeZone.getAvailableIDs()) {
@@ -31,25 +46,25 @@ public class DateServices extends Resource {
         return it;
     }
 
-    @ThingworxServiceDefinition(name = "getDefaultTimeZone", description = "", category = "", isAllowOverride = false, aspects = {"isAsync:false" })
+    @ThingworxServiceDefinition(name = "getDefaultTimeZone", description = "", category = "", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "STRING", aspects = {})
     public String getDefaultTimeZone() {
         return DateServices._defaultTimeZone.getID();
     }
 
-    @ThingworxServiceDefinition(name = "setDefaultTimeZone", description = "", category = "", isAllowOverride = false, aspects = {"isAsync:false" })
+    @ThingworxServiceDefinition(name = "setDefaultTimeZone", description = "", category = "", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
     public void setDefaultTimeZone(
-            @ThingworxServiceParameter(name = "tz", description = "", baseType = "STRING", aspects = {"isRequired:true" }) String tz) {
+            @ThingworxServiceParameter(name = "tz", description = "", baseType = "STRING", aspects = { "isRequired:true" }) String tz) {
         DateServices._defaultTimeZone = DateTimeZone.forID(tz);
+        _logger.trace("DefaultTimeZone set to: " + DateServices._defaultTimeZone.getID() );
     }
 
-    @ThingworxServiceDefinition(name = "getTimeZoneOffset", description = "", category = "", isAllowOverride = false, aspects = {"isAsync:false" })
+    @ThingworxServiceDefinition(name = "getTimeZoneOffset", description = "", category = "", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "Offset to UTC in ms", baseType = "INTEGER", aspects = {})
     public Integer getTimeZoneOffset(
             @ThingworxServiceParameter(name = "dt", description = "Timestamp, if not given it's now()", baseType = "DATETIME") DateTime dt,
-            @ThingworxServiceParameter(name = "tzId", description = "Id of the timezone, if not given selects default.", baseType = "STRING") String tzId
-    ) {
+            @ThingworxServiceParameter(name = "tzId", description = "Id of the timezone, if not given selects default.", baseType = "STRING") String tzId) {
         long current = System.currentTimeMillis();
         DateTimeZone tz = _defaultTimeZone;
         if (dt != null)
@@ -59,7 +74,7 @@ public class DateServices extends Resource {
         return tz.getOffset(current);
     }
 
-    @ThingworxServiceDefinition(name = "hasTimeZoneTransition", description = "", category = "", isAllowOverride = false, aspects = {"isAsync:false" })
+    @ThingworxServiceDefinition(name = "hasTimeZoneTransition", description = "", category = "", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "BOOLEAN", aspects = {})
     public Boolean hasTimeZoneTransition(
             @ThingworxServiceParameter(name = "tzId", description = "", baseType = "STRING") String tzId) {
@@ -73,27 +88,25 @@ public class DateServices extends Resource {
         return false;
     }
 
-    @ThingworxServiceDefinition(name = "getTimeZoneIsStdTransition", description = "", category = "", isAllowOverride = false, aspects = {"isAsync:false" })
+    @ThingworxServiceDefinition(name = "getTimeZoneIsStdTransition", description = "", category = "", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "BOOLEAN", aspects = {})
     public Boolean getTimeZoneIsStdTransition(
             @ThingworxServiceParameter(name = "dt", description = "", baseType = "DATETIME") DateTime dt,
-            @ThingworxServiceParameter(name = "tzId", description = "", baseType = "STRING") String tzId
-    ) {
+            @ThingworxServiceParameter(name = "tzId", description = "", baseType = "STRING") String tzId) {
         long            current = System.currentTimeMillis();
         DateTimeZone    tz = _defaultTimeZone;
-        if( dt != null ) 
+        if (dt != null)
             current = dt.getMillis();
-        if( tzId != null && tzId != "" )
-            tz = DateTimeZone.forID( tzId );
-        return tz.isStandardOffset( current );
+        if (tzId != null && tzId != "")
+            tz = DateTimeZone.forID(tzId);
+        return tz.isStandardOffset(current);
     }
 
-    @ThingworxServiceDefinition(name = "getTimeZoneNextTransition", description = "", category = "", isAllowOverride = false, aspects = {"isAsync:false" })
+    @ThingworxServiceDefinition(name = "getTimeZoneNextTransition", description = "", category = "", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "DATETIME", aspects = {})
     public DateTime getTimeZoneNextTransition(
             @ThingworxServiceParameter(name = "dt", description = "", baseType = "DATETIME") DateTime dt,
-            @ThingworxServiceParameter(name = "tzId", description = "", baseType = "STRING") String tzId
-    ) {
+            @ThingworxServiceParameter(name = "tzId", description = "", baseType = "STRING") String tzId) {
         long current = System.currentTimeMillis();
         DateTimeZone tz = _defaultTimeZone;
         if (dt != null)
@@ -103,12 +116,11 @@ public class DateServices extends Resource {
         return new DateTime(tz.nextTransition(current));
     }
 
-    @ThingworxServiceDefinition(name = "getTimeZonePrevTransition", description = "", category = "", isAllowOverride = false, aspects = {"isAsync:false" })
+    @ThingworxServiceDefinition(name = "getTimeZonePrevTransition", description = "", category = "", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "DATETIME", aspects = {})
     public DateTime getTimeZonePrevTransition(
             @ThingworxServiceParameter(name = "dt", description = "", baseType = "DATETIME") DateTime dt,
-            @ThingworxServiceParameter(name = "tzId", description = "", baseType = "STRING") String tzId
-    ) {
+            @ThingworxServiceParameter(name = "tzId", description = "", baseType = "STRING") String tzId) {
         long current = System.currentTimeMillis();
         DateTimeZone tz = _defaultTimeZone;
         if (dt != null)
@@ -118,32 +130,24 @@ public class DateServices extends Resource {
         return new DateTime(tz.nextTransition(current));
     }
 
-    @ThingworxServiceDefinition(name = "formatTimeZoneISO", description = "", category = "", isAllowOverride = false, aspects = {"isAsync:false" })
+    @ThingworxServiceDefinition(name = "formatTimeZoneISO", description = "", category = "", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "STRING", aspects = {})
     public String formatTimeZoneISO(
-            @ThingworxServiceParameter(name = "dt", description = "", baseType = "DATETIME", aspects = {"isRequired:true" }) DateTime dt,
-            @ThingworxServiceParameter(name = "tzId", description = "", baseType = "STRING") String tzId
-    ) {
-        long current = System.currentTimeMillis();
+            @ThingworxServiceParameter(name = "dt", description = "", baseType = "DATETIME", aspects = { "isRequired:true" }) DateTime dt,
+            @ThingworxServiceParameter(name = "tzId", description = "", baseType = "STRING") String tzId) {
         DateTimeZone tz = _defaultTimeZone;
-        if (dt != null)
-            current = dt.getMillis();
         if (tzId != null && tzId != "")
             tz = DateTimeZone.forID(tzId);
         return dt.withZone(tz).toString();
     }
 
-    @ThingworxServiceDefinition(name = "formatTimeZone", description = "", category = "", isAllowOverride = false, aspects = {"isAsync:false" })
+    @ThingworxServiceDefinition(name = "formatTimeZone", description = "", category = "", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "STRING", aspects = {})
     public String formatTimeZone(
-            @ThingworxServiceParameter(name = "dt", description = "", baseType = "DATETIME", aspects = {"isRequired:true" }) DateTime dt,
-            @ThingworxServiceParameter(name = "fmt", description = "", baseType = "STRING", aspects = {"isRequired:true" }) String fmt,
-            @ThingworxServiceParameter(name = "tzId", description = "", baseType = "STRING") String tzId
-    ) {
-        long current = System.currentTimeMillis();
+            @ThingworxServiceParameter(name = "dt", description = "", baseType = "DATETIME", aspects = { "isRequired:true" }) DateTime dt,
+            @ThingworxServiceParameter(name = "fmt", description = "", baseType = "STRING", aspects = { "isRequired:true" }) String fmt,
+            @ThingworxServiceParameter(name = "tzId", description = "", baseType = "STRING") String tzId) {
         DateTimeZone tz = _defaultTimeZone;
-        if (dt != null)
-            current = dt.getMillis();
         if (tzId != null && tzId != "")
             tz = DateTimeZone.forID(tzId);
         return dt.withZone(tz).toString(fmt);
