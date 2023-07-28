@@ -1,14 +1,13 @@
 package twx.core.string;
 
-import java.io.UnsupportedEncodingException;
-import ch.qos.logback.classic.Logger;
-import com.thingworx.logging.LogUtilities;
-import java.util.Arrays;
 import java.text.MessageFormat;
-import org.mozilla.javascript.*;
+import java.util.Arrays;
+
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
+import org.mozilla.javascript.Scriptable;
+
 import com.thingworx.security.authentication.AuthenticationUtilities;
-import com.thingworx.types.BaseTypes;
-import com.thingworx.types.primitives.StringPrimitive;
 
 public class StringScriptLibrary {
 
@@ -27,7 +26,7 @@ public class StringScriptLibrary {
             throw new IllegalArgumentException("Invalid number of arguments in string_format");
         if (!(args[0] instanceof String))
             throw new IllegalArgumentException("The first string_format argument must be a format string");
-        var format_str = (String)args[0];
+        
         var array = Arrays.copyOfRange(args,1,args.length);
         return String.format((String)args[0], array);            
     }
@@ -37,7 +36,7 @@ public class StringScriptLibrary {
             throw new IllegalArgumentException("Invalid number of arguments in string_format");
         if (!(args[0] instanceof String))
             throw new IllegalArgumentException("The first string_format argument must be a format string");
-        var format_str = (String)args[0];
+        
         var array = Arrays.copyOfRange(args,1,args.length);
         return MessageFormat.format((String)args[0], array);            
       }

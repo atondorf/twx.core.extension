@@ -1,178 +1,228 @@
 package twx.core.utils;
 
 import java.lang.reflect.Field;
-import java.util.ConcurrentModificationException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 
 import com.thingworx.common.utils.MonitoredThreadPoolExecutor;
 import com.thingworx.data.util.InfoTableInstanceFactory;
 import com.thingworx.logging.LogUtilities;
+import com.thingworx.metadata.FieldDefinition;
 import com.thingworx.metadata.annotations.ThingworxServiceDefinition;
+import com.thingworx.metadata.annotations.ThingworxServiceParameter;
 import com.thingworx.metadata.annotations.ThingworxServiceResult;
+import com.thingworx.notifications.SubscriberReference;
 import com.thingworx.resources.Resource;
 import com.thingworx.system.subsystems.eventprocessing.EventProcessingSubsystem;
 import com.thingworx.system.subsystems.eventprocessing.EventRouter;
 import com.thingworx.things.events.ThingworxEvent;
+import com.thingworx.types.BaseTypes;
 import com.thingworx.types.InfoTable;
+import com.thingworx.types.collections.ValueCollection;
+import com.thingworx.types.primitives.StringPrimitive;
 
 public class SysUtilServices extends Resource {
     private static final long serialVersionUID = -8659764339606932258L;
 
     private static Logger _logger = LogUtilities.getInstance().getApplicationLogger(SysUtilServices.class);
 
-    // region queue Thingworx Event Queue - Utils 
+    // region queue Thingworx Event Queue - Utils
 
-    protected MonitoredThreadPoolExecutor getEventExecutor()  {
-        // query the queue of EventProcessingSubsystem ... 
-        EventProcessingSubsystem evSubsys = EventProcessingSubsystem.getSubsystemInstance();
-        EventRouter evRouter = evSubsys.getEventRouter();
-        MonitoredThreadPoolExecutor evPoolExecutor = evRouter.getWorkerPool(); 
+    protected EventRouter getEventRouter() {
+        EventProcessingSubsystem evSubSys = EventProcessingSubsystem.getSubsystemInstance();
+        EventRouter evRouter = evSubSys.getEventRouter();
+        return evRouter;
+    }
+
+    protected MonitoredThreadPoolExecutor getEventExecutor() {
+        EventRouter evRouter = this.getEventRouter();
+        MonitoredThreadPoolExecutor evPoolExecutor = evRouter.getWorkerPool();
         return evPoolExecutor;
     }
 
-    protected BlockingQueue<Runnable> getEventQueue()  {
-        MonitoredThreadPoolExecutor evPoolExecutor = this.getEventExecutor(); 
+    protected BlockingQueue<Runnable> getEventQueue() {
+        MonitoredThreadPoolExecutor evPoolExecutor = this.getEventExecutor();
         return evPoolExecutor.getQueue();
     }
 
-    protected BlockingQueue<Runnable> getEventQueue(ThreadPoolExecutor executor)  {
-        return executor.getQueue();
-    }
+    protected InfoTable getInfotableFromEvents(Collection<Runnable> events) throws Exception {
+        // create the result Infotable ...
+        InfoTable evTab = InfoTableInstanceFactory.createInfoTableFromDataShape(ThingworxEvent.getDataShape());
+        evTab.addField(new FieldDefinition("SubscriberReference", BaseTypes.STRING));
 
-    @ThingworxServiceDefinition(name = "GetEventQueueMetrics", description = "Returns all entries of the event queue as Infotable", category = "TWX.EventQueue", isAllowOverride = false, aspects = {"isAsync:false" })
-	@ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
-	public InfoTable GetEventQueueMetrics() throws Exception {
-        MonitoredThreadPoolExecutor evPoolExecutor = this.getEventExecutor();
-        return evPoolExecutor.getThingworxMetrics();
-	}
-
-    @ThingworxServiceDefinition(name = "GetEventQueueContent", description = "Returns all entries of the event queue as Infotable", category = "TWX.EventQueue", isAllowOverride = false, aspects = {"isAsync:false" })
-	@ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
-	public InfoTable GetEventQueueContent() throws Exception {
-        // create the result Infotable ... 
-        InfoTable   resulTab = InfoTableInstanceFactory.createInfoTableFromDataShape( ThingworxEvent.getDataShape() );
-        
-        // query the queue of EventProcessingSubsystem ... 
-        BlockingQueue<Runnable> evq = this.getEventQueue();
-        for (Runnable evInstance : evq) {
-            // queue contains <EventInstance> which implements runnable ... 
+        for (Runnable evInstance : events) {
+            // queue contains <EventInstance> which implements runnable ...
             // but, we want the "private final ThingworxEvent event;"
             // only way to get it is reflection ...
-            Class<?> evInstCls = evInstance.getClass();
-            Field evFiled = evInstCls.getDeclaredField("event");
-            evFiled.setAccessible(true);
-            
-            ThingworxEvent event = (ThingworxEvent)evFiled.get(evInstance);
-            resulTab.addRow( event.toValueCollection() );
-        }
-		return resulTab;
-	}
+            Class<?> evInstanceClass = evInstance.getClass();
+            Field eventField = evInstanceClass.getDeclaredField("event");
+            eventField.setAccessible(true);
+            Field handlerField = evInstanceClass.getDeclaredField("handler");
+            handlerField.setAccessible(true);
 
-	@ThingworxServiceDefinition(name = "PurgeEventQueueContent", description = "Removes all events from the EventQueue", category = "TWX.EventQueue", isAllowOverride = false, aspects = { "isAsync:false" })
-	@ThingworxServiceResult(name = "Result", description = "NUmber of Removed Events", baseType = "LONG", aspects = {})
-	public Long PurgeEventQueueContent() {
-        Long ret = (long) 0;
-        // query the queue of EventProcessingSubsystem ... 
-        BlockingQueue<Runnable> evq = this.getEventQueue();
-        try {
-            Iterator<Runnable> it = evq.iterator();
-            while (it.hasNext()) {
-                Runnable r = it.next();
-                if ( r.getClass().getSimpleName().equals("EventInstance") ) {
-                    it.remove();
-                    ret++;
-                }
+            ThingworxEvent event = (ThingworxEvent) eventField.get(evInstance);
+            SubscriberReference handler = (SubscriberReference) handlerField.get(evInstance);
+
+            ValueCollection evVal = event.toValueCollection();
+            evVal.put("SubscriberReference", new StringPrimitive(handler.toString()));
+            evTab.addRow(evVal);
+        }
+        return evTab;
+    }
+
+    @ThingworxServiceDefinition(name = "GetEventQueueMetrics", description = "Returns all entries of the event queue as Infotable", category = "TWX.EventQueue", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "JSON", aspects = {})
+    public JSONObject GetEventQueueMetrics() throws Exception {
+        JSONObject json = new JSONObject();
+        ThreadPoolExecutor evex = this.getEventExecutor();
+        BlockingQueue<Runnable> evq = evex.getQueue();
+
+        json.put("ActiveCount", evex.getActiveCount());
+        json.put("CompletedTaskCount", evex.getCompletedTaskCount());
+        json.put("CorePoolSize", evex.getCorePoolSize());
+        json.put("LargestPoolSize", evex.getLargestPoolSize());
+        json.put("MaximumPoolSize", evex.getMaximumPoolSize());
+        json.put("PoolSize", evex.getPoolSize());
+        json.put("TaskCount", evex.getTaskCount());
+
+        json.put("QueueSize", evq.size());
+        json.put("QueueRemainCapacity", evq.remainingCapacity());
+
+        return json;
+    }
+
+    @ThingworxServiceDefinition(name = "GetEventQueueContent", description = "Returns all entries of the event queue as Infotable", category = "TWX.EventQueue", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
+    public InfoTable GetEventQueueContent() throws Exception {
+        _logger.trace("Entering Service: GetEventQueueContent");
+
+        BlockingQueue<Runnable> evQueue = this.getEventQueue();
+        InfoTable evTab = this.getInfotableFromEvents(evQueue);
+
+        _logger.trace("Exiting Service: GetEventQueueContent");
+        return evTab;
+    }
+
+    @ThingworxServiceDefinition(name = "DrainEventQueueContent", description = "Drains(Removes) all entries of the event queue to an Infotable", category = "TWX.EventQueue", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "Infotable of Drainerd Events", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
+    public InfoTable DrainEventQueueContent() throws Exception {
+        _logger.trace("Entering Service: DrainEventQueueContent");
+
+        // query the queue of EventProcessingSubsystem ...
+        BlockingQueue<Runnable> evQueue = this.getEventQueue();
+        List<Runnable> evList = new ArrayList<Runnable>();
+        evQueue.drainTo(evList);
+        InfoTable evTab = this.getInfotableFromEvents(evList);
+
+        _logger.trace("Exiting Service: DrainEventQueueContent");
+        return evTab;
+    }
+
+    @ThingworxServiceDefinition(name = "PurgeEventQueueContent", description = "Removes all events from the EventQueue", category = "TWX.EventQueue", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "Number of Removed Events", baseType = "INTEGER", aspects = {})
+    public Integer PurgeEventQueueContent() throws Exception {
+        _logger.trace("Entering Service: PurgeEventQueueContent");
+        // query the queue of EventProcessingSubsystem ...
+        BlockingQueue<Runnable> evQueue = this.getEventQueue();
+        List<Runnable> evList = new ArrayList<Runnable>();
+        evQueue.drainTo(evList);
+        _logger.trace("Exiting Service: PurgeEventQueueContent");
+        return evList.size();
+    }
+
+    @ThingworxServiceDefinition(name = "FilterEventQueueByEventName", description = "Removes all events of specified type from the EventQueue", category = "TWX.EventQueue", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "Number of Removed Events", baseType = "INTEGER", aspects = {})
+    public Integer FilterEventQueueByEventName(
+            @ThingworxServiceParameter(name = "eventName", description = "", baseType = "STRING") String eventName) throws Exception {
+        _logger.trace("Entering Service: FilterEventQueueContent");
+        Integer cnt = 0;
+
+        BlockingQueue<Runnable> evQueue = this.getEventQueue();
+        List<Runnable> evList = new ArrayList<Runnable>();
+        evQueue.drainTo(evList);
+
+        // iterate Runnable List and check for matching Events ...
+        Iterator<Runnable> it = evList.iterator();
+        while (it.hasNext()) {
+            Runnable evInstance = it.next();
+
+            // queue contains <EventInstance> which implements runnable ...
+            // but, we want the "private final ThingworxEvent event;"
+            // only way to get it is reflection ...
+            Class<?> evInstanceClass = evInstance.getClass();
+            Field eventField = evInstanceClass.getDeclaredField("event");
+            eventField.setAccessible(true);
+            ThingworxEvent event = (ThingworxEvent) eventField.get(evInstance);
+            if (event != null && event.getEventName().equals(eventName)) {
+                it.remove();
+                cnt++;
             }
-        } catch (ConcurrentModificationException fallThrough) {
-            // Take slow path if we encounter interference during traversal.
-            // Make copy for traversal and call remove for cancelled entries.
-            // The slow path is more likely to be O(N*N).
-            for (Object r : evq.toArray())
-                if ( r.getClass().getSimpleName().equals("EventInstance") ) {
-                    evq.remove(r);
-                    ret++;
-                }
         }
-		return ret;
-	}
 
-    /*
-    @ThingworxServiceDefinition(name = "GetEventQueueContent", description = "", category = "", isAllowOverride = false, aspects = {
-			"isAsync:false" })
-	@ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = {
-			"isEntityDataShape:true", "dataShape:EventProcessingSubsystemQueue" })
-	public InfoTable GetEventQueueContent() throws Exception {
-		_logger.trace("Entering Service: GetEventQueueContent");
-		Subsystem evproc = (Subsystem) EntityUtilities.findEntity("EventProcessingSubsystem",
-				ThingworxRelationshipTypes.Subsystem);
-		EventProcessingSubsystem ev = EventProcessingSubsystem.getSubsystemInstance();
-		Class cls = ev.getClass();
-		Field workerQueue = cls.getDeclaredField("eventRouter");
-		workerQueue.setAccessible(true);
-		EventRouter eventRouter = (EventRouter)workerQueue.get(ev);
-		Class erClass = eventRouter.getClass();
-		Field mtp = erClass.getDeclaredField("workerPool");
-		mtp.setAccessible(true);
-		MonitoredThreadPoolExecutor mtpe = (MonitoredThreadPoolExecutor)mtp.get(eventRouter);
-		BlockingQueue<Runnable> br = mtpe.getQueue();
-		
-		InfoTable iftbl_Status = InfoTableInstanceFactory
-				.createInfoTableFromDataShape("EventProcessingSubsystemQueue");
-		for (Object obj: br)
-		{
-			Class cls2 = obj.getClass();
-			Field fld = cls2.getDeclaredField("event");
-			fld.setAccessible(true);
-			ThingworxEvent tve = (ThingworxEvent)fld.get(obj);
-		
-			ValueCollection vc = new ValueCollection();
-			vc.put("eventName", new StringPrimitive(tve.getEventName()));
-			vc.put("eventSource", new StringPrimitive(tve.getSource()));
-			vc.put("eventSourceProperty", new StringPrimitive(tve.getSourceProperty()));
-			
-			iftbl_Status.addRow(vc);
-		}
-		
-		_logger.trace("Exiting Service: GetEventQueueContent");
-		return iftbl_Status;
-	}
+        // added the remaining events back to Worker Pool ... 
+        MonitoredThreadPoolExecutor evExec = this.getEventExecutor();
+        for (Runnable evInstance : evList) {
+            evExec.execute(evInstance);
+        }
 
-	@ThingworxServiceDefinition(name = "ClearEventQueue", description = "", category = "", isAllowOverride = false, aspects = {
-			"isAsync:false" })
-	@ThingworxServiceResult(name = "Result", description = "", baseType = "STRING", aspects = {})
-	public String ClearEventQueue() throws Exception {
-		_logger.trace("Entering Service: ClearEventQueue");
-//		
-//		Subsystem evproc = (Subsystem) EntityUtilities.findEntity("EventProcessingSubsystem",
-//				ThingworxRelationshipTypes.Subsystem);
-//		EventProcessingSubsystem ev = EventProcessingSubsystem.getSubsystemInstance();
-//		Class cls = ev.getClass();
-//		Field workerQueue = cls.getDeclaredField("eventRouter");
-//		workerQueue.setAccessible(true);
-//		EventRouter eventRouter = (EventRouter)workerQueue.get(ev);
-//		Class erClass = eventRouter.getClass();
-//		Field mtp = erClass.getDeclaredField("workerPool");
-//		mtp.setAccessible(true);
-//		MonitoredThreadPoolExecutor mtpe = (MonitoredThreadPoolExecutor)mtp.get(eventRouter);
-//		BlockingQueue<Runnable> br = mtpe.getQueue();
-//		br.clear();
-		
-	
-		
-		_logger.trace("Exiting Service: GetEventQueueContent");
-	
-		_logger.trace("Exiting Service: ClearEventQueue");
-		//return Integer.toString(br.size());
-		return "";
+        _logger.trace("Exiting Service: FilterEventQueueContent");
+        return cnt;
+    }
 
-	}
+    @ThingworxServiceDefinition(name = "FilterEventQueueBySourceName", description = "Removes all events of specified type from the EventQueue", category = "TWX.EventQueue", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "Number of Removed Events", baseType = "INTEGER", aspects = {})
+    public Integer FilterEventQueueBySourceName(
+            @ThingworxServiceParameter(name = "sourceName", description = "", baseType = "STRING") String sourceName) throws Exception {
+        _logger.trace("Entering Service: FilterEventQueueContent");
+        Integer cnt = 0;
 
-    // endregion
+        BlockingQueue<Runnable> evQueue = this.getEventQueue();
+        List<Runnable> evList = new ArrayList<Runnable>();
+        evQueue.drainTo(evList);
 
-*/
+        // iterate Runnable List and check for matching Events ...
+        Iterator<Runnable> it = evList.iterator();
+        while (it.hasNext()) {
+            Runnable evInstance = it.next();
 
+            // queue contains <EventInstance> which implements runnable ...
+            // but, we want the "private final ThingworxEvent event;"
+            // only way to get it is reflection ...
+            Class<?> evInstanceClass = evInstance.getClass();
+            Field eventField = evInstanceClass.getDeclaredField("event");
+            eventField.setAccessible(true);
+            ThingworxEvent event = (ThingworxEvent) eventField.get(evInstance);
+            if (event != null && event.getSource().equals(sourceName)) {
+                it.remove();
+                cnt++;
+            }
+        }
+
+        // added the remaining events back to Worker Pool ... 
+        MonitoredThreadPoolExecutor evExec = this.getEventExecutor();
+        for (Runnable evInstance : evList) {
+            evExec.execute(evInstance);
+        }
+
+        _logger.trace("Exiting Service: FilterEventQueueContent");
+        return cnt;
+    }
+
+    @ThingworxServiceDefinition(name = "RestartEventThreadPool", description = "Tries to restart the EventRouter", category = "TWX.EventQueue", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
+    public void RestartEventThreadPool() throws Exception {
+        _logger.trace("Entering Service: RestartEventThreadPool");
+        EventRouter evRouter = this.getEventRouter();
+        evRouter.shutdown();
+        evRouter.start();
+        _logger.trace("Exiting Service: RestartEventThreadPool");
+    }
 }

@@ -1,13 +1,10 @@
-package twx.core.impl;
+package twx.core.imp;
 
+import java.util.Optional;
 import com.thingworx.common.exceptions.ThingworxRuntimeException;
 import com.thingworx.datashape.DataShape;
 import com.thingworx.entities.utils.EntityUtilities;
-import com.thingworx.metadata.FieldDefinition;
 import com.thingworx.relationships.RelationshipTypes;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 
 public class DataShapeUtil {
    

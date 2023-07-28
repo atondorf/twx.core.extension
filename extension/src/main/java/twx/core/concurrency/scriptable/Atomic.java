@@ -1,12 +1,10 @@
 package twx.core.concurrency.scriptable;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.annotations.JSConstructor;
 import org.mozilla.javascript.annotations.JSFunction;
-import org.mozilla.javascript.annotations.JSGetter;
 
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import twx.core.concurrency.imp.AtomicManager;
 
 public class Atomic extends ScriptableObject {

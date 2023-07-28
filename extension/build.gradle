@@ -12,6 +12,8 @@ project.ext {
     configDir       = "${baseDir}/configfiles"            // folder location of the metadata.xml file
     entitiesDir     = "${baseDir}/configfiles/Entities"   // folder additional Entities file that you want to be included in the extension
     zipDir          = "${rootDir}/zip"                    // where to store the generated zip
+    twxURL          = "http://127.0.0.1:8080"
+    twxAppKey       = "dbb1dc78-5c11-4579-b677-eb26c66f15b6"
 }
 
 dependencies {
