@@ -1,19 +1,20 @@
 package twx.core.date;
 
-import com.thingworx.common.utils.DateUtilities;
-import com.thingworx.dsl.engine.DSLConverter;
-import org.mozilla.javascript.*;
-import com.thingworx.types.InfoTable;
-import com.thingworx.types.collections.ValueCollection;
-import com.thingworx.types.BaseTypes;
-import com.thingworx.types.primitives.DatetimePrimitive;
-import com.thingworx.types.primitives.LongPrimitive;
-import com.thingworx.types.primitives.NumberPrimitive;
-import com.thingworx.types.primitives.StringPrimitive;
-import com.thingworx.data.util.InfoTableInstanceFactory;
-import com.thingworx.security.authentication.AuthenticationUtilities;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
+
+import com.thingworx.data.util.InfoTableInstanceFactory;
+import com.thingworx.dsl.engine.DSLConverter;
+import com.thingworx.security.authentication.AuthenticationUtilities;
+import com.thingworx.types.BaseTypes;
+import com.thingworx.types.InfoTable;
+import com.thingworx.types.collections.ValueCollection;
+import com.thingworx.types.primitives.DatetimePrimitive;
+import com.thingworx.types.primitives.StringPrimitive;
 
 import twx.core.date.scriptable.TimeZone;
 
@@ -56,7 +57,7 @@ public class DateScriptLibrary {
 
     public static Object core_getDefaultTimeZone(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
         AuthenticationUtilities.validateUserSecurityContext();
-        return DateServices._defaultTimeZone.getID();
+        return DateServices.get_defaultTimeZone().getID();
     }
 
     public static Object core_setDefaultTimeZone(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
@@ -65,7 +66,7 @@ public class DateScriptLibrary {
         if (args.length != 1)
             throw new Exception("Invalid Number of Arguments in core_setDefaultTimeZone"); 
         StringPrimitive stringVal = (StringPrimitive)BaseTypes.ConvertToPrimitive(args[0], BaseTypes.STRING);
-        DateServices._defaultTimeZone = DateTimeZone.forID( stringVal.getValue() );
+        DateServices.set_defaultTimeZone( DateTimeZone.forID( stringVal.getValue() ) );
         return null;
     }
 
@@ -73,7 +74,7 @@ public class DateScriptLibrary {
         AuthenticationUtilities.validateUserSecurityContext();
         DSLConverter.convertValues(args, me);
         long            current = System.currentTimeMillis();
-        DateTimeZone    tz      = DateServices._defaultTimeZone;
+        DateTimeZone    tz      = DateServices.get_defaultTimeZone();
         if ( args.length > 0 ) {
             StringPrimitive stringVal = (StringPrimitive)BaseTypes.ConvertToPrimitive(args[0], BaseTypes.STRING);
             tz = DateTimeZone.forID( stringVal.getValue() );
@@ -89,7 +90,7 @@ public class DateScriptLibrary {
         AuthenticationUtilities.validateUserSecurityContext();
         DSLConverter.convertValues(args, me);        
         long            current = System.currentTimeMillis();
-        DateTimeZone    tz      = DateServices._defaultTimeZone;
+        DateTimeZone    tz      = DateServices.get_defaultTimeZone();
         if ( args.length > 0 ) {
             StringPrimitive stringVal = (StringPrimitive)BaseTypes.ConvertToPrimitive(args[0], BaseTypes.STRING);
             tz = DateTimeZone.forID( stringVal.getValue() );
@@ -105,7 +106,7 @@ public class DateScriptLibrary {
         AuthenticationUtilities.validateUserSecurityContext();
         DSLConverter.convertValues(args, me);        
         long            current = System.currentTimeMillis();
-        DateTimeZone    tz      = DateServices._defaultTimeZone;
+        DateTimeZone    tz      = DateServices.get_defaultTimeZone();
         if ( args.length > 0 ) {
             StringPrimitive stringVal = (StringPrimitive)BaseTypes.ConvertToPrimitive(args[0], BaseTypes.STRING);
             tz = DateTimeZone.forID( stringVal.getValue() );
@@ -120,7 +121,7 @@ public class DateScriptLibrary {
         AuthenticationUtilities.validateUserSecurityContext();
         DSLConverter.convertValues(args, me);
         long            current = System.currentTimeMillis();
-        DateTimeZone    tz      = DateServices._defaultTimeZone;
+        DateTimeZone    tz      = DateServices.get_defaultTimeZone();
         if ( args.length > 0 ) {
             StringPrimitive stringVal = (StringPrimitive)BaseTypes.ConvertToPrimitive(args[0], BaseTypes.STRING);
             tz = DateTimeZone.forID( stringVal.getValue() );
@@ -137,7 +138,7 @@ public class DateScriptLibrary {
         AuthenticationUtilities.validateUserSecurityContext();
         DSLConverter.convertValues(args, me);
         long            current = System.currentTimeMillis();
-        DateTimeZone    tz      = DateServices._defaultTimeZone;
+        DateTimeZone    tz      = DateServices.get_defaultTimeZone();
         if ( args.length > 0 ) {
             StringPrimitive stringVal = (StringPrimitive)BaseTypes.ConvertToPrimitive(args[0], BaseTypes.STRING);
             tz = DateTimeZone.forID( stringVal.getValue() );
@@ -152,7 +153,7 @@ public class DateScriptLibrary {
 
     public static Object core_formatTimeZoneISO(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
         AuthenticationUtilities.validateUserSecurityContext();
-        DateTimeZone    tz = DateServices._defaultTimeZone;
+        DateTimeZone    tz = DateServices.get_defaultTimeZone();
         if (args.length < 1)
             throw new Exception("Invalid Number of Arguments in core_formatTimeZoneISO"); 
         DSLConverter.convertValues(args, me); 
@@ -166,7 +167,7 @@ public class DateScriptLibrary {
 
     public static Object core_formatTimeZone(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
         AuthenticationUtilities.validateUserSecurityContext();
-        DateTimeZone    tz = DateServices._defaultTimeZone;
+        DateTimeZone    tz = DateServices.get_defaultTimeZone();
         if (args.length < 2)
             throw new Exception("Invalid Number of Arguments in core_formatTimeZoneISO"); 
         DSLConverter.convertValues(args, me); 

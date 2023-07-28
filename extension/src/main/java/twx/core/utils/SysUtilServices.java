@@ -53,6 +53,7 @@ public class SysUtilServices extends Resource {
     @ThingworxServiceDefinition(name = "GetEventQueueContent", description = "Returns all entries of the event queue as Infotable", category = "TWX.EventQueue", isAllowOverride = false, aspects = {"isAsync:false" })
 	@ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
 	public InfoTable GetEventQueueContent() throws Exception {
+        _logger.trace("Entering Service: GetEventQueueContent");
         // create the result Infotable ... 
         InfoTable   resulTab = InfoTableInstanceFactory.createInfoTableFromDataShape( ThingworxEvent.getDataShape() );
         
@@ -69,6 +70,8 @@ public class SysUtilServices extends Resource {
             ThingworxEvent event = (ThingworxEvent)evFiled.get(evInstance);
             resulTab.addRow( event.toValueCollection() );
         }
+        
+        _logger.trace("Exiting Service: GetEventQueueContent");
 		return resulTab;
 	}
 
