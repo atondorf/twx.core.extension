@@ -43,12 +43,12 @@ public class TimeZone extends ScriptableObject {
 
     @JSFunction
     public String test_format(Object param) {
-		/*
-	        if( param instanceof IdScriptableObject ) {
-	            IdScriptableObject obj = (IdScriptableObject)param;
-	
-	        }
-		*/
+/*
+        if( param instanceof IdScriptableObject ) {
+            IdScriptableObject obj = (IdScriptableObject)param;
+
+        }
+*/        
         return param.getClass().getSimpleName();
     }
 

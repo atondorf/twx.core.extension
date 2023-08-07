@@ -1,6 +1,7 @@
 package twx.core.imp;
 
 import java.util.Optional;
+
 import com.thingworx.common.exceptions.ThingworxRuntimeException;
 import com.thingworx.datashape.DataShape;
 import com.thingworx.entities.utils.EntityUtilities;
