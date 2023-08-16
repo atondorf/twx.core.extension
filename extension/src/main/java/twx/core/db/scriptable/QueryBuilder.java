@@ -513,8 +513,6 @@ public class QueryBuilder extends ScriptableObject {
         return this;
     }
 
-
-
     /**
      * Appends an "on duplicate key update" clause to a query.
      * @param columns   The columns to update.

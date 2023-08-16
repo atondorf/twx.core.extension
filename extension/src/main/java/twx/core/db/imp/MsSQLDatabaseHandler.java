@@ -5,14 +5,18 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import java.sql.Types;
+
+import com.thingworx.types.BaseTypes;
 import com.thingworx.things.database.AbstractDatabase;
 
 public class MsSQLDatabaseHandler extends AbstractDatabaseHandler {
 
+    // Internal Helper Classes & Enums
+    // --------------------------------------------------------------------------------
+    // DB-Constants 
     static class DBConstants {
-        
         protected Set<String>    systemSchemas;
-
         public DBConstants() {
             String[] MS_SYS_SCHEMAS = {
                 "DB_ACCESSADMIN",
@@ -31,6 +35,8 @@ public class MsSQLDatabaseHandler extends AbstractDatabaseHandler {
             systemSchemas = new HashSet<>(Arrays.asList(MS_SYS_SCHEMAS) );
         }
     }
+
+    // endregion
 
     final static DBConstants DBCONST = new DBConstants();
 

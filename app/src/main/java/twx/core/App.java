@@ -9,9 +9,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 
 import twx.core.db.IDatabaseHandler;
 import twx.core.db.imp.MsSQLDatabaseHandler;
@@ -21,10 +24,13 @@ public class App {
 
     final static Logger logger = LoggerFactory.getLogger(App.class);
 
-    static final String DB_URL = "jdbc:sqlserver://localhost:1433;database=twdata;";
-    static final String USER = "twx";
-    static final String PASS = "twx@1234";
-    Connection con = null;
+    static final String DB_URL  = "jdbc:sqlserver://localhost:1433;database=twdata;";
+    static final String USER    = "twx";
+    static final String PASS    = "twx@1234";
+    static final String appName = "TWX-Data";
+
+    SQLServerDataSource     ds          = null;
+    Connection              con         = null;
 
     public static void main(String[] args) {
         var app = new App();
@@ -32,35 +38,24 @@ public class App {
         logger.info("---------- Start-App ----------");
         Connection con = null;
         try {
-            DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
-            con = DriverManager.getConnection(DB_URL, USER, PASS);
-            IDatabaseHandler handler = new MsSQLDatabaseHandler(con, "TWX_DATA"); // MsSQLDatabaseHandler
-            // app.queryMeta(handler);
-           // app.queryModelFromDB(handler);
-           app.createModelFromJSON();
-/*             var model = handler.queryModel();
-            logger.info(model.toJSON().toString(2));
+            app.openDBConnection();
             
-*/            
+//            app.queryPrimaryKey(handler);
+//            app.queryIndexes(handler);
+//            app.queryForeignKeys(handler);
+//            app.queryColumns(handler);
+            app.queryModelFromDB();
+          //    app.createModelFromJSON();
+//            var model = handler.queryModel();
+//            logger.info(model.toJSON().toString(2));
         } catch (SQLException e) {
             printSQLException(e);
         } catch (Exception e) {
             logger.error("Exception: " + e.toString() );
         } finally {
-            if (con != null) {
-                try {
-                    con.close();
-                } catch (SQLException e) {
-                    printSQLException(e);
-                }
-            }
+            app.closeDBConnection();
         }
         logger.info("---------- Exit-App ----------");
-    }
-
-    public void queryModelFromDB(IDatabaseHandler handler) throws SQLException {
-        var model = handler.queryModel();
-        logger.info(model.toJSON().toString(2));  
     }
 
     public void createModelFromJSON()  {
@@ -74,38 +69,133 @@ public class App {
     }
 
     public void queryMeta(IDatabaseHandler handler) throws SQLException {
-        ResultSet rs = handler.getMetaData().getIndexInfo(null, "dbo","NewTable", false, false);
+        logger.info("---------- Query Meta ----------");
+
+        var meta = handler.getMetaData();
+        JSONObject obj = new JSONObject();
+        obj.put("dbProductName", meta.getDatabaseProductName());
+        obj.put("dbProductVersion", meta.getDatabaseProductVersion());
+        obj.put("dbDriverName", meta.getDriverName());
+        obj.put("dbDriverVersion", meta.getDriverVersion());
+
+        logger.info( obj.toString(3));
+    }
+
+    public void queryColumns(IDatabaseHandler handler) throws SQLException {
+        logger.info("---------- Query Columns ----------");
+
+        ResultSet rs = handler.getMetaData().getColumns(null, "dbo", "types", null);
+        JSONArray array = new JSONArray();
         while (rs.next()) {
-            String name = rs.getString("INDEX_NAME");
-            if (name != null) {
-                String colName = rs.getString("COLUMN_NAME");
-                Boolean unique = !(rs.getBoolean("NON_UNIQUE"));
+            JSONObject obj = new JSONObject();
+            String typeName = rs.getString("TYPE_NAME");
+            if (typeName.contains("identity")) {
+                typeName = typeName.split(" ")[0];
+            }
+            obj.put("typename", typeName);
+            obj.put( "typeid", rs.getString("DATA_TYPE"));
+/*
+            DbColumn col = dbTable.addColumn(rs.getString("COLUMN_NAME"));
+            String typeName = rs.getString("TYPE_NAME");
+            if (typeName.contains("identity")) {
+                typeName = typeName.split(" ")[0];
+            }
+            col.setTypeName(typeName);
+            col.setTypeId(rs.getInt("DATA_TYPE"));
+            col.setSize(rs.getInt("COLUMN_SIZE"));
+            col.setNullable(((String) "YES").equals(rs.getString("IS_NULLABLE")));
+            col.setAutoIncrement(((String) "YES").equals(rs.getString("IS_AUTOINCREMENT")));
+*/            
+            array.put(obj);
+        }
+
+        logger.info( array.toString(3) );
+    }
+
+    public void queryPrimaryKey(IDatabaseHandler handler) throws SQLException {
+        logger.info("---------- Query Primary Key ----------");
+        ResultSet rs = handler.getMetaData().getPrimaryKeys(null, "dbo","tab_2");
+        while (rs.next()) {
+            String name    = rs.getString("PK_NAME");
+            Boolean unique = true; // !(rs.getBoolean("NON_UNIQUE"));
+            String colName = rs.getString("COLUMN_NAME");
+            Short  seq = rs.getShort("KEY_SEQ");
+
+            logger.info( "Name: " + name + " - col: " +  colName + " - Seq: " + seq + " - uni: " + unique );
+        }
+    }
+
+    public void queryIndexes(IDatabaseHandler handler) throws SQLException {
+        logger.info("---------- Query Index Info ----------");
+        ResultSet rs = handler.getMetaData().getIndexInfo(null, "dbo","tab_2", false, false);
+        while (rs.next()) {
+            String  name    = rs.getString("INDEX_NAME");
+            Boolean unique  = !(rs.getBoolean("NON_UNIQUE"));
+            String  colName = rs.getString("COLUMN_NAME");
+            Short   seq     = rs.getShort("ORDINAL_POSITION");
+
+            logger.info( "Name: " + name + " - col: " +  colName + " - Seq: " + seq + " - uni: " + unique );
+        }
+    }
+
+    public void queryForeignKeys(IDatabaseHandler handler) throws SQLException {
+        logger.info("---------- Query Foreign Keys ----------");
+        ResultSet rs = handler.getMetaData().getImportedKeys(null, "dbo","tab_2");
+        while (rs.next()) {
+            JSONObject  json = new JSONObject();
+            json.put("NAME", rs.getString("FK_NAME") );
+
+            json.put("PK_NAME", rs.getString("PK_NAME") );
+            json.put("DELETE_RULE", rs.getString("DELETE_RULE") );
+            json.put("UPDATE_RULE", rs.getString("UPDATE_RULE") );
+
+            json.put("KEY_SEQ", rs.getString("KEY_SEQ") );
+            json.put("FKTABLE_NAME", rs.getString("FKTABLE_NAME") );
+            json.put("FKCOLUMN_NAME", rs.getString("FKCOLUMN_NAME") );
+
+
+            json.put("PKCOLUMN_NAME", rs.getString("PKCOLUMN_NAME") );
+            json.put("PKTABLE_NAME", rs.getString("PKTABLE_NAME") );
+
+            logger.info( json.toString(2) );
+        }
+    }
+
+    public void queryModelFromDB() throws Exception {
+        IDatabaseHandler handler = new MsSQLDatabaseHandler(this.con, App.appName);
+        var model = handler.queryModel();
+        logger.info(model.toJSON().toString(2));  
+    }
+
+    protected void openDBConnection() throws Exception {
+        logger.info("---------- openDBConnection ----------");
+        DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
+        this.ds = new SQLServerDataSource();
+        this.ds.setUser("twx");
+        this.ds.setPassword("twx@1234");
+        this.ds.setServerName("localhost");
+        this.ds.setPortNumber(1433);
+        this.ds.setDatabaseName("twdata");
+        this.ds.setApplicationName("TWX-Data");
+        this.con = ds.getConnection();
+        
+        logger.info(con.getCatalog());
+        logger.info(con.getSchema());
+        logger.info(ds.getApplicationName());
+    }
+
+    protected void closeDBConnection() {
+        logger.info("---------- closeDBConnection ----------");
+        if (this.con != null) {
+            try {
+                this.con.close();
+            } catch (SQLException e) {
+                printSQLException(e);
             }
         }
     }
 
-    public void testJackson(IDatabaseHandler handler) {
-        try {
-            var model = handler.queryModel();
-            String str = ""; // objectMapper.writeValueAsString(model);
-            logger.info(str);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-           // e.printStackTrace();
-        }
-        // ;
-    }
-
-    public Integer testParam(Object val) {
-        logger.info("Classname: " + val.getClass().getName() );
-        Integer ret = 0;
-        if ( val instanceof Number ) {
-            ret = ((Number)val).intValue();
-        }
-        return ret;
-    }
-
-    public static void printSQLException(SQLException ex) {
+    protected static void printSQLException(SQLException ex) {
         for (Throwable e : ex) {
             if (e instanceof SQLException) {
                 e.printStackTrace(System.err);

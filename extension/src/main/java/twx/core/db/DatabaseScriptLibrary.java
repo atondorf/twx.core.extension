@@ -67,5 +67,4 @@ public class DatabaseScriptLibrary {
         Object[] args_new = { desc.getValue() };
         return cx.newObject(me, "QueryBuilder", args_new);
     }
-
 }

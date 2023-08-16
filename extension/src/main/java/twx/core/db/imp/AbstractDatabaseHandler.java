@@ -3,17 +3,21 @@ package twx.core.db.imp;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Maps;
 import com.thingworx.things.database.AbstractDatabase;
+import com.thingworx.types.BaseTypes;
 
 import twx.core.db.IDatabaseHandler;
 import twx.core.db.model.DBModelManager;
 import twx.core.db.model.DbModel;
 
 public class AbstractDatabaseHandler implements IDatabaseHandler {
+
     final static Logger logger = LoggerFactory.getLogger(AbstractDatabaseHandler.class);
 
     private String              application;
@@ -33,6 +37,8 @@ public class AbstractDatabaseHandler implements IDatabaseHandler {
         this.conn = dbThing.getConnection();
     }
     
+    // region Model & Metadata Management ...
+    // --------------------------------------------------------------------------------
     @Override
     public AbstractDatabase getAbstractDatabase() throws Exception {
         return abstractDatabase;
@@ -76,19 +82,26 @@ public class AbstractDatabaseHandler implements IDatabaseHandler {
     }
 
     @Override
-    public Integer createSchema() throws SQLException {
+    public Integer createSchema(String name) throws SQLException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Integer dropSchema() throws SQLException {
+    public Integer dropSchema(String name) throws SQLException {
         // TODO Auto-generated method stub
         return null;
     }
 
     // endregion
-    // region Model & Metadata Management ...
+    // types Management ...
+    // --------------------------------------------------------------------------------
+   
+
+    // endregion
+
+
+    // types Management ...
     // --------------------------------------------------------------------------------
     
 

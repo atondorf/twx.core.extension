@@ -26,8 +26,8 @@ public interface IDatabaseHandler {
 
     Boolean isSystemSchema(String schemaName) throws SQLException;
 
-    Integer createSchema() throws SQLException;
+    Integer createSchema(String schemaName) throws SQLException;
 
-    Integer dropSchema() throws SQLException;
+    Integer dropSchema(String schemaName) throws SQLException;
 
 }

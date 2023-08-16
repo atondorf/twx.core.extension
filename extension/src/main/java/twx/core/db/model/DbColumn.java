@@ -1,15 +1,16 @@
 package twx.core.db.model;
 
 import org.json.JSONObject;
+import java.sql.JDBCType;
+import com.thingworx.types.BaseTypes;
 
 public class DbColumn extends DbObject<DbTable> {
 
-    protected   String  typeName;
-    protected   int     typeId;
-    protected   int     size = -1;
-    protected   Boolean nullable = false;
-    protected   Boolean autoIncrement = false;
-    protected   int     primaryKeySeq = -1;
+    protected   JDBCType    sqlType = JDBCType.NULL;
+    protected   BaseTypes   twxType = BaseTypes.NOTHING;
+    protected   int         size = -1;
+    protected   Boolean     nullable = false;
+    protected   Boolean     autoIncrement = false;
 
     protected DbColumn(DbTable table, String name) {
         super(table, name);
@@ -17,27 +18,27 @@ public class DbColumn extends DbObject<DbTable> {
 
     // region Get/Set Table Properties 
     // --------------------------------------------------------------------------------
-    public String getTypeName() {
-        return typeName;
+    public JDBCType getSqlType() {
+        return sqlType;
     }
 
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
+    public void setSqlType(JDBCType sqlType) {
+        this.sqlType = sqlType;
     }
 
-    public int getTypeId() {
-        return typeId;
+    public BaseTypes getTwxType() {
+        return twxType;
     }
 
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
+    public void setTwxType(BaseTypes twxType) {
+        this.twxType = twxType;
     }
-
-    public int getSize() {
+    
+    public int getSqlSize() {
         return this.size;
     }
 
-    public void setSize(int lenght) {
+    public void setSqlSize(int lenght) {
         this.size = lenght;
     }
 
@@ -56,28 +57,18 @@ public class DbColumn extends DbObject<DbTable> {
     public void setAutoIncrement(Boolean autoIncrement) {
         this.autoIncrement = autoIncrement;
     }
-
-    public Boolean isPrimaryKey() {
-        return primaryKeySeq > 0;
-    }
-
-    public void setPrimaryKeySeq(int keySeq) {
-        this.primaryKeySeq = keySeq;
-    }
     // endregion
 
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();
-        json.put("typeName", this.typeName );
-        json.put("typeId",this.typeId);
+        json.put("sqlType", sqlType.getName() );
+        json.put("twxType", twxType.name() );
         if( this.size > 0 ) 
             json.put("lenght", this.size);
         json.put("nullable", this.nullable);
         if( this.autoIncrement )
             json.put("autoIncrement", this.autoIncrement);
-        if( this.primaryKeySeq > 0 )
-            json.put("primaryKeySeq", this.primaryKeySeq);
         return json;
     }
 }

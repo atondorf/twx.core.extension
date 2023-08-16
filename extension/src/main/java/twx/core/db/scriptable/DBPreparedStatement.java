@@ -83,7 +83,7 @@ public class DBPreparedStatement extends ScriptableObject {
 
     @JSFunction
     public static void set(Context cx, Scriptable me, Object[] args, Function funObj) throws SQLException {
-        if (args.length < 1)
+        if (args.length < 2)
             throw new IllegalArgumentException("Invalid Number of Arguments in DBPreparedStatement.set()");
         if (!(args[0] instanceof Number))
             throw new IllegalArgumentException("Invalid Argument in DBPreparedStatement.set(), 1nd must be an index number");
@@ -114,6 +114,22 @@ public class DBPreparedStatement extends ScriptableObject {
             default:
                 throw new IllegalArgumentException("Invalid Argument in DBPreparedStatement.set(), " + className + " is not supported!");
         }
+    }
+
+    @JSFunction
+    public static void setNullSqlType(Context cx, Scriptable me, Object[] args, Function funObj) throws SQLException {
+        if (args.length < 2)
+            throw new IllegalArgumentException("Invalid Number of Arguments in DBPreparedStatement.set()");
+        if (!(args[0] instanceof Number))
+            throw new IllegalArgumentException("Invalid Argument in DBPreparedStatement.set(), 1nd must be an index number");
+        if (!(args[1]instanceof Number))
+            throw new IllegalArgumentException("Invalid Argument in DBPreparedStatement.set(), 2nd must be an SQL-Type number");
+
+        var pstmt = DBPreparedStatement.getStatement(me);
+        Integer idx = ((Number) args[0]).intValue();
+        Integer type= ((Number) args[1]).intValue();
+
+        pstmt.setNull(idx,type);
     }
 
     // endregion 

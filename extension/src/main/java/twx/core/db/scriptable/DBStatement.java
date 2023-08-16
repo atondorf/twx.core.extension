@@ -48,14 +48,16 @@ public class DBStatement extends ScriptableObject {
     
     @JSFunction
     public Boolean execute(String sql) throws Exception {
-        return stmt.execute(sql);
+        Boolean ret = stmt.execute(sql);
+        return ret;
     }
 
     @JSFunction
     public int executeUpdate (String sql) throws Exception {
         if( stmt == null )
             return -1;
-        return stmt.executeUpdate(sql);
+        int ret = stmt.executeUpdate(sql);
+        return ret;
     }
 
     @JSFunction

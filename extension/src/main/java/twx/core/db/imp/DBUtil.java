@@ -20,6 +20,8 @@ import twx.core.db.model.DbModel;
 
 public class DBUtil {
 
+    // Helpers to get Abstract Database ... 
+    // --------------------------------------------------------------------------------
     public static AbstractDatabase getAbstractDatabase() throws Exception {
         Object ctx = ThreadLocalContext.getMeContext();
         if (ctx instanceof AbstractDatabase)
@@ -51,27 +53,55 @@ public class DBUtil {
         }
         throw new ThingworxRuntimeException("Thing:" + thingName + " does not exist.");
     }
-
+    // endregion
+    // Helpers to get JDBC Connection objects  from Abstract Database ... 
+    // --------------------------------------------------------------------------------
     public static DataSource getDataSource() throws Exception {
         return getAbstractDatabase().getDataSource();
+    }
+
+    public static DataSource getDataSource(String thingName) throws Exception {
+        return getAbstractDatabase(thingName).getDataSource();
     }
 
     public static Connection getConnection() throws Exception {
         return getAbstractDatabase().getConnection();
     }
 
-    public static IDatabaseHandler getDatabaseHandler() throws Exception {
-        // TODO ... change this in future to implement other DBs than SQL-Server ... 
-        return new MsSQLDatabaseHandler( getAbstractDatabase(), getConfiguredApplication() );
+    public static Connection getConnection(String thingName) throws Exception {
+        return getAbstractDatabase(thingName).getConnection();
     }
-  
-    public static DbModel getDBModel() throws Exception {
-        // TODO ... change this in future to implement other DBs than SQL-Server ... 
-        return DBModelManager.getModel( getConfiguredApplication() );
+    // endregion 
+    // Helpers to get Core handlers from Abstract Database ... 
+    // --------------------------------------------------------------------------------
+    public static IDatabaseHandler getDatabaseHandler() throws Exception {
+        AbstractDatabase abstractDatabase = getAbstractDatabase();
+        return getDatabaseHandler(abstractDatabase);
     }
 
+    public static IDatabaseHandler getDatabaseHandler(AbstractDatabase abstractDB) throws Exception {
+        // TODO ... change this in future to implement other DBs than SQL-Server ... 
+        return new MsSQLDatabaseHandler( abstractDB, getConfiguredApplication(abstractDB) );
+    }
+
+    public static DbModel getDBModel() throws Exception {
+        AbstractDatabase abstractDatabase = getAbstractDatabase();
+        return getDBModel(abstractDatabase);
+    }
+
+    public static DbModel getDBModel(AbstractDatabase abstractDB) throws Exception {
+        return DBModelManager.getModel( getConfiguredApplication(abstractDB) );
+    }
+    // endregion 
+    // Helpers to get JDBC configuration items ... 
+    // --------------------------------------------------------------------------------
     public static String getConfiguredKey() throws Exception {
-        Object configValue = getConfiguredJDBCURL();
+        AbstractDatabase abstractDatabase = getAbstractDatabase();
+        return getConfiguredKey(abstractDatabase);
+    }
+
+    public static String getConfiguredKey(AbstractDatabase abstractDatabase) throws Exception {
+        Object configValue = getConfiguredJDBCURL(abstractDatabase);
         if (configValue instanceof String) {
             String jdbcUrl = (String) configValue;
             int startIndex = jdbcUrl.indexOf(':') + 1;
@@ -84,7 +114,12 @@ public class DBUtil {
     }
 
     public static String getConfiguredCatalog() throws Exception {
-        Object configValue = getConfiguredJDBCURL();
+        AbstractDatabase abstractDatabase = getAbstractDatabase();
+        return getConfiguredCatalog(abstractDatabase);
+    }
+
+    public static String getConfiguredCatalog(AbstractDatabase abstractDatabase) throws Exception {
+        Object configValue = getConfiguredJDBCURL(abstractDatabase);
         if (configValue instanceof String) {
             String jdbcUrl = (String) configValue;
             int startIndex = jdbcUrl.indexOf("databaseName=") + 13;
@@ -97,7 +132,12 @@ public class DBUtil {
     }
 
     public static String getConfiguredApplication() throws Exception {
-        Object configValue = getConfiguredJDBCURL();
+        AbstractDatabase abstractDatabase = getAbstractDatabase();
+        return getConfiguredApplication(abstractDatabase);
+    }
+
+    public static String getConfiguredApplication(AbstractDatabase abstractDatabase) throws Exception {
+        Object configValue = getConfiguredJDBCURL(abstractDatabase);
         if (configValue instanceof String) {
             String jdbcUrl = (String) configValue;
             int startIndex  = jdbcUrl.indexOf("applicationName=") + 16;
@@ -111,6 +151,10 @@ public class DBUtil {
 
     public static Object getConfiguredJDBCURL() throws Exception {
         AbstractDatabase abstractDatabase = getAbstractDatabase();
+        return getConfiguredJDBCURL(abstractDatabase);
+    }
+
+    public static Object getConfiguredJDBCURL(AbstractDatabase abstractDatabase) throws Exception {
         Object configValue = null;
         // check if the AbstractDatabase is a Database Thing
         if (abstractDatabase instanceof com.thingworx.things.database.DatabaseSystem) {
@@ -126,4 +170,5 @@ public class DBUtil {
         }
         return configValue;
     }
+    // endregion
 }

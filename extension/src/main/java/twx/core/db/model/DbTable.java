@@ -12,7 +12,7 @@ public class DbTable extends DbObject<DbSchema> {
     private final LinkedHashMap<String, DbColumn> columns = new LinkedHashMap<String, DbColumn>();
     private final LinkedHashMap<String, DbIndex> indexes = new LinkedHashMap<String, DbIndex>();
     private final LinkedHashMap<String, DbForeignKey> foreignKeys = new LinkedHashMap<String, DbForeignKey>();
-    
+    private final DbIndex   primaryKey = new DbIndex(this, name);
 
     private String      schemaName;
     private String      dataShapeName;
@@ -20,9 +20,9 @@ public class DbTable extends DbObject<DbSchema> {
 
     protected DbTable(DbSchema schema, String name) {
         super(schema, name);
-        schemaName = schema.getName();
-        dataShapeName = null;
-        dbInfo = null;
+        this.schemaName = schema.getName();
+        this.dataShapeName = null;
+        this.dbInfo = null;
     };
 
     // region Get/Set Table Properties 
@@ -52,6 +52,7 @@ public class DbTable extends DbObject<DbSchema> {
     }
     // endregion
 
+    
     // region Columns
     // --------------------------------------------------------------------------------
     public List<DbColumn> getColumns() {
@@ -79,6 +80,13 @@ public class DbTable extends DbObject<DbSchema> {
 
     // region Indexes
     // --------------------------------------------------------------------------------
+    public DbIndex getPrimaryKey() {
+        return primaryKey;
+    }
+
+    // region Indexes
+    // --------------------------------------------------------------------------------
+
     public List<DbIndex> getIndexes() {
         return new ArrayList<DbIndex>(this.indexes.values());
     }
@@ -112,7 +120,7 @@ public class DbTable extends DbObject<DbSchema> {
 
     // region Indexes
     // --------------------------------------------------------------------------------
-    public List<DbForeignKey> getForeignKeyes() {
+    public List<DbForeignKey> getForeignKeys() {
         return new ArrayList<DbForeignKey>(this.foreignKeys.values());
     }
 
@@ -123,6 +131,14 @@ public class DbTable extends DbObject<DbSchema> {
     public DbForeignKey addForeignKey(String name) {
         DbForeignKey fk = createForeignKey(name);
         return addForeignKey(fk);
+    }
+
+    public DbForeignKey getOrAddForeignKey(String name) {
+        DbForeignKey fk = getForeignKey(name);
+        if( fk == null ) {
+            fk = this.addForeignKey(name);
+        }
+        return fk;
     }
 
     public DbForeignKey createForeignKey(String name) {
@@ -143,6 +159,8 @@ public class DbTable extends DbObject<DbSchema> {
             columns.put(column.toJSON());
         }
         json.put("columns", columns);
+
+        json.put( "primaryKey", this.primaryKey.toJSON() );
 
         var indexes = new JSONArray();
         for (DbIndex index : this.indexes.values()) {

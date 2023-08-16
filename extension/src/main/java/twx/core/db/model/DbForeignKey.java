@@ -1,6 +1,12 @@
 package twx.core.db.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import twx.core.db.model.DbIndex.DbIndexColumn;
 
 public class DbForeignKey extends DbObject<DbTable> {
 
@@ -35,21 +41,71 @@ public class DbForeignKey extends DbObject<DbTable> {
             return null;
         }
     }
+
+    protected class DbFKColumn {
+        protected String columnName = "";
+        protected Integer columnOrdinal = 0;
+        protected String toColumnName = "";
+        
+        public DbFKColumn(String columnName, Integer columnOrdinal, String toColumnName) {
+            this.columnName = columnName;
+            this.columnOrdinal = columnOrdinal;
+            this.toColumnName = toColumnName;
+        }
+
+        public void setColumnName(String name) {
+            this.columnName = name;
+        }
+
+        public String getColumnName() {
+            return columnName;
+        }
+
+        public void setColumnOrdinal(Integer ordinal) {
+            this.columnOrdinal = ordinal;
+        }
+
+        public Integer getColumnOrdinal() {
+            return columnOrdinal;
+        }
+
+        public String getToColumnName() {
+            return toColumnName;
+        }
+
+        public void setToColumnName(String toColumnName) {
+            this.toColumnName = toColumnName;
+        }
+
+        public JSONObject toJSON() {
+            var json = new JSONObject();
+            json.put( "columnName", this.columnName );
+            json.put( "columnOrdinal", this.columnOrdinal );
+            json.put( "toColumnName", this.toColumnName );
+            return json;
+        }
+    }
     // endregion
 
-    protected String column;
+    // region Get/Set Table Properties
+    // --------------------------------------------------------------------------------    
+    private final List<DbFKColumn> columns = new ArrayList<DbFKColumn>();
     protected String toSchema;
     protected String toTable;
-    protected String toColumn;
     protected FkRule onUpdate;
     protected FkRule onDelete;
 
     public DbForeignKey(DbTable table, String name) {
         super(table, name);
     };
+    // endregion 
 
-    // region Get/Set Table Properties 
+    // region Get/Set Table Properties
     // --------------------------------------------------------------------------------
+    public void addColumn(Integer seq, String fromCol, String toCol ) {
+        this.columns.add( new DbFKColumn(toCol, seq, toCol));
+    }
+
     public void setOnUpdate(int onUpdate) {
         this.onUpdate = FkRule.getByKey(onUpdate);
     }
@@ -66,24 +122,12 @@ public class DbForeignKey extends DbObject<DbTable> {
         return onDelete.key;
     }
 
-    public void setColumn(String fromColumn) {
-        this.column = fromColumn;
-    }
-
     public void setToSchema(String toSchema) {
         this.toSchema = toSchema;
     }
 
     public void setToTable(String toTable) {
         this.toTable = toTable;
-    }
-
-    public void setToColumn(String toColumn) {
-        this.toColumn = toColumn;
-    }
-
-    public String getColumn() {
-        return column;
     }
 
     public String getToSchema() {
@@ -93,22 +137,20 @@ public class DbForeignKey extends DbObject<DbTable> {
     public String getToTable() {
         return toTable;
     }
-
-    public String getToColumn() {
-        return toColumn;
-    }
     // endregion
 
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();
-        json.put("column", column);
+        var colArray = new JSONArray();
         json.put("toSchema", toSchema);
         json.put("toTable", toTable);
-        json.put("toColumn", toColumn);
         json.put("onUpdate", onUpdate.label);
         json.put("onDelete", onDelete.label);
-
+        for (DbFKColumn col : this.columns) {
+            colArray.put(col.toJSON());
+        }
+        json.put("columns", colArray );
         return json;
     }
 }

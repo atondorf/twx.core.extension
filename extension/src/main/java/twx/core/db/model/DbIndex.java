@@ -1,83 +1,99 @@
 package twx.core.db.model;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class DbIndex extends DbObject<DbTable> {
 
-    // Internal Enum for IdxType
+    // Internal Helpers
     // --------------------------------------------------------------------------------
-    public enum IdxType {
-        Statistic(0, "Statistic"), Clustered(1, "Clustered"), Hashed(2, "Hashed"), Other(3, "Other");
+    protected class DbIndexColumn {
+        protected String colName = "";
+        protected Integer colSeq = 0;
 
-        public Integer  key;
-        public String   label;
-
-        private IdxType(Integer key, String label) {
-            this.key = key;
-            this.label = label;
+        public DbIndexColumn(Integer ordinal, String name) {
+            this.colSeq = ordinal;
+            this.colName = name;
         }
 
-        public static IdxType getByKey(Integer key) {
-            for (IdxType e : values()) {
-                if (e.key.equals(key)) {
-                    return e;
-                }
-            }
-            return null;
+        public Integer getColSeq() {
+            return colSeq;
         }
 
-        public static IdxType getByLabel(String label) {
-            for (IdxType e : values()) {
-                if (e.label.equals(label)) {
-                    return e;
-                }
-            }
-            return null;
+        public void setColSeq(Integer ordinal) {
+            this.colSeq = ordinal;
+        }
+
+        public String getColName() {
+            return colName;
+        }
+
+        public void setColName(String name) {
+            this.colName = name;
+        }
+
+        public JSONObject toJSON() {
+            var json = new JSONObject();
+            json.put("colSeq", this.colSeq);
+            json.put("colName", this.colName);
+            return json;
         }
     }
-    // enregion
+    // endregion
 
-    protected IdxType   type;
-    protected String    column;
-    protected boolean   unique;
+    // region Get/Set Index Properties
+    // --------------------------------------------------------------------------------
+    private final List<DbIndexColumn> columns = new ArrayList<DbIndexColumn>();
+    protected boolean unique;
 
     public DbIndex(DbTable table, String name) {
         super(table, name);
     };
+    // endregion
 
-    // region Get/Set Index Properties 
+    // region Get/Set Index Properties
     // --------------------------------------------------------------------------------
-    public int getType() {
-        return type.key;
-    }
-
-    public String getColumn() {
-        return column;
-    }
-
     public boolean isUnique() {
         return unique;
-    }
-
-    public void setType(int type) {
-        this.type = IdxType.getByKey(type);
-    }
-
-    public void setColumn(String colName) {
-        this.column = colName;
     }
 
     public void setUnique(boolean unique) {
         this.unique = unique;
     }
-    // endregion 
+
+    public List<DbIndexColumn> getColumns() {
+        return this.columns;
+    }
+
+    public List<String> getColumnNames() {
+        return this.columns.stream().map(DbIndexColumn::getColName).collect(Collectors.toList());
+    }
+
+    public void addColumn(String columnName) {
+        Integer seq = this.columns.size() + 1;
+        this.columns.add(new DbIndexColumn(seq, columnName));
+    }
+
+    public void addColumn(String columnName, Integer ordinal) {
+        this.columns.add(new DbIndexColumn(ordinal, columnName));
+        this.columns.sort((c1, c2) -> c1.getColSeq().compareTo(c2.getColSeq()));
+
+    }
+    // endregion
 
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();
-        json.put("type", type.label);
-        json.put("column", column);
-        json.put("unique", unique);
+        var colArray = new JSONArray();
+        json.put("unique", this.unique);
+        for (DbIndexColumn col : this.columns) {
+            colArray.put(col.toJSON());
+        }
+        json.put("columns", colArray);
         return json;
     }
 }
