@@ -12,34 +12,34 @@ public class DbIndex extends DbObject<DbTable> {
     // Internal Helpers
     // --------------------------------------------------------------------------------
     protected class DbIndexColumn {
-        protected String colName = "";
-        protected Integer colSeq = 0;
+        protected Integer ordinal = 0;
+        protected String columnName = "";
 
         public DbIndexColumn(Integer ordinal, String name) {
-            this.colSeq = ordinal;
-            this.colName = name;
+            this.ordinal = ordinal;
+            this.columnName = name;
         }
 
-        public Integer getColSeq() {
-            return colSeq;
+        public Integer getOrdinal() {
+            return ordinal;
         }
 
-        public void setColSeq(Integer ordinal) {
-            this.colSeq = ordinal;
+        public void setOrdinal(Integer ordinal) {
+            this.ordinal = ordinal;
         }
 
-        public String getColName() {
-            return colName;
+        public String getColumnName() {
+            return columnName;
         }
 
-        public void setColName(String name) {
-            this.colName = name;
+        public void setColumnName(String name) {
+            this.columnName = name;
         }
 
         public JSONObject toJSON() {
             var json = new JSONObject();
-            json.put("colSeq", this.colSeq);
-            json.put("colName", this.colName);
+            json.put(DbConstants.MODEL_TAG_INDEX_ORDINAL, this.ordinal);
+            json.put(DbConstants.MODEL_TAG_INDEX_LOCAL_COLUMN, this.columnName);
             return json;
         }
     }
@@ -70,7 +70,7 @@ public class DbIndex extends DbObject<DbTable> {
     }
 
     public List<String> getColumnNames() {
-        return this.columns.stream().map(DbIndexColumn::getColName).collect(Collectors.toList());
+        return this.columns.stream().map(DbIndexColumn::getColumnName).collect(Collectors.toList());
     }
 
     public void addColumn(String columnName) {
@@ -80,20 +80,43 @@ public class DbIndex extends DbObject<DbTable> {
 
     public void addColumn(String columnName, Integer ordinal) {
         this.columns.add(new DbIndexColumn(ordinal, columnName));
-        this.columns.sort((c1, c2) -> c1.getColSeq().compareTo(c2.getColSeq()));
+        this.columns.sort((c1, c2) -> c1.getOrdinal().compareTo(c2.getOrdinal()));
 
     }
     // endregion
+    // region Serialization ... 
+    // --------------------------------------------------------------------------------
+    public void addColumnFromJSON(JSONObject json) {
+        Integer colSeq = json.getInt(DbConstants.MODEL_TAG_INDEX_ORDINAL);
+        String name = json.getString(DbConstants.MODEL_TAG_INDEX_LOCAL_COLUMN);   
+        this.addColumn(name,colSeq);   
+    }
+
+    @Override
+    public DbIndex fromJSON(JSONObject json) {
+        super.fromJSON(json);
+        if( json.has(DbConstants.MODEL_TAG_INDEX_UNIQUE)) 
+            this.unique = json.getBoolean(DbConstants.MODEL_TAG_INDEX_UNIQUE);
+        if( json.has(DbConstants.MODEL_TAG_INDEX_ARRAY)) {
+            JSONArray columns = json.getJSONArray(DbConstants.MODEL_TAG_INDEX_ARRAY);
+            columns.forEach( item -> {
+                this.addColumnFromJSON((JSONObject)item);
+            });
+        }
+        return this;
+    }
 
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();
+        json.put(DbConstants.MODEL_TAG_INDEX_UNIQUE, this.unique);
         var colArray = new JSONArray();
-        json.put("unique", this.unique);
         for (DbIndexColumn col : this.columns) {
             colArray.put(col.toJSON());
         }
-        json.put("columns", colArray);
+        if( colArray.length() > 0 )
+            json.put(DbConstants.MODEL_TAG_INDEX_ARRAY, colArray);
         return json;
     }
+    // endreggion 
 }

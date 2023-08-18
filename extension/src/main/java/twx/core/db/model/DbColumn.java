@@ -6,11 +6,12 @@ import com.thingworx.types.BaseTypes;
 
 public class DbColumn extends DbObject<DbTable> {
 
-    protected   JDBCType    sqlType = JDBCType.NULL;
-    protected   BaseTypes   twxType = BaseTypes.NOTHING;
-    protected   int         size = -1;
-    protected   Boolean     nullable = false;
-    protected   Boolean     autoIncrement = false;
+    protected   JDBCType    sqlType         = JDBCType.NULL;
+    protected   BaseTypes   twxType         = BaseTypes.NOTHING;
+    protected   int         size            = -1;
+    protected   int         primaryKeySeq   = -1;
+    protected   Boolean     nullable        = false;
+    protected   Boolean     autoIncrement   = false;
 
     protected DbColumn(DbTable table, String name) {
         super(table, name);
@@ -58,17 +59,36 @@ public class DbColumn extends DbObject<DbTable> {
         this.autoIncrement = autoIncrement;
     }
     // endregion
+    // region Serialization ... 
+    // --------------------------------------------------------------------------------
+
+    @Override
+    public DbColumn fromJSON(JSONObject json) {
+        super.fromJSON(json);
+        if( json.has(DbConstants.MODEL_TAG_COLUMN_SQL_TYPE)) 
+            this.sqlType = JDBCType.valueOf( json.getString(DbConstants.MODEL_TAG_COLUMN_SQL_TYPE) );
+        if( json.has(DbConstants.MODEL_TAG_COLUMN_TWX_TYPE)) 
+            this.twxType = BaseTypes.valueOf( json.getString(DbConstants.MODEL_TAG_COLUMN_TWX_TYPE));
+        if( json.has(DbConstants.MODEL_TAG_COLUMN_SIZE)) 
+            this.size = json.getInt(DbConstants.MODEL_TAG_COLUMN_SIZE);
+        if( json.has(DbConstants.MODEL_TAG_COLUMN_NULLABLE)) 
+            this.nullable = json.getBoolean(DbConstants.MODEL_TAG_COLUMN_NULLABLE);
+        if( json.has(DbConstants.MODEL_TAG_COLUMN_AUTOINCREMENT)) 
+            this.autoIncrement = json.getBoolean(DbConstants.MODEL_TAG_COLUMN_AUTOINCREMENT);
+        return this;
+    }
 
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();
-        json.put("sqlType", sqlType.getName() );
-        json.put("twxType", twxType.name() );
+        json.put(DbConstants.MODEL_TAG_COLUMN_SQL_TYPE, sqlType.getName() );
+        json.put(DbConstants.MODEL_TAG_COLUMN_TWX_TYPE, twxType.name() );
         if( this.size > 0 ) 
-            json.put("lenght", this.size);
-        json.put("nullable", this.nullable);
+            json.put(DbConstants.MODEL_TAG_COLUMN_SIZE, this.size);
+        json.put(DbConstants.MODEL_TAG_COLUMN_NULLABLE, this.nullable);
         if( this.autoIncrement )
-            json.put("autoIncrement", this.autoIncrement);
+            json.put(DbConstants.MODEL_TAG_COLUMN_AUTOINCREMENT, this.autoIncrement);
         return json;
     }
+    // endregion
 }

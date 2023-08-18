@@ -37,7 +37,7 @@ public class DbSchemaTest {
         @Test
         void shouldGiveValidParentAndSpec() {
             assertEquals(spec, sut.getParent());
-            assertEquals(spec, sut.getSpec());
+            assertEquals(spec, sut.getModel());
         }
 
         @Test

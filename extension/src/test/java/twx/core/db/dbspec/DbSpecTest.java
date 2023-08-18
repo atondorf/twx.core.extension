@@ -32,7 +32,7 @@ public class DbSpecTest {
 
         @Test
         void shouldReturnItselfAsSpec() {
-            assertEquals(sut, sut.getSpec());
+            assertEquals(sut, sut.getModel());
         }
 
         @Test
@@ -73,7 +73,7 @@ public class DbSpecTest {
             void shouldGiveValidParentAndSpec() {
                 DbSchema schema = sut.getSchema("Test");
                 assertEquals(sut, schema.getParent());
-                assertEquals(sut, schema.getSpec());
+                assertEquals(sut, schema.getModel());
             }
 
             @Test

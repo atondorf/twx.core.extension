@@ -1,4 +1,4 @@
-package twx.core.db.imp;
+package twx.core.db.model;
 
 import java.sql.Types;
 import java.util.Collection;
@@ -9,7 +9,7 @@ import java.sql.JDBCType;
 import com.thingworx.connectors.ParameterDefinition.In;
 import com.thingworx.types.BaseTypes;
 
-public class SQLTypeMapper {
+public class DbTypeMapper {
 
     public class TypeMapEntry {
 

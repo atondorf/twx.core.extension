@@ -3,6 +3,8 @@
  */
 package twx.core;
 
+import java.io.FileReader;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -11,6 +13,7 @@ import java.util.Scanner;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,15 +42,9 @@ public class App {
         Connection con = null;
         try {
             app.openDBConnection();
-            
-//            app.queryPrimaryKey(handler);
-//            app.queryIndexes(handler);
-//            app.queryForeignKeys(handler);
-//            app.queryColumns(handler);
             app.queryModelFromDB();
-          //    app.createModelFromJSON();
-//            var model = handler.queryModel();
-//            logger.info(model.toJSON().toString(2));
+            app.loadModelFromJSON();
+
         } catch (SQLException e) {
             printSQLException(e);
         } catch (Exception e) {
@@ -56,112 +53,25 @@ public class App {
             app.closeDBConnection();
         }
         logger.info("---------- Exit-App ----------");
-    }
+    }  
 
-    public void createModelFromJSON()  {
-        JSONObject dbInfo = new JSONObject(
-        "{\"name\":\"test\",\"description\":\"jon doe\"}"
-        );
-        var model = new DbModel("");
+    public void loadModelFromJSON() throws Exception {
+        logger.info("---------- loadModelFromFile ----------");
+        InputStream is = App.class.getResourceAsStream("/db1.json");
+        if (is == null) {
+            throw new NullPointerException("Cannot find resource file " + "db1.json");
+        }
+        JSONTokener tokener = new JSONTokener(is);
+        JSONObject dbInfo = new JSONObject(tokener);
+
+        var model = new DbModel(appName);
         model.fromJSON(dbInfo);
 
-        logger.info(model.toJSON().toString(2));  
-    }
-
-    public void queryMeta(IDatabaseHandler handler) throws SQLException {
-        logger.info("---------- Query Meta ----------");
-
-        var meta = handler.getMetaData();
-        JSONObject obj = new JSONObject();
-        obj.put("dbProductName", meta.getDatabaseProductName());
-        obj.put("dbProductVersion", meta.getDatabaseProductVersion());
-        obj.put("dbDriverName", meta.getDriverName());
-        obj.put("dbDriverVersion", meta.getDriverVersion());
-
-        logger.info( obj.toString(3));
-    }
-
-    public void queryColumns(IDatabaseHandler handler) throws SQLException {
-        logger.info("---------- Query Columns ----------");
-
-        ResultSet rs = handler.getMetaData().getColumns(null, "dbo", "types", null);
-        JSONArray array = new JSONArray();
-        while (rs.next()) {
-            JSONObject obj = new JSONObject();
-            String typeName = rs.getString("TYPE_NAME");
-            if (typeName.contains("identity")) {
-                typeName = typeName.split(" ")[0];
-            }
-            obj.put("typename", typeName);
-            obj.put( "typeid", rs.getString("DATA_TYPE"));
-/*
-            DbColumn col = dbTable.addColumn(rs.getString("COLUMN_NAME"));
-            String typeName = rs.getString("TYPE_NAME");
-            if (typeName.contains("identity")) {
-                typeName = typeName.split(" ")[0];
-            }
-            col.setTypeName(typeName);
-            col.setTypeId(rs.getInt("DATA_TYPE"));
-            col.setSize(rs.getInt("COLUMN_SIZE"));
-            col.setNullable(((String) "YES").equals(rs.getString("IS_NULLABLE")));
-            col.setAutoIncrement(((String) "YES").equals(rs.getString("IS_AUTOINCREMENT")));
-*/            
-            array.put(obj);
-        }
-
-        logger.info( array.toString(3) );
-    }
-
-    public void queryPrimaryKey(IDatabaseHandler handler) throws SQLException {
-        logger.info("---------- Query Primary Key ----------");
-        ResultSet rs = handler.getMetaData().getPrimaryKeys(null, "dbo","tab_2");
-        while (rs.next()) {
-            String name    = rs.getString("PK_NAME");
-            Boolean unique = true; // !(rs.getBoolean("NON_UNIQUE"));
-            String colName = rs.getString("COLUMN_NAME");
-            Short  seq = rs.getShort("KEY_SEQ");
-
-            logger.info( "Name: " + name + " - col: " +  colName + " - Seq: " + seq + " - uni: " + unique );
-        }
-    }
-
-    public void queryIndexes(IDatabaseHandler handler) throws SQLException {
-        logger.info("---------- Query Index Info ----------");
-        ResultSet rs = handler.getMetaData().getIndexInfo(null, "dbo","tab_2", false, false);
-        while (rs.next()) {
-            String  name    = rs.getString("INDEX_NAME");
-            Boolean unique  = !(rs.getBoolean("NON_UNIQUE"));
-            String  colName = rs.getString("COLUMN_NAME");
-            Short   seq     = rs.getShort("ORDINAL_POSITION");
-
-            logger.info( "Name: " + name + " - col: " +  colName + " - Seq: " + seq + " - uni: " + unique );
-        }
-    }
-
-    public void queryForeignKeys(IDatabaseHandler handler) throws SQLException {
-        logger.info("---------- Query Foreign Keys ----------");
-        ResultSet rs = handler.getMetaData().getImportedKeys(null, "dbo","tab_2");
-        while (rs.next()) {
-            JSONObject  json = new JSONObject();
-            json.put("NAME", rs.getString("FK_NAME") );
-
-            json.put("PK_NAME", rs.getString("PK_NAME") );
-            json.put("DELETE_RULE", rs.getString("DELETE_RULE") );
-            json.put("UPDATE_RULE", rs.getString("UPDATE_RULE") );
-
-            json.put("KEY_SEQ", rs.getString("KEY_SEQ") );
-            json.put("FKTABLE_NAME", rs.getString("FKTABLE_NAME") );
-            json.put("FKCOLUMN_NAME", rs.getString("FKCOLUMN_NAME") );
-
-
-            json.put("PKCOLUMN_NAME", rs.getString("PKCOLUMN_NAME") );
-            json.put("PKTABLE_NAME", rs.getString("PKTABLE_NAME") );
-
-            logger.info( json.toString(2) );
-        }
+        logger.info(model.toJSON().toString(2));          
     }
 
     public void queryModelFromDB() throws Exception {
+        logger.info("---------- queryModelFromDB ----------");
         IDatabaseHandler handler = new MsSQLDatabaseHandler(this.con, App.appName);
         var model = handler.queryModel();
         logger.info(model.toJSON().toString(2));  

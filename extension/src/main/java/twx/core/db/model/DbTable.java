@@ -7,20 +7,20 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonArrayFormatVisitor;
+
 public class DbTable extends DbObject<DbSchema> {
 
     private final LinkedHashMap<String, DbColumn> columns = new LinkedHashMap<String, DbColumn>();
     private final LinkedHashMap<String, DbIndex> indexes = new LinkedHashMap<String, DbIndex>();
     private final LinkedHashMap<String, DbForeignKey> foreignKeys = new LinkedHashMap<String, DbForeignKey>();
-    private final DbIndex   primaryKey = new DbIndex(this, name);
+    private final DbIndex primaryKey = new DbIndex(this, name + "_PK");
 
-    private String      schemaName;
     private String      dataShapeName;
     private JSONObject  dbInfo;
 
     protected DbTable(DbSchema schema, String name) {
         super(schema, name);
-        this.schemaName = schema.getName();
         this.dataShapeName = null;
         this.dbInfo = null;
     };
@@ -28,13 +28,11 @@ public class DbTable extends DbObject<DbSchema> {
     // region Get/Set Table Properties 
     // --------------------------------------------------------------------------------
     public String getSchemaName() {
-        return this.schemaName;
+        if( this.isRoot() )
+            return null;
+        return this.getParent().getName();
     }
-
-    public void setSchemaName(String schemaName) {
-        this.schemaName = schemaName;
-    }
-
+    
     public String getDataShapeName() {
         return this.dataShapeName;
     }
@@ -86,7 +84,6 @@ public class DbTable extends DbObject<DbSchema> {
 
     // region Indexes
     // --------------------------------------------------------------------------------
-
     public List<DbIndex> getIndexes() {
         return new ArrayList<DbIndex>(this.indexes.values());
     }
@@ -150,7 +147,64 @@ public class DbTable extends DbObject<DbSchema> {
         return foreignKey;
     }
     // endregion
+    // region Serialization ... 
+    // --------------------------------------------------------------------------------
+    public DbColumn addColumnFromJSON(JSONObject json) {
+        if( !json.has(DbConstants.MODEL_TAG_NAME) ) 
+            throw new DbModelException("JSON does not define a tag 'name'");
+        DbColumn col = new DbColumn(this, json.getString(DbConstants.MODEL_TAG_NAME));
+        col.fromJSON(json);
+        return addColumn(col);
+    }
     
+    public DbIndex addIndexFromJSON(JSONObject json) {
+        if( !json.has(DbConstants.MODEL_TAG_NAME) ) 
+            throw new DbModelException("JSON does not define a tag 'name'");
+        DbIndex index = new DbIndex(this, json.getString(DbConstants.MODEL_TAG_NAME));
+        index.fromJSON(json);
+        return addIndex(index);
+    }
+
+    public DbForeignKey addForeignKeyFromJSON(JSONObject json) {
+        if( !json.has(DbConstants.MODEL_TAG_NAME) ) 
+            throw new DbModelException("JSON does not define a tag 'name'");
+
+        DbForeignKey fkKey = new DbForeignKey(this, json.getString(DbConstants.MODEL_TAG_NAME));
+        fkKey.fromJSON(json);
+        return addForeignKey(fkKey);
+        // return null;
+    }
+
+    @Override
+    public DbTable fromJSON(JSONObject json) {
+        super.fromJSON(json);
+
+        if( json.has(DbConstants.MODEL_TAG_TABLE_PRIMARY_KEY)) {
+            var keyJ = json.getJSONObject(DbConstants.MODEL_TAG_TABLE_PRIMARY_KEY);
+            this.primaryKey.fromJSON(keyJ);
+        }
+
+        if( json.has(DbConstants.MODEL_TAG_COLUMN_ARRAY)) {
+            JSONArray columns = json.getJSONArray(DbConstants.MODEL_TAG_COLUMN_ARRAY);
+            columns.forEach( item -> {
+                this.addColumnFromJSON((JSONObject)item);
+            });
+        }
+        if( json.has(DbConstants.MODEL_TAG_INDEX_ARRAY)) {
+            JSONArray indexes = json.getJSONArray(DbConstants.MODEL_TAG_INDEX_ARRAY);
+            indexes.forEach( item -> {
+                this.addIndexFromJSON((JSONObject)item);
+            });
+        }
+        if( json.has(DbConstants.MODEL_TAG_FKKEYS_ARRAY)) {
+            JSONArray fkKeys = json.getJSONArray(DbConstants.MODEL_TAG_FKKEYS_ARRAY); 
+            fkKeys.forEach( item -> {
+                this.addForeignKeyFromJSON((JSONObject)item);
+            }); 
+        }
+        return this;
+    }
+
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();
@@ -158,21 +212,23 @@ public class DbTable extends DbObject<DbSchema> {
         for (DbColumn column : this.columns.values()) {
             columns.put(column.toJSON());
         }
-        json.put("columns", columns);
-
-        json.put( "primaryKey", this.primaryKey.toJSON() );
+        json.put(DbConstants.MODEL_TAG_COLUMN_ARRAY, columns);
+        json.put(DbConstants.MODEL_TAG_TABLE_PRIMARY_KEY, this.primaryKey.toJSON() );
 
         var indexes = new JSONArray();
         for (DbIndex index : this.indexes.values()) {
             indexes.put(index.toJSON());
         }
-        json.put("indexes", indexes);
+        if( indexes.length() > 0 )
+            json.put(DbConstants.MODEL_TAG_INDEX_ARRAY, indexes);
 
         var foreignKeys = new JSONArray();
         for (DbForeignKey fk : this.foreignKeys.values()) {
             foreignKeys.put(fk.toJSON());
         }
-        json.put("foreignKeys", foreignKeys);
+        if( foreignKeys.length() > 0 )
+            json.put(DbConstants.MODEL_TAG_FKKEYS_ARRAY, foreignKeys);
         return json;
     }
+    // endregion 
 }

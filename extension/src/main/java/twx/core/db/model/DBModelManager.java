@@ -36,7 +36,7 @@ public class DBModelManager {
     public static DbModel queryModel(IDatabaseHandler handler) throws SQLException {
         String catalog = handler.getCatalog();
         String application = handler.getApplication();
-        DbModel dbModel = new DbModel(catalog, application);
+        DbModel dbModel = new DbModel(catalog);
         return queryModelSchemas(dbModel, handler);
     }
 
@@ -123,8 +123,8 @@ public class DBModelManager {
         ResultSet rs = handler.getMetaData().getImportedKeys(null, dbTable.getSchemaName(), dbTable.getName());
         while (rs.next()) {
             DbForeignKey fk = dbTable.getOrAddForeignKey(rs.getString("FK_NAME"));
-            fk.setToSchema(rs.getString("FKTABLE_SCHEM"));
-            fk.setToTable(rs.getString("FKTABLE_NAME"));
+            fk.setForeignSchemaName(rs.getString("FKTABLE_SCHEM"));
+            fk.setForeignTableName(rs.getString("FKTABLE_NAME"));
             fk.setOnDelete(rs.getInt("UPDATE_RULE"));
             fk.setOnUpdate(rs.getInt("DELETE_RULE"));
 

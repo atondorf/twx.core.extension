@@ -1,11 +1,19 @@
 package twx.core.db.model;
 
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.json.JSONObject;
 
-public class DbObject<ParentType extends DbObject<?>> {
+/*
+ *  Base class for all of the members in the DB-Model Tree ... 
+ */
+public class DbObject<ParentType extends DbObject<?>> implements Serializable {
 
-  protected ParentType parent;
+  private static final long serialVersionUID = 1L;
 
+  transient protected ParentType parent;  // << not serialized ... 
   protected String name;
   protected String description;
 
@@ -14,8 +22,30 @@ public class DbObject<ParentType extends DbObject<?>> {
     this.name = name;
   }
 
+  public String getName() {
+    return this.name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getDesciption() {
+    return this.description;
+  }
+
+  public void setDescription(String desc) {
+    this.description = desc;
+  }
+
   protected void takeOwnerShip(DbObject<?> parent) {
     this.parent = (ParentType)parent;
+  }
+
+  public void clear() {
+    this.parent = null;
+    this.name = null;
+    this.description = null;
   }
 
   public boolean isRoot() {
@@ -33,16 +63,8 @@ public class DbObject<ParentType extends DbObject<?>> {
       return this.getParent().getRoot();
   }
 
-  public DbModel getSpec() {
+  public DbModel getModel() {
     return (DbModel) this.getRoot();
-  }
-
-  public String getName() {
-    return this.name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
   }
 
   public String getFullName() {
@@ -51,7 +73,7 @@ public class DbObject<ParentType extends DbObject<?>> {
     if (name == null) {
       name = prefix;
     } else if (prefix != null) {
-      if( name.contains(".") )
+      if (name.contains("."))
         name = prefix + ".[" + name + "]";
       else
         name = prefix + "." + name;
@@ -59,25 +81,41 @@ public class DbObject<ParentType extends DbObject<?>> {
     return name;
   }
 
-  public String getDesciption() {
-    return this.description;
+  protected <T extends DbObject<?>> T checkOwnership(T obj) {
+    if (obj.getParent() != this) {
+      throw new IllegalArgumentException(
+          "Given " + obj.getClass().getSimpleName() + " is not owned by this " +
+              getClass().getSimpleName());
+    }
+    return obj;
   }
 
-  public void setDescription(String desc) {
-    this.description = desc;
+  protected static <T extends DbObject<?>> T findObject(Collection<T> objects, String name) {
+    for (T obj : objects) {
+      if ((name == obj.getName()) ||
+          ((name != null) && name.equals(obj.getName()))) {
+        return obj;
+      }
+    }
+    return null;
   }
 
+  // region Serialization ... 
+  // --------------------------------------------------------------------------------
   public JSONObject toJSON() {
     var json = new JSONObject();
-    json.put("name", getName());
+    json.put( DbConstants.MODEL_TAG_NAME, getName());
     if (description != null)
-      json.put("description", this.description);
+      json.put(DbConstants.MODEL_TAG_DESCRIPT, this.description);
     return json;
   }
 
   public DbObject<?> fromJSON(JSONObject json) {
-    this.name = json.getString("name");
-    this.description = json.getString("description");
+    if (json.has(DbConstants.MODEL_TAG_NAME))
+      this.name = json.getString(DbConstants.MODEL_TAG_NAME);
+    if (json.has(DbConstants.MODEL_TAG_DESCRIPT))
+      this.description = json.getString(DbConstants.MODEL_TAG_DESCRIPT);
     return this;
   }
+  // endregion 
 }

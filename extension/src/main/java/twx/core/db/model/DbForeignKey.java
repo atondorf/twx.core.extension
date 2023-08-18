@@ -1,5 +1,6 @@
 package twx.core.db.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import org.json.JSONObject;
 
 import twx.core.db.model.DbIndex.DbIndexColumn;
 
-public class DbForeignKey extends DbObject<DbTable> {
+public class DbForeignKey extends DbObject<DbTable> implements Serializable {
 
     // Internal Enum for FK-Rules
     // --------------------------------------------------------------------------------
@@ -42,46 +43,46 @@ public class DbForeignKey extends DbObject<DbTable> {
         }
     }
 
-    protected class DbFKColumn {
-        protected String columnName = "";
-        protected Integer columnOrdinal = 0;
-        protected String toColumnName = "";
+    protected class DbFKReference implements Serializable {
+        protected Integer   ordinal = 0;
+        protected String    localColumnName = "";
+        protected String    foreignColumnName = "";
         
-        public DbFKColumn(String columnName, Integer columnOrdinal, String toColumnName) {
-            this.columnName = columnName;
-            this.columnOrdinal = columnOrdinal;
-            this.toColumnName = toColumnName;
+        public DbFKReference(Integer ordinal, String localColumnName, String foreignColumnName) {
+            this.ordinal = ordinal;
+            this.localColumnName = localColumnName;
+            this.foreignColumnName = foreignColumnName;
         }
 
-        public void setColumnName(String name) {
-            this.columnName = name;
+        public void setOrdinal(Integer ordinal) {
+            this.ordinal = ordinal;
         }
 
-        public String getColumnName() {
-            return columnName;
+        public Integer getOrdinal() {
+            return ordinal;
         }
 
-        public void setColumnOrdinal(Integer ordinal) {
-            this.columnOrdinal = ordinal;
+        public void setLocalColumnName(String name) {
+            this.localColumnName = name;
         }
 
-        public Integer getColumnOrdinal() {
-            return columnOrdinal;
+        public String getLocalColumnName() {
+            return localColumnName;
         }
 
-        public String getToColumnName() {
-            return toColumnName;
+        public String getForeignColumnName() {
+            return foreignColumnName;
         }
 
-        public void setToColumnName(String toColumnName) {
-            this.toColumnName = toColumnName;
+        public void setForeignColumnName(String toColumnName) {
+            this.foreignColumnName = toColumnName;
         }
 
         public JSONObject toJSON() {
             var json = new JSONObject();
-            json.put( "columnName", this.columnName );
-            json.put( "columnOrdinal", this.columnOrdinal );
-            json.put( "toColumnName", this.toColumnName );
+            json.put( DbConstants.MODEL_TAG_INDEX_LOCAL_COLUMN, this.localColumnName );
+            json.put( DbConstants.MODEL_TAG_INDEX_ORDINAL, this.ordinal );
+            json.put( DbConstants.MODEL_TAG_INDEX_FOREIGN_COLUMN, this.foreignColumnName );
             return json;
         }
     }
@@ -89,11 +90,11 @@ public class DbForeignKey extends DbObject<DbTable> {
 
     // region Get/Set Table Properties
     // --------------------------------------------------------------------------------    
-    private final List<DbFKColumn> columns = new ArrayList<DbFKColumn>();
-    protected String toSchema;
-    protected String toTable;
-    protected FkRule onUpdate;
-    protected FkRule onDelete;
+    private final List<DbFKReference> columns = new ArrayList<DbFKReference>();
+    protected String foreignSchemaName  = "";
+    protected String foreignTableName   = "";
+    protected FkRule onUpdate           = null;
+    protected FkRule onDelete           = null;
 
     public DbForeignKey(DbTable table, String name) {
         super(table, name);
@@ -102,8 +103,8 @@ public class DbForeignKey extends DbObject<DbTable> {
 
     // region Get/Set Table Properties
     // --------------------------------------------------------------------------------
-    public void addColumn(Integer seq, String fromCol, String toCol ) {
-        this.columns.add( new DbFKColumn(toCol, seq, toCol));
+    public void addColumn(Integer seq, String localColumn, String toCol ) {
+        this.columns.add( new DbFKReference(seq, localColumn, toCol));
     }
 
     public void setOnUpdate(int onUpdate) {
@@ -122,35 +123,66 @@ public class DbForeignKey extends DbObject<DbTable> {
         return onDelete.key;
     }
 
-    public void setToSchema(String toSchema) {
-        this.toSchema = toSchema;
+    public void setForeignSchemaName(String foreignSchemaName) {
+        this.foreignSchemaName = foreignSchemaName;
     }
 
-    public void setToTable(String toTable) {
-        this.toTable = toTable;
+    public void setForeignTableName(String foreignTableName) {
+        this.foreignTableName = foreignTableName;
     }
 
-    public String getToSchema() {
-        return toSchema;
+    public String getForeignSchemaName() {
+        return foreignSchemaName;
     }
 
-    public String getToTable() {
-        return toTable;
+    public String getForeignTableName() {
+        return foreignTableName;
     }
     // endregion
+    // region Serialization ... 
+    // --------------------------------------------------------------------------------
+    public void addColumnFromJSON(JSONObject json) {
+        Integer colSeq = json.getInt(DbConstants.MODEL_TAG_INDEX_ORDINAL);
+        String localColumnName = json.getString(DbConstants.MODEL_TAG_INDEX_LOCAL_COLUMN);   
+        String foreignColumnName = json.getString(DbConstants.MODEL_TAG_INDEX_FOREIGN_COLUMN);   
+        this.addColumn(colSeq,localColumnName,foreignColumnName);  
+    }
 
+    @Override
+    public DbForeignKey fromJSON(JSONObject json) {
+        super.fromJSON(json);
+        if( json.has(DbConstants.MODEL_TAG_INDEX_FOREIGN_SCHEMA))
+            this.foreignSchemaName = json.getString(DbConstants.MODEL_TAG_INDEX_FOREIGN_SCHEMA);
+        if( json.has(DbConstants.MODEL_TAG_INDEX_FOREIGN_TABLE))
+            this.foreignTableName = json.getString(DbConstants.MODEL_TAG_INDEX_FOREIGN_TABLE);
+        if( json.has(DbConstants.MODEL_TAG_INDEX_ON_UPDATE))
+            this.onUpdate = FkRule.getByLabel(json.getString(DbConstants.MODEL_TAG_INDEX_ON_UPDATE));
+        if( json.has(DbConstants.MODEL_TAG_INDEX_ON_DELETE))
+            this.onDelete = FkRule.getByLabel(json.getString(DbConstants.MODEL_TAG_INDEX_ON_DELETE));
+        if( json.has(DbConstants.MODEL_TAG_COLUMN_ARRAY) ) {
+            JSONArray schemas = json.getJSONArray(DbConstants.MODEL_TAG_COLUMN_ARRAY);
+            schemas.forEach( item -> {
+                this.addColumnFromJSON((JSONObject)item);
+            });
+        }        
+        return this;
+    }
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();
         var colArray = new JSONArray();
-        json.put("toSchema", toSchema);
-        json.put("toTable", toTable);
-        json.put("onUpdate", onUpdate.label);
-        json.put("onDelete", onDelete.label);
-        for (DbFKColumn col : this.columns) {
-            colArray.put(col.toJSON());
+        json.put(DbConstants.MODEL_TAG_INDEX_FOREIGN_SCHEMA, this.foreignSchemaName);
+        json.put(DbConstants.MODEL_TAG_INDEX_FOREIGN_TABLE, this.foreignTableName);
+        if( this.onUpdate != null )
+            json.put(DbConstants.MODEL_TAG_INDEX_ON_UPDATE, this.onUpdate.label);
+        if( this.onDelete != null )
+            json.put(DbConstants.MODEL_TAG_INDEX_ON_DELETE, this.onDelete.label);
+        for (DbFKReference col : this.columns) {
+            colArray.put( col.toJSON() );
         }
-        json.put("columns", colArray );
+        json.put(DbConstants.MODEL_TAG_COLUMN_ARRAY, colArray );
         return json;
     }
+    // endregion
+
 }
