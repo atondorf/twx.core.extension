@@ -110,7 +110,7 @@
                             <isTransactional>false</isTransactional>
                             <persistenceProviderName>
                             <![CDATA[
-                            ThingworxPersistenceProvider
+                            DataPersistenceProvider
                             ]]>
                             </persistenceProviderName>
                         </Row>

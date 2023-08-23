@@ -1,7 +1,6 @@
 package twx.core.db.model;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collection;
 
 import org.json.JSONObject;
@@ -40,6 +39,10 @@ public class DbObject<ParentType extends DbObject<?>> implements Serializable {
 
   protected void takeOwnerShip(DbObject<?> parent) {
     this.parent = (ParentType)parent;
+  }
+
+  protected void addChild( DbObject<?> child ) {
+    child.takeOwnerShip(this);
   }
 
   public void clear() {

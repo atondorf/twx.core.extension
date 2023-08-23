@@ -2,7 +2,7 @@ package twx.core.db.model;
 
 public class DbConstants {
 
-    public static final String DEFAULT_SCHEMA_NAME  = "dbo";
+    public static final String DEFAULT_SCHEMA_NAME              = "dbo";
 
     public static final String MODEL_TAG_NAME                   = "name";
     public static final String MODEL_TAG_DESCRIPT               = "description";
@@ -13,10 +13,14 @@ public class DbConstants {
     public static final String MODEL_TAG_FKKEYS_ARRAY           = "foreignKeys";
 	
     public static final String MODEL_TAG_TABLE_PRIMARY_KEY      = "primaryKey";
+    public static final String MODEL_TAG_TABLE_DATASHAPE_NAME   = "dataShape";
 
-    public static final String MODEL_TAG_COLUMN_SQL_TYPE        = "sqlType";
     public static final String MODEL_TAG_COLUMN_TWX_TYPE        = "twxType";
+    public static final String MODEL_TAG_COLUMN_SQL_TYPE        = "sqlType";
+    public static final String MODEL_TAG_COLUMN_SQL_TYPENAME    = "sqlTypeName";
     public static final String MODEL_TAG_COLUMN_SIZE	        = "size";
+    public static final String MODEL_TAG_COLUMN_ORDINAL         = "ordinal";    
+    public static final String MODEL_TAG_COLUMN_PRECISION       = "precision";
     public static final String MODEL_TAG_COLUMN_NULLABLE        = "nullable";
     public static final String MODEL_TAG_COLUMN_AUTOINCREMENT   = "autoIncrement";
     public static final String MODEL_TAG_COLUMN_PRIMARY_KEY     = "primaryKeySeq";

@@ -19,8 +19,7 @@ import org.mozilla.javascript.annotations.JSFunction;
 import com.thingworx.common.exceptions.ThingworxRuntimeException;
 import com.thingworx.things.database.AbstractDatabase;
 
-import twx.core.db.IDatabaseHandler;
-import twx.core.db.imp.DBUtil;
+import twx.core.db.util.TwxDbUtil;
 
 public class DBConnection extends ScriptableObject {
     // region ScriptableObject basics
@@ -33,7 +32,7 @@ public class DBConnection extends ScriptableObject {
     }
 
     public DBConnection(String thingName, Boolean autoCommit) throws Exception {
-        this.databaseThing = DBUtil.getAbstractDatabaseDirect(thingName);
+        this.databaseThing = TwxDbUtil.getAbstractDatabaseDirect(thingName);
         this.databaseThing.beginTransaction();
         this.connection = this.databaseThing.getConnection();
         this.connection.setAutoCommit(autoCommit);
@@ -204,7 +203,6 @@ public class DBConnection extends ScriptableObject {
 
 
     AbstractDatabase    databaseThing = null;
-    IDatabaseHandler    databaseHandler = null;
     Connection          connection = null;
 
     // endregion

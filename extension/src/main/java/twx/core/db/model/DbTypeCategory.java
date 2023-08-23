@@ -3,6 +3,7 @@ package twx.core.db.model;
 // Internal Enum for FK-Rules
     // --------------------------------------------------------------------------------
     public enum DbTypeCategory {
+        NULL(1, "null"),
         NUMERIC(1, "numeric"), 
         DATETIME(2, "datetime"), 
         TEXTUAL(3, "textual"), 

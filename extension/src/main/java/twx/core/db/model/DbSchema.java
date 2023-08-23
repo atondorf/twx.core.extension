@@ -9,7 +9,13 @@ import org.json.JSONObject;
 
 public class DbSchema extends DbObject<DbModel> {
     
+    private static final long serialVersionUID = 1L;
+
     private final LinkedHashMap<String,DbTable> tables = new LinkedHashMap<String,DbTable>();
+
+    public DbSchema(String name) {
+        super(null,name);
+    }
 
     protected DbSchema(DbModel spec, String name) {
         super(spec,name);
@@ -36,18 +42,28 @@ public class DbSchema extends DbObject<DbModel> {
 
     public DbTable addTable(String name) {
         DbTable table = createTable(name);
-        return addTable(table);
+        return internAddTable(table);
     }
 
-    protected <T extends DbTable> T addTable(T table) {
-        this.tables.put(table.getName(), table);
-        return table;
+    public DbTable addTable(DbTable table) {
+        return internAddTable(table);
     }
 
     public DbTable createTable(String name) {
         return new DbTable(this, name);
     }
     // endregion 
+
+    protected <T extends DbTable> T internAddTable(T table) {
+        table.takeOwnerShip(this);
+        this.tables.put(table.getName(), table);
+        return table;
+    }
+
+    protected <T extends DbSchema> T internRemoveTable(T table) {
+        this.tables.remove(table.getName());
+        return table;
+    }
     // region Serialization ... 
     // --------------------------------------------------------------------------------
     public DbTable addTableFromJSON(JSONObject json) {
@@ -55,7 +71,7 @@ public class DbSchema extends DbObject<DbModel> {
             throw new DbModelException("JSON does not define a tag 'name'");
         DbTable table = new DbTable(this, json.getString(DbConstants.MODEL_TAG_NAME));
         table.fromJSON(json);
-        return addTable(table);
+        return internAddTable(table);
     }
 
     @Override

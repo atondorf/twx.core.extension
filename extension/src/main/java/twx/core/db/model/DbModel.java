@@ -17,6 +17,11 @@ public class DbModel extends DbObject<DbObject<?>> {
     private String version = "0";
     private final LinkedHashMap<String, DbSchema> schemas = new LinkedHashMap<String, DbSchema>();
 
+    public DbModel() {
+        super(null,"");
+        this.addSchema(DbConstants.DEFAULT_SCHEMA_NAME);
+    }
+
     public DbModel(String name) {
         super(null, name);
         this.addSchema(DbConstants.DEFAULT_SCHEMA_NAME);
@@ -45,26 +50,21 @@ public class DbModel extends DbObject<DbObject<?>> {
 
     // region Model Join & Compare 
     // --------------------------------------------------------------------------------
-    public DbModel mergeWith(DbModel other) {
+    public DbModel mergeWith(DbModel other) throws DbModelException {
         return this;
+    }
+
+    public Boolean initialize() throws DbModelException {
+        return true;
+    }
+
+    public Boolean validate() throws DbModelException {
+        return true;
     }
     // endregion
 
     // region Get/Set Schemas 
     // --------------------------------------------------------------------------------
-    public DbSchema addSchema(String name) {
-        DbSchema schema = new DbSchema(this, name);
-        return addSchema(schema);
-    }
-
-    public DbSchema getOrAddSchema(String name) {
-        DbSchema schema = this.schemas.get(name);
-        if (schema == null) {
-            schema = addSchema(name);
-        }
-        return schema;
-    }
-
     public List<DbSchema> getSchemas() {
         return new ArrayList<DbSchema>(this.schemas.values());
     }
@@ -73,11 +73,30 @@ public class DbModel extends DbObject<DbObject<?>> {
         return schemas.keySet();
     }
 
+    public DbSchema addSchema(String name) {
+        DbSchema schema = new DbSchema(this, name);
+        return internAddSchema(schema);
+    }
+    
+    public DbSchema getOrAddSchema(String name) {
+        DbSchema schema = this.schemas.get(name);
+        if (schema == null) {
+            schema = addSchema(name);
+        }
+        return schema;
+    }
+
+    public DbSchema addSchema(DbSchema schema) {
+        return internAddSchema(schema);
+    }
+
     public DbSchema getDefaultSchema() {
         return getSchema(DbConstants.DEFAULT_SCHEMA_NAME);
     }
 
     public DbSchema getSchema(String name) {
+        if( name == null )
+            return this.getDefaultSchema();
         return this.schemas.get(name);
     }
 
@@ -88,21 +107,12 @@ public class DbModel extends DbObject<DbObject<?>> {
     public Boolean removeSchema(String name) {
         DbSchema schema = this.schemas.get(name);
         if (schema != null) {
-            removeSchema(schema);
+            internRemoveSchema(schema);
             return true;
         }
         return false;
     }
     
-    protected <T extends DbSchema> T addSchema(T schema) {
-        this.schemas.put(schema.getName(), schema);
-        return schema;
-    }
-
-    protected <T extends DbSchema> T removeSchema(T schema) {
-        this.schemas.remove(schema.getName());
-        return schema;
-    }
     // endregion
     // region Get/Set Tables 
     // --------------------------------------------------------------------------------
@@ -126,15 +136,29 @@ public class DbModel extends DbObject<DbObject<?>> {
 
     // endregion
 
+    // region 
+    // --------------------------------------------------------------------------------
+    protected <T extends DbSchema> T internAddSchema(T schema) {
+        schema.takeOwnerShip(this);
+        this.schemas.put(schema.getName(), schema);
+        return schema;
+    }
+
+    protected <T extends DbSchema> T internRemoveSchema(T schema) {
+        this.schemas.remove(schema.getName());
+        return schema;
+    }
+    // endregion 
+
+
     // region Serialization ... 
     // --------------------------------------------------------------------------------
-
     public DbSchema addSchemaFromJSON(JSONObject json) {
         if( !json.has(DbConstants.MODEL_TAG_NAME) ) 
             throw new DbModelException("JSON does not define a tag 'name'");
         DbSchema schema = new DbSchema(this, json.getString(DbConstants.MODEL_TAG_NAME));
         schema.fromJSON(json);
-        return addSchema(schema);
+        return internAddSchema(schema);
     }
 
     @Override

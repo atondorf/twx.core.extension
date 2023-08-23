@@ -1,6 +1,10 @@
-package twx.core.db.imp;
+package twx.core.db.util;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.sql.DataSource;
 
@@ -14,11 +18,17 @@ import com.thingworx.types.ConfigurationTable;
 import com.thingworx.types.collections.ConfigurationTableCollection;
 import com.thingworx.webservices.context.ThreadLocalContext;
 
-import twx.core.db.IDatabaseHandler;
-import twx.core.db.model.DBModelManager;
+import twx.core.db.handler.DbHandler;
+import twx.core.db.handler.DbHandlerImplBase;
+import twx.core.db.handler.mssql.MSSqlHandler;
 import twx.core.db.model.DbModel;
 
-public class DBUtil {
+public class TwxDbUtil {
+
+    // region Handling of cached Model ...
+    // --------------------------------------------------------------------------------
+    private static final ConcurrentMap<String, DbModel>    modelMap    = new ConcurrentHashMap<String, DbModel>();
+    private static final ConcurrentMap<String, DbHandler>  handlerMap  = new ConcurrentHashMap<String, DbHandler>();
 
     // Helpers to get Abstract Database ... 
     // --------------------------------------------------------------------------------
@@ -53,45 +63,82 @@ public class DBUtil {
         }
         throw new ThingworxRuntimeException("Thing:" + thingName + " does not exist.");
     }
-    // endregion
-    // Helpers to get JDBC Connection objects  from Abstract Database ... 
-    // --------------------------------------------------------------------------------
-    public static DataSource getDataSource() throws Exception {
-        return getAbstractDatabase().getDataSource();
-    }
-
-    public static DataSource getDataSource(String thingName) throws Exception {
-        return getAbstractDatabase(thingName).getDataSource();
-    }
-
-    public static Connection getConnection() throws Exception {
-        return getAbstractDatabase().getConnection();
-    }
-
-    public static Connection getConnection(String thingName) throws Exception {
-        return getAbstractDatabase(thingName).getConnection();
-    }
-    // endregion 
     // Helpers to get Core handlers from Abstract Database ... 
     // --------------------------------------------------------------------------------
-    public static IDatabaseHandler getDatabaseHandler() throws Exception {
+    public static String getDbThingName() throws Exception {
         AbstractDatabase abstractDatabase = getAbstractDatabase();
-        return getDatabaseHandler(abstractDatabase);
+        return getDbThingName(abstractDatabase);
     }
 
-    public static IDatabaseHandler getDatabaseHandler(AbstractDatabase abstractDB) throws Exception {
-        // TODO ... change this in future to implement other DBs than SQL-Server ... 
-        return new MsSQLDatabaseHandler( abstractDB, getConfiguredApplication(abstractDB) );
+    public static String getDbThingName(AbstractDatabase abstractDatabase) {
+        // check if the AbstractDatabase is a Database Thing
+        String thingName = "";
+        if (abstractDatabase instanceof com.thingworx.things.database.DatabaseSystem) {
+            thingName = abstractDatabase.getName();
+        }
+        // ceck if the AbstractDatabase is a SQL Thing
+        else if (abstractDatabase instanceof com.thingworx.things.database.SQLThing) {
+            ConfigurationTableCollection configurationData = abstractDatabase.getConfigurationData();
+            ConfigurationTable persistenceProviderConfig = configurationData.getConfigurationTable("ConnectionProvider");
+            thingName = persistenceProviderConfig.getRowValue("persistenceProviderName").getStringValue();
+        }
+        return thingName;
     }
 
-    public static DbModel getDBModel() throws Exception {
+    public static List<String> getHandlerNames() {
+        return new ArrayList<>(handlerMap.keySet());
+    }
+
+    public static DbHandler getHandler() throws Exception {
         AbstractDatabase abstractDatabase = getAbstractDatabase();
-        return getDBModel(abstractDatabase);
+        return getHandler(abstractDatabase);
     }
 
-    public static DbModel getDBModel(AbstractDatabase abstractDB) throws Exception {
-        return DBModelManager.getModel( getConfiguredApplication(abstractDB) );
+    public static DbHandler getHandler(AbstractDatabase abstractDatabase) throws Exception {
+        String dbThingName = getDbThingName(abstractDatabase);
+        if( handlerMap.containsKey(dbThingName) )
+            return handlerMap.get(dbThingName);
+        return createHandler(abstractDatabase);
     }
+
+    public static DbHandler getHandler(String handlerName) throws Exception {
+        if( handlerMap.containsKey(handlerName) )
+            return handlerMap.get(handlerName);
+        return null;
+    }
+
+    public static DbHandler createHandler() throws Exception {
+        AbstractDatabase abstractDatabase = getAbstractDatabase();
+        return createHandler(abstractDatabase);
+    }
+
+    public static DbHandler createHandler(AbstractDatabase abstractDatabase) throws Exception {
+        String dbThingName = getDbThingName(abstractDatabase);
+        // TODO - Factory for creation ... currently only MSSQL
+        DbHandlerImplBase dbHandler = new MSSqlHandler(abstractDatabase);
+        handlerMap.put( dbThingName, dbHandler );
+        dbHandler.setAppliction(getConfiguredApplication(abstractDatabase));
+        dbHandler.setCatalog(getConfiguredCatalog(abstractDatabase));
+        return dbHandler;    
+    }
+
+    public static void removeHandler(String modelName) throws Exception {
+        var keys = handlerMap.keySet().iterator();
+        while (keys.hasNext()) {
+            String currentKey = (String) keys.next();
+            if( currentKey.equals(modelName) )
+                keys.remove();
+        }
+    }
+
+    public static void purgeHandlers() throws Exception {
+        var keys = handlerMap.keySet().iterator();
+        while (keys.hasNext()) {
+            String currentKey = (String) keys.next();
+            keys.remove();
+        }
+    }
+
     // endregion 
     // Helpers to get JDBC configuration items ... 
     // --------------------------------------------------------------------------------

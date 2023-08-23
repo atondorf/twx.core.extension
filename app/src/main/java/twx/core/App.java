@@ -3,15 +3,13 @@
  */
 package twx.core;
 
-import java.io.FileReader;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
+import java.sql.JDBCType;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.slf4j.Logger;
@@ -19,9 +17,11 @@ import org.slf4j.LoggerFactory;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 
-import twx.core.db.IDatabaseHandler;
-import twx.core.db.imp.MsSQLDatabaseHandler;
+import twx.core.db.handler.DbHandler;
+import twx.core.db.handler.mssql.MSSqlHandler;
 import twx.core.db.model.DbModel;
+import twx.core.db.model.DbSchema;
+import twx.core.db.model.DbTable;
 
 public class App {
 
@@ -33,7 +33,7 @@ public class App {
     static final String appName = "TWX-Data";
 
     SQLServerDataSource     ds          = null;
-    Connection              con         = null;
+    DbHandler               handler     = null;
 
     public static void main(String[] args) {
         var app = new App();
@@ -43,7 +43,12 @@ public class App {
         try {
             app.openDBConnection();
             app.queryModelFromDB();
-            app.loadModelFromJSON();
+            //            app.manualModel();
+
+//          app.queryModelFromDB();
+//            app.createTable();
+//            app.queryModelFromDB();
+//          app.loadModelFromJSON();
 
         } catch (SQLException e) {
             printSQLException(e);
@@ -72,9 +77,63 @@ public class App {
 
     public void queryModelFromDB() throws Exception {
         logger.info("---------- queryModelFromDB ----------");
-        IDatabaseHandler handler = new MsSQLDatabaseHandler(this.con, App.appName);
-        var model = handler.queryModel();
-        logger.info(model.toJSON().toString(2));  
+        DbModel dbModel = handler.queryModel();
+        logger.info(dbModel.toJSON().toString(2)); 
+    }
+
+    public void getCatalog() throws Exception {
+        logger.info("---------- getCatalog ----------");
+        Connection con = this.handler.getConnection();
+
+        con.getMetaData();
+
+    }
+
+    public void manualModel() {
+        logger.info("---------- manualModel ----------");  
+
+        var dbTable = new DbTable("test_1");
+        var dbSchema = new DbSchema("test");
+        var dbModel = new DbModel("T");
+
+
+        String dataShapeName = "TWX.Hallo_DS";
+        String projectName = "TWX"; 
+        int start   = 0;
+        if( !projectName.isEmpty() )
+            start = dataShapeName.startsWith(projectName) ?  projectName.length() + 1 : 0;
+        int end = dataShapeName.endsWith("_DS") ? dataShapeName.length() - 3 :  dataShapeName.length();
+        String result = dataShapeName.substring(start, end);  
+
+        // dbSchema.addTable(dbTable);
+        dbModel.addSchema(dbSchema);
+
+
+
+        logger.info(dbTable.getRoot().toJSON().toString(2)); 
+    }
+
+    public void dropTable() throws Exception {
+        var con = this.ds.getConnection();
+        var st = con.createStatement();
+        String sql = "DROP TABLE test_1 "; 
+
+        st.execute(sql);
+        con.commit();
+
+    }
+
+    public void createTable() throws Exception {
+        var con = this.ds.getConnection();
+        var st = con.createStatement();
+        
+        String sql =    "CREATE TABLE test_1 ( " + 
+                        "id_1 int NOT NULL," + 
+                        "id_2 int NOT NULL," + 
+                        "PRIMARY KEY (id_1,id_2)" +
+                        ")";
+        st.execute(sql);
+        con.commit();
     }
 
     protected void openDBConnection() throws Exception {
@@ -87,22 +146,14 @@ public class App {
         this.ds.setPortNumber(1433);
         this.ds.setDatabaseName("twdata");
         this.ds.setApplicationName("TWX-Data");
-        this.con = ds.getConnection();
-        
-        logger.info(con.getCatalog());
-        logger.info(con.getSchema());
-        logger.info(ds.getApplicationName());
+        this.handler = new MSSqlHandler(this.ds);
+
+        logger.info("DB-Name:   " + this.handler.getName() );
+        logger.info("DB-Name:   " + this.handler.getKey() );
     }
 
     protected void closeDBConnection() {
         logger.info("---------- closeDBConnection ----------");
-        if (this.con != null) {
-            try {
-                this.con.close();
-            } catch (SQLException e) {
-                printSQLException(e);
-            }
-        }
     }
 
     protected static void printSQLException(SQLException ex) {

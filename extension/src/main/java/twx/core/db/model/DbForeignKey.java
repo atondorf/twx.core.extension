@@ -7,9 +7,9 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import twx.core.db.model.DbIndex.DbIndexColumn;
+public class DbForeignKey extends DbObject<DbTable> {
 
-public class DbForeignKey extends DbObject<DbTable> implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     // Internal Enum for FK-Rules
     // --------------------------------------------------------------------------------
@@ -44,6 +44,8 @@ public class DbForeignKey extends DbObject<DbTable> implements Serializable {
     }
 
     protected class DbFKReference implements Serializable {
+        private static final long serialVersionUID = 1L;
+
         protected Integer   ordinal = 0;
         protected String    localColumnName = "";
         protected String    foreignColumnName = "";
