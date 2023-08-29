@@ -6,22 +6,22 @@ package twx.core;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.JDBCType;
 import java.sql.SQLException;
 import java.util.Scanner;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 
-import twx.core.db.handler.DbHandler;
-import twx.core.db.handler.mssql.MSSqlHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
+
+import twx.core.db.ConnectionManager;
+import twx.core.db.impl.DataSourceConnectionManager;
 import twx.core.db.model.DbModel;
-import twx.core.db.model.DbSchema;
-import twx.core.db.model.DbTable;
 
 public class App {
 
@@ -33,7 +33,8 @@ public class App {
     static final String appName = "TWX-Data";
 
     SQLServerDataSource     ds          = null;
-    DbHandler               handler     = null;
+    ConnectionManager       conMgr      = null;
+    //  DbHandler               handler     = null;
 
     public static void main(String[] args) {
         var app = new App();
@@ -41,8 +42,9 @@ public class App {
         logger.info("---------- Start-App ----------");
         Connection con = null;
         try {
+            app.checkLogger();
             app.openDBConnection();
-            app.queryModelFromDB();
+//            app.queryModelFromDB();
             //            app.manualModel();
 
 //          app.queryModelFromDB();
@@ -60,6 +62,15 @@ public class App {
         logger.info("---------- Exit-App ----------");
     }  
 
+    private void checkLogger() {
+         // print internal state
+         LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+         StatusPrinter.print(lc);
+         
+         logger.debug("Hello world.");        
+         logger.info(logger.getClass().getName());
+    }
+
     public void loadModelFromJSON() throws Exception {
         logger.info("---------- loadModelFromFile ----------");
         InputStream is = App.class.getResourceAsStream("/db1.json");
@@ -68,49 +79,12 @@ public class App {
         }
         JSONTokener tokener = new JSONTokener(is);
         JSONObject dbInfo = new JSONObject(tokener);
-
+/*
         var model = new DbModel(appName);
         model.fromJSON(dbInfo);
-
+ 
         logger.info(model.toJSON().toString(2));          
-    }
-
-    public void queryModelFromDB() throws Exception {
-        logger.info("---------- queryModelFromDB ----------");
-        DbModel dbModel = handler.queryModel();
-        logger.info(dbModel.toJSON().toString(2)); 
-    }
-
-    public void getCatalog() throws Exception {
-        logger.info("---------- getCatalog ----------");
-        Connection con = this.handler.getConnection();
-
-        con.getMetaData();
-
-    }
-
-    public void manualModel() {
-        logger.info("---------- manualModel ----------");  
-
-        var dbTable = new DbTable("test_1");
-        var dbSchema = new DbSchema("test");
-        var dbModel = new DbModel("T");
-
-
-        String dataShapeName = "TWX.Hallo_DS";
-        String projectName = "TWX"; 
-        int start   = 0;
-        if( !projectName.isEmpty() )
-            start = dataShapeName.startsWith(projectName) ?  projectName.length() + 1 : 0;
-        int end = dataShapeName.endsWith("_DS") ? dataShapeName.length() - 3 :  dataShapeName.length();
-        String result = dataShapeName.substring(start, end);  
-
-        // dbSchema.addTable(dbTable);
-        dbModel.addSchema(dbSchema);
-
-
-
-        logger.info(dbTable.getRoot().toJSON().toString(2)); 
+*/         
     }
 
     public void dropTable() throws Exception {
@@ -146,10 +120,8 @@ public class App {
         this.ds.setPortNumber(1433);
         this.ds.setDatabaseName("twdata");
         this.ds.setApplicationName("TWX-Data");
-        this.handler = new MSSqlHandler(this.ds);
 
-        logger.info("DB-Name:   " + this.handler.getName() );
-        logger.info("DB-Name:   " + this.handler.getKey() );
+        this.conMgr = new DataSourceConnectionManager(ds);
     }
 
     protected void closeDBConnection() {

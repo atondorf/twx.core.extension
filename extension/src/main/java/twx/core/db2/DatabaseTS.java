@@ -1,4 +1,4 @@
-package twx.core.db;
+package twx.core.db2;
 
 import java.sql.Connection;
 
@@ -16,13 +16,13 @@ import com.thingworx.types.collections.ValueCollection;
 import com.thingworx.types.primitives.StringPrimitive;
 
 import ch.qos.logback.core.db.dialect.DBUtil;
-import twx.core.db.handler.DbHandler;
-import twx.core.db.model.DbModel;
-import twx.core.db.model.DbObject;
-import twx.core.db.model.DbSchema;
-import twx.core.db.model.DbTable;
-import twx.core.db.util.TwxDataShapeUtil;
-import twx.core.db.util.TwxDbUtil;
+import twx.core.db2.handler.DbHandler;
+import twx.core.db2.model.DbModel;
+import twx.core.db2.model.DbObject;
+import twx.core.db2.model.DbSchema;
+import twx.core.db2.model.DbTable;
+import twx.core.db2.util.TwxDataShapeUtil;
+import twx.core.db2.util.TwxDbUtil;
 
 public class DatabaseTS {
     private static Logger logger = LogUtilities.getInstance().getApplicationLogger(DatabaseTS.class);

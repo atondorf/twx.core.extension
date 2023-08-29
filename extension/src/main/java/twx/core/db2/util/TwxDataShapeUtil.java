@@ -1,4 +1,4 @@
-package twx.core.db.util;
+package twx.core.db2.util;
 
 import java.util.Optional;
 

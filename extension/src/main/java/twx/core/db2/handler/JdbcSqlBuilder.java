@@ -1,4 +1,4 @@
-package twx.core.db.handler;
+package twx.core.db2.handler;
 
 import java.sql.Connection;
 

@@ -1,4 +1,4 @@
-package twx.core.db.handler;
+package twx.core.db2.handler;
 
 import java.sql.Connection;
 import java.sql.JDBCType;
@@ -14,13 +14,13 @@ import com.thingworx.datashape.DataShape;
 import com.thingworx.metadata.FieldDefinition;
 import com.thingworx.types.BaseTypes;
 
-import twx.core.db.model.DbColumn;
-import twx.core.db.model.DbForeignKey;
-import twx.core.db.model.DbIndex;
-import twx.core.db.model.DbModel;
-import twx.core.db.model.DbSchema;
-import twx.core.db.model.DbTable;
-import twx.core.db.util.TwxDataShapeUtil;
+import twx.core.db2.model.DbColumn;
+import twx.core.db2.model.DbForeignKey;
+import twx.core.db2.model.DbIndex;
+import twx.core.db2.model.DbModel;
+import twx.core.db2.model.DbSchema;
+import twx.core.db2.model.DbTable;
+import twx.core.db2.util.TwxDataShapeUtil;
 
 public class JdbcModelManager {
 

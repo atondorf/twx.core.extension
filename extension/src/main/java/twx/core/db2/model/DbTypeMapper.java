@@ -1,4 +1,4 @@
-package twx.core.db.model;
+package twx.core.db2.model;
 
 import java.sql.Types;
 import java.util.Collection;

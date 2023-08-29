@@ -1,4 +1,4 @@
-package twx.core.db.handler;
+package twx.core.db2.handler;
 
 import java.sql.Connection;
 
@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.thingworx.things.database.AbstractDatabase;
 
 import ch.qos.logback.classic.spi.PlatformInfo;
-import twx.core.db.model.DbModel;
+import twx.core.db2.model.DbModel;
 
 public abstract class DbHandlerImplBase implements DbHandler {
     final static Logger logger = LoggerFactory.getLogger(DbHandlerImplBase.class);

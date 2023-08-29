@@ -1,6 +1,5 @@
 package twx.core.db.scriptable;
 
-import java.sql.Types;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -16,40 +15,29 @@ import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.annotations.JSConstructor;
 import org.mozilla.javascript.annotations.JSFunction;
 
-import com.thingworx.common.exceptions.ThingworxRuntimeException;
-import com.thingworx.things.database.AbstractDatabase;
-
-import twx.core.db.util.TwxDbUtil;
+import twx.core.db.handler.DbHandler;
+import twx.core.db.util.DatabaseUtil;
 
 public class DBConnection extends ScriptableObject {
+
+    DbHandler    databaseHandler = null;
+    Connection   connection = null;
+
     // region ScriptableObject basics
     // --------------------------------------------------------------------------------
     private static final long serialVersionUID = 1L;
 
-    public DBConnection() {
-        this.databaseThing = null;
-        this.connection = null;
-    }
-
-    public DBConnection(String thingName, Boolean autoCommit) throws Exception {
-        this.databaseThing = TwxDbUtil.getAbstractDatabaseDirect(thingName);
-        this.databaseThing.beginTransaction();
-        this.connection = this.databaseThing.getConnection();
-        this.connection.setAutoCommit(autoCommit);
+    public DBConnection(String thingName) throws Exception {
+        this.databaseHandler = DatabaseUtil.getHandler(thingName);
+        this.connection = this.databaseHandler.getConnectionManager().getConnection();
     }
 
     @JSConstructor
     public static Scriptable jsConstructor(Context cx, Object[] args, Function ctorObj, boolean inNewExpr) throws Exception {
         if (args.length < 1 || args[0] == Context.getUndefinedValue())
             throw new IllegalArgumentException("DBConnection - First Param must be Name of an DBThing");
-
         String thingName = Context.toString(args[0]);
-        Boolean autoCommit = false;
-
-        if (args.length >= 2 && args[1] != Context.getUndefinedValue())
-            autoCommit = Context.toBoolean(args[1]);
-
-        return new DBConnection(thingName, autoCommit);
+        return new DBConnection(thingName);
     }
 
     @Override
@@ -65,13 +53,6 @@ public class DBConnection extends ScriptableObject {
     // endregion
     // region Thing and DB - Information
     // --------------------------------------------------------------------------------
-    @JSFunction
-    public String getThingName() throws Exception {
-        if (databaseThing == null)
-            return "UNDEFINED";
-        return databaseThing.getName();
-    }
-
     @JSFunction
     public String getCatalog() throws Exception {
         return this.connection.getCatalog();
@@ -131,45 +112,25 @@ public class DBConnection extends ScriptableObject {
 
     @JSFunction
     public void close() throws Exception {
-        if (this.connection == null)
+        if ( this.isClosed() )
             return;
-        if( this.databaseThing != null )
-            this.databaseThing.endTransaction(this.connection);
-        else {
-            this.connection.close();
-        }
-        this.databaseThing = null;
+        this.databaseHandler.getConnectionManager().close(connection);
         this.connection = null;
     }
 
     @JSFunction
-    public void open(Boolean autoCommit) throws Exception {
-        if (this.connection != null)
-            return;
-        this.databaseThing.beginTransaction();
-        this.connection = this.databaseThing.getConnection();
-        this.connection.setAutoCommit(autoCommit);
-    }
-
-    @JSFunction
     public void commit() throws Exception {
-        this.databaseThing.commit(this.connection);
+        if ( this.isClosed() )
+            return;
+        this.databaseHandler.getConnectionManager().commit(connection);
     }
 
     @JSFunction
     public void rollback() throws Exception {
-        this.databaseThing.rollback(this.connection);
+        if ( this.isClosed() )
+            return;
+        this.databaseHandler.getConnectionManager().rollback(connection);
     }
-
-    @JSFunction
-    public Boolean isAutoCommit() throws SQLException {
-        return this.connection.getAutoCommit();
-    }
-
-    @JSFunction
-    public void setAutoCommit(Boolean autoCommit) throws SQLException {
-        this.connection.setAutoCommit(autoCommit);
-    };
 
     // endregion
     // region Statements
@@ -200,10 +161,6 @@ public class DBConnection extends ScriptableObject {
     protected DatabaseMetaData getMetaData() throws Exception {
         return getConnection().getMetaData();
     }
-
-
-    AbstractDatabase    databaseThing = null;
-    Connection          connection = null;
 
     // endregion
     // region Test Services for Development only ...

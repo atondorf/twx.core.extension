@@ -1,4 +1,4 @@
-package twx.core.db.util;
+package twx.core.db2.util;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -18,10 +18,10 @@ import com.thingworx.types.ConfigurationTable;
 import com.thingworx.types.collections.ConfigurationTableCollection;
 import com.thingworx.webservices.context.ThreadLocalContext;
 
-import twx.core.db.handler.DbHandler;
-import twx.core.db.handler.DbHandlerImplBase;
-import twx.core.db.handler.mssql.MSSqlHandler;
-import twx.core.db.model.DbModel;
+import twx.core.db2.handler.DbHandler;
+import twx.core.db2.handler.DbHandlerImplBase;
+import twx.core.db2.handler.mssql.MSSqlHandler;
+import twx.core.db2.model.DbModel;
 
 public class TwxDbUtil {
 

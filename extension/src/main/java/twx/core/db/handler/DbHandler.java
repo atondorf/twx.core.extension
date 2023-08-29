@@ -2,13 +2,13 @@ package twx.core.db.handler;
 
 import java.sql.Connection;
 
-import javax.sql.DataSource;
-
-import com.thingworx.things.database.AbstractDatabase;
-
-import twx.core.db.model.DbModel;
+import twx.core.db.ConnectionManager;
+import twx.core.db.TransactionManager;
+import twx.core.db2.handler.DbHandlerInfo;
+import twx.core.db2.handler.JdbcSqlBuilder;
 
 public interface DbHandler {
+    
     // region TWX-Services Metadata Database ... 
     // --------------------------------------------------------------------------------
     public String getName();
@@ -18,36 +18,29 @@ public interface DbHandler {
     public String getCatalog();
 
     public String getApplication();
-
-    public DbHandlerInfo getHandlerInfo();
-
-    public JdbcSqlBuilder getSqlBuilder();
     // endregion
-    // region Access to Models ... 
-    // --------------------------------------------------------------------------------
-    public JdbcModelManager getModelManager();
 
-    public DbModel getModel();
+    // region Connections & Transactions ... 
+    // --------------------------------------------------------------------------------  
+    public ConnectionManager getConnectionManager();
 
-    public DbModel queryModel() throws Exception;
-
-    // endregion
-    // region TWX-Services Metadata Database ... 
-    // --------------------------------------------------------------------------------
-    public AbstractDatabase getAbstractDatabase();
-
-    public DataSource getDataSource() throws Exception;
+    public TransactionManager getTransactionManager();
 
     public Connection getConnection() throws Exception;
+    // endregion 
 
-    public boolean isConnected() throws Exception;
+    // region DDL Handler ... 
+    // --------------------------------------------------------------------------------  
+    public DbInfo getDbInfo();
 
-    public void beginTransaction() throws Exception;
+    public DDLBuilder getDdlBuilder();
 
-    public void endTransaction(Connection conn) throws Exception;
+    public DDLReader  getDdlReader();
+    // endregion 
+    // region DSL Handler ... 
+    // --------------------------------------------------------------------------------  
+    public SQLBuilder getSqlBuilder();
 
-    public void commit(Connection conn) throws Exception;
+    // endregion 
 
-    public void rollback(Connection conn) throws Exception;
-    // endregion
 }
