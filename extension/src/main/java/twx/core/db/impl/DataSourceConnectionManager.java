@@ -11,7 +11,7 @@ import ch.qos.logback.classic.Logger;
 import twx.core.db.ConnectionManager;
 
 public class DataSourceConnectionManager implements ConnectionManager {
-    private static Logger _logger = LogUtilities.getInstance().getApplicationLogger(AbstractDatabaseConnectionManager.class);
+    private static Logger _logger = LogUtilities.getInstance().getApplicationLogger(DataSourceConnectionManager.class);
 
     protected DataSource    dataSource;
 
