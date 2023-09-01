@@ -30,9 +30,9 @@ public class DBCallableStatement extends DBStatement {
     @Override
     protected Statement createStatement(String sql) throws Exception {
         this.cstmt = dbCon.getConnection().prepareCall(sql);
-        if( this.stmt != null )
-            this.stmt.close();
-        this.stmt  = cstmt;        
+        if( this.satement != null )
+            this.satement.close();
+        this.satement  = cstmt;        
         return this.cstmt;
     }
 

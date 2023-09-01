@@ -1,4 +1,4 @@
-package twx.core.db2.model;
+package twx.core.db.model;
 
 public class DbModelException extends RuntimeException {
     private static final long serialVersionUID = -1L;

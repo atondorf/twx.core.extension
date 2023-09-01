@@ -12,6 +12,16 @@ import com.thingworx.things.database.SQLToInfoTableConversion;
 import com.thingworx.types.InfoTable;
 
 public class DBStatement extends ScriptableObject {
+    // region Private Members ...
+    // --------------------------------------------------------------------------------
+    protected DBConnection  connection   = null ;
+    protected Statement     satement    = null;
+
+    protected static Statement getStatement(Scriptable me) {
+        DBStatement dbStatement = (DBStatement)me;
+        return dbStatement.satement;
+    }
+    // endregion
     // region ScriptableObject basics
     // --------------------------------------------------------------------------------
     private static final long serialVersionUID = 1L;
@@ -19,12 +29,12 @@ public class DBStatement extends ScriptableObject {
     public DBStatement() { }
 
     public DBStatement(DBConnection dbCon) throws Exception {
-        this.dbCon = dbCon;
-        this.stmt  = createStatement(null);
+        this.connection = dbCon;
+        this.satement  = createStatement(null);
     }
 
     protected Statement createStatement(String sql) throws Exception {
-        return this.dbCon.getConnection().createStatement();
+        return this.connection.getConnection().createStatement();
     }
 
     @Override
@@ -32,54 +42,43 @@ public class DBStatement extends ScriptableObject {
 
     @Override
     protected void finalize() throws Throwable {
-        if( stmt != null)
-            stmt.close();
-        stmt = null;
+        if( satement != null)
+            satement.close();
+        satement = null;
     }
     // endregion 
     // region Statement Handling 
     // --------------------------------------------------------------------------------
     @JSFunction
     public void close() throws SQLException {
-        if( stmt != null)
-            stmt.close();
-        stmt = null;
+        if( satement != null)
+            satement.close();
+        satement = null;
     }
     
     @JSFunction
     public Boolean execute(String sql) throws Exception {
-        Boolean ret = stmt.execute(sql);
+        Boolean ret = satement.execute(sql);
         return ret;
     }
 
     @JSFunction
     public int executeUpdate (String sql) throws Exception {
-        if( stmt == null )
+        if( satement == null )
             return -1;
-        int ret = stmt.executeUpdate(sql);
+        int ret = satement.executeUpdate(sql);
         return ret;
     }
 
     @JSFunction
     public InfoTable executeQuery(String sql) throws Exception {
         InfoTable result = null;
-        if( stmt != null ) {
-            ResultSet rs = stmt.executeQuery(sql);
+        if( satement != null ) {
+            ResultSet rs = satement.executeQuery(sql);
             result = SQLToInfoTableConversion.createInfoTableFromResultset(rs,null);
         }
         return result;
     }
 
     // endregion 
-    // region Private Members ...
-    // --------------------------------------------------------------------------------
-    protected DBConnection  dbCon   = null ;
-    protected Statement     stmt    = null;
-
-    protected static Statement getStatement(Scriptable me) {
-        DBStatement dbStatement = (DBStatement)me;
-        return dbStatement.stmt;
-    }
-
-    // endregion
 }

@@ -1,5 +1,6 @@
 package twx.core.db.handler;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -12,19 +13,7 @@ import twx.core.db.model.DbTable;
 
 public interface DDLReader {
     
-    public DbModel readTables(String catalog, String schema, String[] tableTypes);
+    public DbModel queryModel() throws SQLException;
+ 
 
-    public DbTable readTable(String catalog, String schema, String tableName);
-
-    public List<String> getTableTypes();
-
-    public List<String> getCatalogNames();
-
-    public List<String> getSchemaNames(String catalog);
-
-    public List<String> getTableNames(String catalog, String schema, String[] tableTypes);
-
-    public List<String> getColumnNames(String catalog, String schema, String tableName);
-
-    public Collection<DbForeignKey> getExportedKeys(DbTable table);
 }

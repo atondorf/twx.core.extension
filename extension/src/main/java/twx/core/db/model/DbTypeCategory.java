@@ -1,4 +1,4 @@
-package twx.core.db2.model;
+package twx.core.db.model;
 
 // Internal Enum for FK-Rules
     // --------------------------------------------------------------------------------

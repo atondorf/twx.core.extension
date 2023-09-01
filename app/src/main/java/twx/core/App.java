@@ -11,15 +11,13 @@ import java.util.Scanner;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.util.StatusPrinter;
-
-import twx.core.db.ConnectionManager;
+import twx.core.db.handler.DbHandler;
+import twx.core.db.handler.DbHandlerFactory;
 import twx.core.db.impl.DataSourceConnectionManager;
 import twx.core.db.model.DbModel;
 
@@ -27,14 +25,13 @@ public class App {
 
     final static Logger logger = LoggerFactory.getLogger(App.class);
 
-    static final String DB_URL  = "jdbc:sqlserver://localhost:1433;database=twdata;";
-    static final String USER    = "twx";
-    static final String PASS    = "twx@1234";
+    static final String DB_URL = "jdbc:sqlserver://localhost:1433;database=twdata;";
+    static final String USER = "twx";
+    static final String PASS = "twx@1234";
     static final String appName = "TWX-Data";
 
-    SQLServerDataSource     ds          = null;
-    ConnectionManager       conMgr      = null;
-    //  DbHandler               handler     = null;
+    SQLServerDataSource ds = null;
+    DbHandler handler = null;
 
     public static void main(String[] args) {
         var app = new App();
@@ -42,33 +39,35 @@ public class App {
         logger.info("---------- Start-App ----------");
         Connection con = null;
         try {
-            app.checkLogger();
             app.openDBConnection();
-//            app.queryModelFromDB();
-            //            app.manualModel();
+            // app.queryModel();
+            // app.queryModelFromDB();
+            // app.manualModel();
 
-//          app.queryModelFromDB();
-//            app.createTable();
-//            app.queryModelFromDB();
-//          app.loadModelFromJSON();
+            // app.queryModelFromDB();
+            // app.createTable();
+            // app.queryModelFromDB();
+            // app.loadModelFromJSON();
 
         } catch (SQLException e) {
             printSQLException(e);
         } catch (Exception e) {
-            logger.error("Exception: " + e.toString() );
+            logger.error("Exception: " + e.toString());
         } finally {
             app.closeDBConnection();
         }
         logger.info("---------- Exit-App ----------");
-    }  
+    }
 
-    private void checkLogger() {
-         // print internal state
-         LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-         StatusPrinter.print(lc);
-         
-         logger.debug("Hello world.");        
-         logger.info(logger.getClass().getName());
+    private void queryModel() throws SQLException {
+        logger.info("---------- queryModel ----------");
+        var model = handler.getDDLReader().queryModel(); // handler.getDbModel();
+/*
+        model.setDescription("This is a test");
+        model.addTable("test_1");
+        model.addTable("test_2");
+*/        
+        logger.info(model.toJSON().toString(2));
     }
 
     public void loadModelFromJSON() throws Exception {
@@ -79,18 +78,18 @@ public class App {
         }
         JSONTokener tokener = new JSONTokener(is);
         JSONObject dbInfo = new JSONObject(tokener);
-/*
-        var model = new DbModel(appName);
-        model.fromJSON(dbInfo);
- 
-        logger.info(model.toJSON().toString(2));          
-*/         
+        /*
+         * var model = new DbModel(appName);
+         * model.fromJSON(dbInfo);
+         * 
+         * logger.info(model.toJSON().toString(2));
+         */
     }
 
     public void dropTable() throws Exception {
         var con = this.ds.getConnection();
         var st = con.createStatement();
-        String sql = "DROP TABLE test_1 "; 
+        String sql = "DROP TABLE test_1 ";
 
         st.execute(sql);
         con.commit();
@@ -100,12 +99,12 @@ public class App {
     public void createTable() throws Exception {
         var con = this.ds.getConnection();
         var st = con.createStatement();
-        
-        String sql =    "CREATE TABLE test_1 ( " + 
-                        "id_1 int NOT NULL," + 
-                        "id_2 int NOT NULL," + 
-                        "PRIMARY KEY (id_1,id_2)" +
-                        ")";
+
+        String sql = "CREATE TABLE test_1 ( " +
+                "id_1 int NOT NULL," +
+                "id_2 int NOT NULL," +
+                "PRIMARY KEY (id_1,id_2)" +
+                ")";
         st.execute(sql);
         con.commit();
     }
@@ -120,12 +119,16 @@ public class App {
         this.ds.setPortNumber(1433);
         this.ds.setDatabaseName("twdata");
         this.ds.setApplicationName("TWX-Data");
+        this.handler = DbHandlerFactory.getInstance().createMsSqlHandler(ds);
 
-        this.conMgr = new DataSourceConnectionManager(ds);
+        logger.info("---------- DB Connection Opened ----------");
+        logger.info("Handler Name   : {}", this.handler.getName() );
+        logger.info("Handler Key    : {}", this.handler.getKey()  );
+        logger.info("Handler Catalog: {}", this.handler.getDefaultCatalog());
     }
 
-    protected void closeDBConnection() {
-        logger.info("---------- closeDBConnection ----------");
+    private void closeDBConnection() {
+        
     }
 
     protected static void printSQLException(SQLException ex) {

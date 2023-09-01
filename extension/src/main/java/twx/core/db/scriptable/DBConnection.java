@@ -20,16 +20,18 @@ import twx.core.db.util.DatabaseUtil;
 
 public class DBConnection extends ScriptableObject {
 
-    DbHandler    databaseHandler = null;
+    DbHandler    dbHandler = null;
     Connection   connection = null;
 
     // region ScriptableObject basics
     // --------------------------------------------------------------------------------
     private static final long serialVersionUID = 1L;
 
+    public DBConnection() {}
+
     public DBConnection(String thingName) throws Exception {
-        this.databaseHandler = DatabaseUtil.getHandler(thingName);
-        this.connection = this.databaseHandler.getConnectionManager().getConnection();
+        this.dbHandler = DatabaseUtil.getHandler(thingName);
+        this.connection = this.dbHandler.getConnection();
     }
 
     @JSConstructor
@@ -55,7 +57,7 @@ public class DBConnection extends ScriptableObject {
     // --------------------------------------------------------------------------------
     @JSFunction
     public String getCatalog() throws Exception {
-        return this.connection.getCatalog();
+        return getConnection().getCatalog();
     }
 
     @JSFunction
@@ -114,7 +116,7 @@ public class DBConnection extends ScriptableObject {
     public void close() throws Exception {
         if ( this.isClosed() )
             return;
-        this.databaseHandler.getConnectionManager().close(connection);
+        this.dbHandler.close(connection);
         this.connection = null;
     }
 
@@ -122,14 +124,14 @@ public class DBConnection extends ScriptableObject {
     public void commit() throws Exception {
         if ( this.isClosed() )
             return;
-        this.databaseHandler.getConnectionManager().commit(connection);
+        this.dbHandler.commit(connection);
     }
 
     @JSFunction
     public void rollback() throws Exception {
         if ( this.isClosed() )
             return;
-        this.databaseHandler.getConnectionManager().rollback(connection);
+        this.dbHandler.rollback(connection);
     }
 
     // endregion

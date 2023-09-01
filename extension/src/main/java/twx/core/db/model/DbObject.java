@@ -1,4 +1,4 @@
-package twx.core.db2.model;
+package twx.core.db.model;
 
 import java.io.Serializable;
 import java.util.Collection;

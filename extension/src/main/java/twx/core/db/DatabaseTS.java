@@ -1,4 +1,4 @@
-package twx.core.db2;
+package twx.core.db;
 
 import java.sql.Connection;
 
@@ -16,89 +16,68 @@ import com.thingworx.types.collections.ValueCollection;
 import com.thingworx.types.primitives.StringPrimitive;
 
 import ch.qos.logback.core.db.dialect.DBUtil;
-import twx.core.db2.handler.DbHandler;
-import twx.core.db2.model.DbModel;
-import twx.core.db2.model.DbObject;
-import twx.core.db2.model.DbSchema;
-import twx.core.db2.model.DbTable;
-import twx.core.db2.util.TwxDataShapeUtil;
-import twx.core.db2.util.TwxDbUtil;
+import twx.core.db.util.DatabaseUtil;
 
 public class DatabaseTS {
     private static Logger logger = LogUtilities.getInstance().getApplicationLogger(DatabaseTS.class);
 
-    private DbModel getDBModel() throws Exception  {
-        // return TwxDbUtil.getDBModel();
-        return null;
-    }
-
     // region TWX-Services Metadata Configuration ... 
     // --------------------------------------------------------------------------------
-    @ThingworxServiceDefinition(name = "GetHandlerName", description = "", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "GetDBName", description = "", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "STRING", aspects = {})
-    public String GetHandlerName() throws Exception {
-        return TwxDbUtil.getHandler().getName();
+    public String GetDBName() throws Exception {
+        return DatabaseUtil.getHandler().getName();
     }
 
     @ThingworxServiceDefinition(name = "GetDBKey", description = "", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "STRING", aspects = {})
     public String GetDBKey() throws Exception {
-        // return TwxDbUtil.getConfiguredKey();
-        return TwxDbUtil.getHandler().getKey();
+        return DatabaseUtil.getHandler().getKey();
     }
 
     @ThingworxServiceDefinition(name = "GetDBCatalog", description = "", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "STRING", aspects = {})
     public String GetDBCatalog() throws Exception {
-        // return TwxDbUtil.getConfiguredCatalog();
-        return TwxDbUtil.getHandler().getCatalog();
+        return DatabaseUtil.getHandler().getDefaultCatalog();
     }
 
-    @ThingworxServiceDefinition(name = "GetDBApplication", description = "", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "GetDBDefaultSchema", description = "", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "STRING", aspects = {})
-    public String GetDBApplication() throws Exception {
-        // return TwxDbUtil.getConfiguredApplication();
-        return TwxDbUtil.getHandler().getApplication();        
+    public String GetDBDefaultSchema() throws Exception {
+        return DatabaseUtil.getHandler().getDefaultSchema();
     }
 
-	@ThingworxServiceDefinition(name = "IsSqlThing", description = "", category = "", isAllowOverride = false, aspects = {"isAsync:false" })
-    @ThingworxServiceResult(name = "Result", description = "", baseType = "BOOLEAN", aspects = {})
-    public Boolean IsSqlThing() throws Exception {
-        var abstractDatabase = TwxDbUtil.getHandler().getAbstractDatabase(); 
-        return ( abstractDatabase instanceof com.thingworx.things.database.SQLThing );
-    }
-
-    @ThingworxServiceDefinition(name = "IsDatabaseThing", description = "", category = "", isAllowOverride = false, aspects = {"isAsync:false" })
-    @ThingworxServiceResult(name = "Result", description = "", baseType = "BOOLEAN", aspects = {})
-    public Boolean IsDatabaseThing() throws Exception {
-        var abstractDatabase = TwxDbUtil.getHandler().getAbstractDatabase(); 
-        return ( abstractDatabase instanceof com.thingworx.things.database.DatabaseSystem );
-    }
-
-    @ThingworxServiceDefinition(name = "GetSQLThingName", description = "", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "GetConfiguredKey", description = "", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "STRING", aspects = {})
-    public String GetSQLThingName() throws Exception {
-        // return TwxDbUtil.getConfiguredApplication();
-        var abstractDatabase = TwxDbUtil.getHandler().getAbstractDatabase(); 
-        if( abstractDatabase == null ) {
-            return "UNDEFINED";
-        }
-        return abstractDatabase.getName();
+    public String GetConfiguredKey() throws Exception {
+        return DatabaseUtil.getConfiguredKey();
     }
-    
+
+    @ThingworxServiceDefinition(name = "GetConfigureCatalog", description = "", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "STRING", aspects = {})
+    public String GetConfigureCatalog() throws Exception {
+        return DatabaseUtil.getConfiguredCatalog();
+    }
+
+    @ThingworxServiceDefinition(name = "GetConfiguredApplication", description = "", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "STRING", aspects = {})
+    public String GetConfiguredApplication() throws Exception {
+        return DatabaseUtil.getConfiguredApplication();
+    }
+
     // endregion
     // region TWX-Services Metadata Database ... 
     // --------------------------------------------------------------------------------
     @ThingworxServiceDefinition(name = "GetDBModel", description = "Get's the Model from the internal Model Cache ...", category = "DB Model", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "JSON", aspects = {})
     public JSONObject GetDBModel() throws Exception {
-        return TwxDbUtil.getHandler().getModel().toJSON();
+        return DatabaseUtil.getHandler().getDbModel().toJSON();
     }
 
     @ThingworxServiceDefinition(name = "QueryDBModel", description = "Queries the Model from Database, does not store it to the Model Tree", category = "Metadata Database", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "JSON", aspects = {})
     public JSONObject QueryDBModel() throws Exception {
-        return TwxDbUtil.getHandler().queryModel().toJSON(); 
+        return DatabaseUtil.getHandler().getDDLReader().queryModel().toJSON();
     }
     
     // endregion
@@ -124,11 +103,13 @@ public class DatabaseTS {
     public JSONObject CreateTableModel(
             @ThingworxServiceParameter(name = "dataShapeName", description = "", baseType = "DATASHAPENAME") String dataShapeName,
             @ThingworxServiceParameter(name = "dnInfo", description = "", baseType = "JSON") JSONObject dnInfo) throws Exception {
-        
+  /*
         var ds = TwxDataShapeUtil.getDataShape(dataShapeName);
         var modelMgr = TwxDbUtil.getHandler().getModelManager();
         DbTable table = modelMgr.getTableFromDataShape(ds);
         return table.toJSON();
+*/
+        return null; // 
     }
 
 

@@ -3,8 +3,8 @@ package twx.core.db.dbspec;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.*;
 
-import twx.core.db2.model.DbModel;
-import twx.core.db2.model.DbSchema;
+import twx.core.db.model.DbModel;
+import twx.core.db.model.DbSchema;
 
 import java.util.logging.Logger;
 

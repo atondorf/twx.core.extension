@@ -9,6 +9,8 @@ dependencies {
     implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.4.11'
     implementation group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '8.2.1.jre11'
     implementation project(':extension')
+    implementation fileTree(dir: rootProject.ext.commonJarDir, include: ['*.jar'])
+    implementation fileTree(dir: rootProject.ext.localJarDir, include: ['*.jar'])
 }
 
 application {

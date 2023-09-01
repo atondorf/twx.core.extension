@@ -21,15 +21,13 @@ import com.thingworx.webservices.context.ThreadLocalContext;
 
 import ch.qos.logback.classic.Logger;
 import twx.core.db.handler.DbHandler;
+import twx.core.db.handler.DbHandlerFactory;
 
 public class DatabaseUtil {
-    
     private static Logger _logger = LogUtilities.getInstance().getApplicationLogger(DatabaseUtil.class);
     
     // region Database Handler ... 
     // --------------------------------------------------------------------------------  
-    private static final Map<String, DbHandler>  handlerMap  = Maps.newHashMap();
-
     public static DbHandler getHandler() throws Exception {
         AbstractDatabase abstractDatabase = getAbstractDatabase();
         return getHandler(abstractDatabase);
@@ -41,10 +39,7 @@ public class DatabaseUtil {
     }
 
     public static DbHandler getHandler(AbstractDatabase abstractDatabase) throws Exception {
-        String dbThingName = getDatabaseThingName(abstractDatabase);
-        if( handlerMap.containsKey(dbThingName) )
-            return handlerMap.get(dbThingName);
-        return null; // createHandler(abstractDatabase);
+        return DbHandlerFactory.getInstance().getDbHandler(abstractDatabase);
     }
 
     // endregion 
@@ -81,6 +76,16 @@ public class DatabaseUtil {
         }
         throw new ThingworxRuntimeException("Thing:" + thingName + " does not exist.");
     }
+
+    public static DbHandler getDatabaseHandler() {
+        return null;
+    }
+
+    public static DbHandler getDatabaseHandler(AbstractDatabase abstractDatabase ) {
+        return null;
+    }
+
+
     // Helpers to get Core handlers from Abstract Database ... 
     // --------------------------------------------------------------------------------
     public static String getDatabaseThingName() throws Exception {

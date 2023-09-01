@@ -3,6 +3,8 @@ package twx.core.db.impl;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
 import ch.qos.logback.classic.Logger;
 import twx.core.db.ConnectionManager;
 
@@ -11,26 +13,30 @@ import com.thingworx.logging.LogUtilities;
 import com.thingworx.things.database.AbstractDatabase;
 import com.thingworx.logging.LogUtilities;
 
-public class AbstractDatabaseConnectionManager implements ConnectionManager {
+public class AbstractDatabaseConnectionManager extends DataSourceConnectionManager {
     private static Logger _logger = LogUtilities.getInstance().getApplicationLogger(AbstractDatabaseConnectionManager.class);
 
     protected AbstractDatabase abstractDatabase = null;
+    protected String  catalog = null;
 
-    public AbstractDatabaseConnectionManager(AbstractDatabase abstractDatabase) {
+    public AbstractDatabaseConnectionManager(AbstractDatabase abstractDatabase) throws Exception {
+        super(abstractDatabase.getDataSource());
         this.abstractDatabase = abstractDatabase;
     }
 
+    @Override
+    public AbstractDatabase getAbstractDatabase() {
+        return this.abstractDatabase;
+    }
+
+    @Override
     public Connection getConnection() {
         try {
-            if (_logger.isDebugEnabled())
-                _logger.debug("Try to get database Connection.");
             Connection connection = abstractDatabase.getConnection();
             connection.setAutoCommit(false);
-            if (_logger.isDebugEnabled())
-                _logger.debug("Connection to database acquire.");
             return connection;
-        } catch (Exception e) {
-            _logger.error("Error getting database connection", e);
+        } catch (Exception ex) {
+            _logger.error("Error getting database connection", ex);
         }
         return null;
     }
@@ -43,8 +49,8 @@ public class AbstractDatabaseConnectionManager implements ConnectionManager {
                 return;
             connection.setAutoCommit(true);
             connection.close();
-        } catch (SQLException e) {
-            _logger.error("Error closing connection", e);
+        } catch (SQLException ex) {
+            _logger.error("Error closing connection", ex);
         }
     }
 
@@ -53,8 +59,8 @@ public class AbstractDatabaseConnectionManager implements ConnectionManager {
             return;
         try {
             connection.commit();
-        } catch (Exception e) {
-            _logger.error("Error in commit", e);
+        } catch (Exception ex) {
+            _logger.error("Error in commit", ex);
             rollback(connection);
         }
     }
@@ -64,8 +70,8 @@ public class AbstractDatabaseConnectionManager implements ConnectionManager {
             return;
         try {
             connection.rollback();
-        } catch (SQLException e) {
-            _logger.error("Error in rollback", e);
+        } catch (SQLException ex) {
+            _logger.error("Error in rollback", ex);
         }
     }
 
