@@ -19,7 +19,7 @@ public class DbSchemaTest {
         @BeforeEach
         void createNewSpec() {
             spec = new DbModel("Spec");
-            sut = spec.addSchema("Schema");
+            sut = spec.createSchema("Schema");
             log.info("DbSchemaTest.BeforeEach()");
         }
 
@@ -52,7 +52,7 @@ public class DbSchemaTest {
 
             @BeforeEach
             void createNewSpec() {
-                table = sut.addTable("Table");
+                table = sut.createTable("Table");
                 log.info("whenAddingATable.BeforeEach()");
             }
 

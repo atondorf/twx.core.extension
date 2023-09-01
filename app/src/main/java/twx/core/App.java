@@ -7,7 +7,9 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.LinkedHashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -20,6 +22,7 @@ import twx.core.db.handler.DbHandler;
 import twx.core.db.handler.DbHandlerFactory;
 import twx.core.db.impl.DataSourceConnectionManager;
 import twx.core.db.model.DbModel;
+import twx.core.db.model.DbSchema;
 
 public class App {
 
@@ -40,7 +43,7 @@ public class App {
         Connection con = null;
         try {
             app.openDBConnection();
-            // app.queryModel();
+            app.testHashSet();
             // app.queryModelFromDB();
             // app.manualModel();
 
@@ -57,6 +60,26 @@ public class App {
             app.closeDBConnection();
         }
         logger.info("---------- Exit-App ----------");
+    }
+
+    private void testHashSet() {
+        logger.info("---------- testHashSet ----------");
+        Set<DbSchema> schemas = new LinkedHashSet<>();
+
+        logger.info( "Size: " + schemas.size() );
+        schemas.add( new DbSchema("Hallo") );
+        logger.info( "Size: " + schemas.size() );
+        schemas.add( new DbSchema("") );
+        logger.info( "Size: " + schemas.size() );   
+        schemas.add( new DbSchema("Hallo2") );
+        schemas.add( new DbSchema("Hallo3") );
+        schemas.add( new DbSchema("Hallo4") );
+        logger.info( "Size: " + schemas.size() );   
+
+        String name = "";
+        DbSchema val =  schemas.stream().filter(c -> name.equals(c.getName())).findAny().orElse(null);
+        if( val != null )
+            logger.info( "Name : " + val.getName() + " - Is default : " + val.isDefault() );   
     }
 
     private void queryModel() throws SQLException {

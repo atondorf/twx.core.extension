@@ -1,122 +1,184 @@
 package twx.core.db.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.LinkedHashSet;
+import java.util.Objects;
 
-import org.json.JSONArray;
+import org.apache.commons.lang3.tuple.MutableTriple;
 import org.json.JSONObject;
 
-public class DbIndex extends DbObject<DbTable> {
+import twx.core.db.model.settings.DbIndexSetting;
+import twx.core.db.model.settings.SettingHolder;
 
-    // Internal Helpers
-    // --------------------------------------------------------------------------------
-    protected class DbIndexColumn {
-        protected Integer ordinal = 0;
-        protected String columnName = "";
+public class DbIndex extends DbObject<DbTable> implements SettingHolder<DbIndexSetting> {
+    private final Map<DbIndexSetting, String> settings = new EnumMap<>(DbIndexSetting.class);
+    private final Set<DbIndexColumn> columns = new LinkedHashSet<>();
 
-        public DbIndexColumn(Integer ordinal, String name) {
-            this.ordinal = ordinal;
-            this.columnName = name;
-        }
-
-        public Integer getOrdinal() {
-            return ordinal;
-        }
-
-        public void setOrdinal(Integer ordinal) {
-            this.ordinal = ordinal;
-        }
-
-        public String getColumnName() {
-            return columnName;
-        }
-
-        public void setColumnName(String name) {
-            this.columnName = name;
-        }
-
-        public JSONObject toJSON() {
-            var json = new JSONObject();
-            json.put(DbConstants.MODEL_TAG_INDEX_ORDINAL, this.ordinal);
-            json.put(DbConstants.MODEL_TAG_INDEX_LOCAL_COLUMN, this.columnName);
-            return json;
-        }
+    public DbIndex(String name) {
+        super(null, name);
     }
-    // endregion
 
-    // region Get/Set Index Properties
-    // --------------------------------------------------------------------------------
-    private final List<DbIndexColumn> columns = new ArrayList<DbIndexColumn>();
-    protected boolean unique;
-
-    public DbIndex(DbTable table, String name) {
+    protected DbIndex(DbTable table, String name) {
         super(table, name);
     };
-    // endregion
 
-    // region Get/Set Index Properties
+    @Override
+    public void clear() {
+        super.clear();
+        this.columns.clear();
+        this.settings.clear();
+    }
+
+    public DbTable getTable() {
+        return (DbTable) this.getParent();
+    }
+
+    public DbSchema getSchema() {
+        return this.getTable().getSchema();
+    }
+
+    // region Get/Set Settings ...
     // --------------------------------------------------------------------------------
-    public boolean isUnique() {
-        return unique;
+    @Override
+    public void addSetting(DbIndexSetting settingKey, String value) {
+        this.settings.put(settingKey, value);
     }
 
-    public void setUnique(boolean unique) {
-        this.unique = unique;
+    public String getSetting(DbIndexSetting settingKey) {
+        return this.settings.get(settingKey);
     }
 
-    public List<DbIndexColumn> getColumns() {
-        return this.columns;
+    public Map<DbIndexSetting, String> getSettings() {
+        return Collections.unmodifiableMap(this.settings);
     }
 
-    public List<String> getColumnNames() {
-        return this.columns.stream().map(DbIndexColumn::getColumnName).collect(Collectors.toList());
+    // endregion
+    // region Get/Set Columns ...
+    // --------------------------------------------------------------------------------
+    // reggion Internal Helpers
+    // --------------------------------------------------------------------------------
+    protected class DbIndexColumn {
+        public DbColumn column;
+        public Integer  ordinal = 0;
+
+        public DbIndexColumn(DbColumn column, Integer ordinal) {
+            this.column = column;
+            this.ordinal = ordinal;
+        }
+
+        @Override
+        public String toString() {
+            return column.getName();
+        }
+    }
+    protected Boolean hasColumn(final String name ) {
+        return columns.stream().anyMatch(c -> c.toString().equals(name));
     }
 
-    public void addColumn(String columnName) {
-        Integer seq = this.columns.size() + 1;
-        this.columns.add(new DbIndexColumn(seq, columnName));
+    protected DbIndexColumn getColumn(final String name ) {
+        return columns.stream().filter(c -> c.toString().equals(name)).findAny().orElse(null);
     }
 
-    public void addColumn(String columnName, Integer ordinal) {
-        this.columns.add(new DbIndexColumn(ordinal, columnName));
-        this.columns.sort((c1, c2) -> c1.getOrdinal().compareTo(c2.getOrdinal()));
+    protected void setColumns( Collection<DbColumn> columns ) {
+        this.columns.clear();
+        columns.stream().forEach( col -> this.columns.add( new DbIndexColumn(col, this.columns.size())));
+    }
 
+    // endregion 
+    public Set<DbColumn> getColumns() {
+        Set<DbColumn> set = new LinkedHashSet<>();
+        this.columns.stream().sorted( (o1,o2)-> o1.ordinal.compareTo(o2.ordinal)).forEach(idx -> set.add(idx.column));
+        return Collections.unmodifiableSet(set);
+    }
+    
+    public Set<DbIndexColumn> getColumnsOrdinal() {
+        return Collections.unmodifiableSet(columns);
+    }
+
+    public Integer addColumn(final String name) {
+        Integer ordinal = columns.size();
+        if( hasColumn(name) )
+            return -1;
+        var column = this.getTable().getColumn(name);
+        if( column == null )
+            return -1;
+        columns.add( new DbIndexColumn(column, ordinal) );
+            return ordinal;
+    }
+
+    public DbColumn removeColumn(final String name ) {
+        DbIndexColumn column = this.getColumn(name);
+        if( column == null )
+            return null;
+        this.columns.remove(column);
+        return column.column;
+    }
+
+    // endregion
+    // region Model Join & Compare
+    // --------------------------------------------------------------------------------
+    public DbIndex mergeWith(DbIndex other) throws DbModelException {
+        return this;
+    }
+
+    public Boolean initialize() throws DbModelException {
+        return true;
+    }
+
+    public Boolean validate() throws DbModelException {
+        return true;
+    }
+
+    // endregion
+    // region Compare and Hash ...
+    // --------------------------------------------------------------------------------
+    /*
+     * @Override
+     * public boolean equals(final Object obj) {
+     * if (this == obj)
+     * return true;
+     * if (obj == null || getClass() != obj.getClass())
+     * return false;
+     * final DbTable that = (DbTable) obj;
+     * return Objects.equals(this.getSchema(), that.getSchema() ) &&
+     * this.getName().equals(that.getName());
+     * }
+     * 
+     * @Override
+     * public int hashCode() {
+     * return Objects.hash(this.getSchema(), this.getName());
+     * }
+     */
+    @Override
+    public String toString() {
+        /*
+         * return columns.entrySet()
+         * .stream()
+         * .map(e -> e.getValue() == null ? '`' + e.getKey() + '`' : e.getKey())
+         * .collect(Collectors.joining(", ", "(", ")"));
+         */ return null;
     }
     // endregion
-    // region Serialization ... 
+    // region Serialization ...
     // --------------------------------------------------------------------------------
-    public void addColumnFromJSON(JSONObject json) {
-        Integer colSeq = json.getInt(DbConstants.MODEL_TAG_INDEX_ORDINAL);
-        String name = json.getString(DbConstants.MODEL_TAG_INDEX_LOCAL_COLUMN);   
-        this.addColumn(name,colSeq);   
-    }
 
     @Override
     public DbIndex fromJSON(JSONObject json) {
         super.fromJSON(json);
-        if( json.has(DbConstants.MODEL_TAG_INDEX_UNIQUE)) 
-            this.unique = json.getBoolean(DbConstants.MODEL_TAG_INDEX_UNIQUE);
-        if( json.has(DbConstants.MODEL_TAG_INDEX_ARRAY)) {
-            JSONArray columns = json.getJSONArray(DbConstants.MODEL_TAG_INDEX_ARRAY);
-            columns.forEach( item -> {
-                this.addColumnFromJSON((JSONObject)item);
-            });
-        }
+
         return this;
     }
 
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();
-        json.put(DbConstants.MODEL_TAG_INDEX_UNIQUE, this.unique);
-        var colArray = new JSONArray();
-        for (DbIndexColumn col : this.columns) {
-            colArray.put(col.toJSON());
-        }
-        if( colArray.length() > 0 )
-            json.put(DbConstants.MODEL_TAG_INDEX_ARRAY, colArray);
+
         return json;
     }
-    // endreggion 
+    // endregion
 }

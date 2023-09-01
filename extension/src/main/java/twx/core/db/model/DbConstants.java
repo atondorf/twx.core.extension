@@ -5,7 +5,8 @@ public class DbConstants {
     public static final String DEFAULT_SCHEMA_NAME              = "dbo";
 
     public static final String MODEL_TAG_NAME                   = "name";
-    public static final String MODEL_TAG_DESCRIPT               = "description";
+    public static final String MODEL_TAG_NOTE                   = "note";
+    
     public static final String MODEL_TAG_SCHEMA_ARRAY           = "schemas";
     public static final String MODEL_TAG_TABLE_ARRAY            = "tables";
     public static final String MODEL_TAG_COLUMN_ARRAY           = "columns";

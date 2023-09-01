@@ -1,6 +1,6 @@
 package twx.core.db.model.settings;
 
-public enum DbRelationshipSetting implements Setting {
+public enum DbRelationSetting implements Setting {
 	DELETE,
 	UPDATE,
 }

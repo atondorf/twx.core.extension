@@ -31,11 +31,6 @@ public class DbSpecTest {
         }
 
         @Test
-        void shouldReturnItselfAsSpec() {
-            assertEquals(sut, sut.getModel());
-        }
-
-        @Test
         void shouldHaveValidName() {
             assertEquals("Name", sut.getName());
             assertEquals("Name", sut.getFullName());
@@ -59,7 +54,7 @@ public class DbSpecTest {
             @BeforeEach
             void addSchemas() {
                 // sut.addDefaultSchema();
-                sut.addSchema("Test");
+                sut.createSchema("Test");
             }
 
             @Test

@@ -52,7 +52,7 @@ public class AbstractDDLReader implements DDLReader {
         while (rs.next()) {
             String schemaName = rs.getString("TABLE_SCHEM");
             if (!this.dbInfo.isSystemSchema(schemaName)) {
-                DbSchema dbSchema = dbModel.addSchema(schemaName);
+                DbSchema dbSchema = dbModel.createSchema(schemaName);
                 queryModelTables(dbSchema, con);
             }
         }
@@ -65,20 +65,19 @@ public class AbstractDDLReader implements DDLReader {
             String tableSchema = rs.getString("TABLE_SCHEM");
             String tableName = rs.getString("TABLE_NAME");
             if (tableSchema.equals(dbSchema.getName())) {
-                DbTable dbTable = dbSchema.addTable(tableName);
+                DbTable dbTable = dbSchema.createTable(tableName);
                 queryModelColumns(dbTable, con);
                 queryModelIndexes(dbTable, con);
                 queryModelKeys(dbTable, con);
-                queryModelForeignKeys(dbTable, con);
             }
         }
         return dbSchema;
     }
 
     protected DbTable queryModelColumns(DbTable dbTable, Connection con) throws SQLException {
-        ResultSet rs = con.getMetaData().getColumns(null, dbTable.getSchemaName(), dbTable.getName(), null);
+        ResultSet rs = con.getMetaData().getColumns(null, dbTable.getSchema().getName(), dbTable.getName(), null);
         while (rs.next()) {
-            DbColumn col = dbTable.addColumn(rs.getString("COLUMN_NAME"));
+            DbColumn col = dbTable.createColumn(rs.getString("COLUMN_NAME"));
             Integer typeId = rs.getInt("DATA_TYPE");
             // @Todo-AT: own type mapping ...
             JDBCType jdbcType = JDBCType.valueOf(typeId);
@@ -103,7 +102,7 @@ public class AbstractDDLReader implements DDLReader {
         while (rs.next()) {
             String name = rs.getString("PK_NAME");
             if (name != null) {
-                dbTable.setPrimaryKey(name);
+                // dbTable.setPrimaryKey(name);
                 String colName = rs.getString("COLUMN_NAME");
                 Integer colOrdinal = rs.getInt("KEY_SEQ");
                 // set the column of the primary key ...
@@ -118,29 +117,17 @@ public class AbstractDDLReader implements DDLReader {
         while (rs.next()) {
             String name = rs.getString("INDEX_NAME");
             if (name != null) {
-                DbIndex index = dbTable.getOrAddIndex(name);
+                DbIndex index = dbTable.getOrCreateIndex(name);
                 String colName = rs.getString("COLUMN_NAME");
                 Integer colOrdinal = rs.getInt("ORDINAL_POSITION");
-                index.addColumn(colName, colOrdinal);
+/*                index.addColumn(colName, colOrdinal);
                 index.setUnique(!rs.getBoolean("NON_UNIQUE"));
-            }
+            */
+                    }
         }
         return dbTable;
     }
 
-    protected DbTable queryModelForeignKeys(DbTable dbTable, Connection con) throws SQLException {
-        ResultSet rs = con.getMetaData().getImportedKeys(null, dbTable.getSchemaName(), dbTable.getName());
-        while (rs.next()) {
-            DbForeignKey fk = dbTable.getOrAddForeignKey(rs.getString("FK_NAME"));
-            fk.setForeignSchemaName(rs.getString("FKTABLE_SCHEM"));
-            fk.setForeignTableName(rs.getString("FKTABLE_NAME"));
-            fk.setOnDelete(rs.getInt("UPDATE_RULE"));
-            fk.setOnUpdate(rs.getInt("DELETE_RULE"));
-
-            fk.addColumn(rs.getInt("KEY_SEQ"), rs.getString("FKCOLUMN_NAME"), rs.getString("PKCOLUMN_NAME"));
-        }
-        return dbTable;
-    }
-
+    
    
 }
