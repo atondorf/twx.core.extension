@@ -427,12 +427,20 @@
                                     <Row>
                                         <code>
                                         <![CDATA[
-                                        queue_push("test", { value: "Hallo" } );
+                                        result =  { };
+                                        if( queue_size("test") == 0 ) {
+                                        	queue_push("test", { v: 1 });
+                                        	queue_push("test", { v: 2 });
+                                        	queue_push("test", { v: 3 });
+                                        	queue_push("test", { v: 4 });
+                                        }
+                                        //queue_push("test", { value: "Hallo" } );
                                         
-                                        result = queue_peek("test");
-                                        result.size = queue_size("test");
+                                        result.array = queue_toArray("test");
+                                        result.pop = queue_popN("test",3);
+                                        result.peek = queue_peekN("test",3);
                                         
-                                        result = queue_toArray("test");
+                                        queue_clear("test");
                                         ]]>
                                         </code>
                                     </Row>
