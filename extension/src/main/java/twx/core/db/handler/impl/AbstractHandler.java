@@ -1,5 +1,7 @@
 package twx.core.db.handler.impl;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -36,8 +38,23 @@ public abstract class AbstractHandler implements DbHandler {
     // region TWX-Services Metadata Database ...
     // --------------------------------------------------------------------------------
     @Override
+    public DbInfo getDbInfo() {
+        return this.dbHandlerInfo;
+    }
+
+    @Override
     public String getDefaultCatalog() {
         return getConnectionManager().getCatalog();
+    }
+
+    @Override 
+    public Boolean isDefaultCatalog(String catalogName) {
+        return this.getDefaultCatalog().equals(catalogName);
+    }
+
+    @Override 
+    public Boolean isDefaultSchema(String schemaName) {
+        return this.getDefaultSchema().equals(schemaName);
     }
 
     // endregion
@@ -70,11 +87,6 @@ public abstract class AbstractHandler implements DbHandler {
     // endregion
     // region DDL Handler ...
     // --------------------------------------------------------------------------------
-    @Override
-    public DbInfo getDbInfo() {
-        return this.dbHandlerInfo;
-    }
-
     public DbModel getDbModel() {
         return this.dbModel;
     }
@@ -87,7 +99,38 @@ public abstract class AbstractHandler implements DbHandler {
     // region DSL Handler ...
     // --------------------------------------------------------------------------------
 
+
     // endregion
+    // region Exception & Logging Handler ...
+    // --------------------------------------------------------------------------------
+    public  void logException(String message, Exception exception ) {
+        _logger.error( message, exception );
+    }
+
+    public  void logSQLException(String message, SQLException exception ) {
+        _logger.error( message, exception );
+        _logger.error( printSQLException(exception) );
+    }
+
+    protected static String printSQLException(SQLException ex) {
+        StringWriter sw = new StringWriter();
+        PrintWriter  pw = new PrintWriter(sw);
+        for (Throwable e : ex) {
+            if (e instanceof SQLException) {
+                e.printStackTrace(pw);
+                pw.println("SQLState: " + ((SQLException) e).getSQLState());
+                pw.println("Error Code: " + ((SQLException) e).getErrorCode());
+                pw.println("Message: " + e.getMessage());
+                Throwable t = ex.getCause();
+                while (t != null) {
+                    pw.println("Cause: " + t);
+                    t = t.getCause();
+                }
+            }
+        }
+        return sw.toString();
+    }
+
     // endregion
     // region DSL Handler ...
     // --------------------------------------------------------------------------------

@@ -1,5 +1,8 @@
 package twx.core.db.scriptable;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -15,10 +18,21 @@ import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.annotations.JSConstructor;
 import org.mozilla.javascript.annotations.JSFunction;
 
+import com.thingworx.datashape.DataShape;
+import com.thingworx.dsl.engine.adapters.ThingworxInfoTableAdapter;
+import com.thingworx.logging.LogUtilities;
+import com.thingworx.metadata.FieldDefinition;
+import com.thingworx.types.InfoTable;
+import com.thingworx.types.BaseTypes;
+
+import ch.qos.logback.classic.Logger;
+import twx.core.db.TransactionManager;
 import twx.core.db.handler.DbHandler;
+import twx.core.db.model.DbColumn;
 import twx.core.db.util.DatabaseUtil;
 
 public class DBConnection extends ScriptableObject {
+    private static Logger _logger = LogUtilities.getInstance().getApplicationLogger(DBConnection.class);
 
     DbHandler    dbHandler = null;
     Connection   connection = null;
@@ -164,6 +178,15 @@ public class DBConnection extends ScriptableObject {
         return getConnection().getMetaData();
     }
 
+    protected void logException(String message, Exception exception ) {
+        if( this.dbHandler != null ) {
+            if( exception instanceof SQLException )
+                this.dbHandler.logSQLException(message, (SQLException)exception);
+            else 
+                this.dbHandler.logException(message, exception);
+        }
+    }
+
     // endregion
     // region Test Services for Development only ...
     // --------------------------------------------------------------------------------
@@ -176,6 +199,33 @@ public class DBConnection extends ScriptableObject {
         jsonResult.put("ClassName", args[0].getClass().getName());
         jsonResult.put("ClassSimpleName", args[0].getClass().getSimpleName());
         jsonResult.put("ClassCanonicalName", args[0].getClass().getCanonicalName());
+
+        if( args[0] instanceof ThingworxInfoTableAdapter ) {
+            InfoTable table = ((ThingworxInfoTableAdapter) args[0]).getInfoTable();
+            var ds = table.getDataShape();
+            // sort all arguments to an Array ...
+            JSONArray argArray = new JSONArray();
+            for (FieldDefinition fieldDefinition : ds.getFields().getOrderedFieldsByOrdinal() ) {
+                JSONObject jsonField = new JSONObject();
+                jsonField.put("Name",  fieldDefinition.getName() );
+                jsonField.put("Basetype", fieldDefinition.getBaseType() );
+                jsonField.put("Ordinal", fieldDefinition.getOrdinal() );
+
+                var valCol = table.getFirstRow();
+                if( valCol != null ) {
+                    Object value = null;
+                    if (valCol.has(fieldDefinition.getName()))
+                      value = valCol.getValue(fieldDefinition.getName()); 
+
+                    var obj = valCol.getValue(fieldDefinition.getName());
+                    jsonField.put("ValueClass", obj.getClass().getName() );
+                    jsonField.put("Value", obj.toString() );
+                }
+                argArray.put(jsonField);
+            }
+
+            jsonResult.put("ARGs", argArray);
+        }
 
         if (args[0] instanceof NativeObject) {
             NativeObject nativeObject = (NativeObject) args[0];
@@ -199,6 +249,10 @@ public class DBConnection extends ScriptableObject {
             jsonResult.put("ARGs", argArray);
         }
         return jsonResult;
+    }
+
+    protected static JSONObject getInfotableParams( InfoTable table ) {
+        return null;
     }
     // endregion
 }

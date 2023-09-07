@@ -196,6 +196,18 @@
                     <PropertyDefinition
                      aspect.cacheTime="0.0"
                      aspect.dataChangeType="VALUE"
+                     aspect.defaultValue="{&quot;value&quot;:100}"
+                     aspect.isIndexed="false"
+                     aspect.isPersistent="true"
+                     baseType="JSON"
+                     category=""
+                     description=""
+                     isLocalOnly="false"
+                     name="json"
+                     ordinal="10"></PropertyDefinition>
+                    <PropertyDefinition
+                     aspect.cacheTime="0.0"
+                     aspect.dataChangeType="VALUE"
                      baseType="LONG"
                      category=""
                      description=""
@@ -224,6 +236,30 @@
                      isLocalOnly="false"
                      name="table"
                      ordinal="6"></PropertyDefinition>
+                    <PropertyDefinition
+                     aspect.cacheTime="0.0"
+                     aspect.dataChangeType="VALUE"
+                     aspect.defaultValue="1.0,2.0"
+                     aspect.isIndexed="false"
+                     aspect.isPersistent="false"
+                     baseType="VEC2"
+                     category=""
+                     description=""
+                     isLocalOnly="false"
+                     name="vec2"
+                     ordinal="12"></PropertyDefinition>
+                    <PropertyDefinition
+                     aspect.cacheTime="0.0"
+                     aspect.dataChangeType="VALUE"
+                     aspect.defaultValue="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&lt;value&gt;&#xA;    100&#xA;&lt;/value&gt;"
+                     aspect.isIndexed="false"
+                     aspect.isPersistent="true"
+                     baseType="XML"
+                     category=""
+                     description=""
+                     isLocalOnly="false"
+                     name="xml"
+                     ordinal="11"></PropertyDefinition>
                 </PropertyDefinitions>
                 <ServiceDefinitions>
                     <ServiceDefinition
@@ -251,6 +287,22 @@
                         isOpen="false"
                         isPrivate="false"
                      name="Test_Argument">
+                        <ResultType
+                         baseType="JSON"
+                         description=""
+                         name="result"
+                         ordinal="0"></ResultType>
+                        <ParameterDefinitions></ParameterDefinitions>
+                    </ServiceDefinition>
+                    <ServiceDefinition
+                     aspect.isAsync="false"
+                     category=""
+                     description=""
+                     isAllowOverride="false"
+                     isLocalOnly="false"
+                     isOpen="false"
+                     isPrivate="false"
+                     name="Test_Argument_Table">
                         <ResultType
                          baseType="JSON"
                          description=""
@@ -450,8 +502,60 @@
                                                 long: me.long,
                                                 num: me.number,
                                                 table: me.table,
-                                                valCol: me.table[0]
+                                                valCol: me.table[0],
+                                                json: me.json,
+                                                xml: me.xml,
+                                                vec2: me.vec2,
                                             } );
+                                        }
+                                        catch(ex) {
+                                            if( con != null ) 
+                                                con.rollback();
+                                            logger.error("Thing [{}] Service [{}] error at line [{}] : {}", me.name, ex.fileName, ex.lineNumber, ex);
+                                            result.error = true;
+                                        }
+                                        finally {
+                                            if ( con != null ) 
+                                                con.close();
+                                        }
+                                        ]]>
+                                        </code>
+                                    </Row>
+                                </Rows>
+                            </ConfigurationTable>
+                        </ConfigurationTables>
+                    </ServiceImplementation>
+                    <ServiceImplementation
+                     description=""
+                     handlerName="Script"
+                     name="Test_Argument_Table">
+                        <ConfigurationTables>
+                            <ConfigurationTable
+                             dataShapeName=""
+                             description=""
+                             isMultiRow="false"
+                             name="Script"
+                             ordinal="0">
+                                <DataShape>
+                                    <FieldDefinitions>
+                                        <FieldDefinition
+                                         baseType="STRING"
+                                         description="code"
+                                         name="code"
+                                         ordinal="0"></FieldDefinition>
+                                    </FieldDefinitions>
+                                </DataShape>
+                                <Rows>
+                                    <Row>
+                                        <code>
+                                        <![CDATA[
+                                        require_core_db();
+                                        let con = null;
+                                        result = { Hallo: "Welt" };
+                                        // DBConnection with AutoCommit ... 
+                                        try {
+                                            let table = DataShapes["ActiveDirectoryDomainGroups"].CreateValues();
+                                            result = con.argTest( table );
                                         }
                                         catch(ex) {
                                             if( con != null ) 
@@ -826,18 +930,43 @@
                 <AlertDefinitions
                  name="int"></AlertDefinitions>
                 <AlertDefinitions
+                 name="json"></AlertDefinitions>
+                <AlertDefinitions
                  name="long"></AlertDefinitions>
                 <AlertDefinitions
                  name="number"></AlertDefinitions>
                 <AlertDefinitions
                  name="table"></AlertDefinitions>
+                <AlertDefinitions
+                 name="vec2"></AlertDefinitions>
+                <AlertDefinitions
+                 name="xml"></AlertDefinitions>
             </AlertConfigurations>
             <ImplementedShapes>
                 <ImplementedShape
                     name="TWX.Core.Database_TS"
                     type="ThingShape"></ImplementedShape>
             </ImplementedShapes>
-            <ThingProperties></ThingProperties>
+            <ThingProperties>
+                <xml>
+                    <Value>
+                        <value>100</value>
+                    </Value>
+                    <Timestamp>2023-09-04T18:59:18.438Z</Timestamp>
+                    <Quality>GOOD</Quality>
+                </xml>
+                <json>
+                    <Value>
+                        <json>
+                        <![CDATA[
+                        {"value":100}
+                        ]]>
+                        </json>
+                    </Value>
+                    <Timestamp>1970-01-01T00:00:00.000Z</Timestamp>
+                    <Quality>UNKNOWN</Quality>
+                </json>
+            </ThingProperties>
         </Thing>
     </Things>
 </Entities>

@@ -14,23 +14,25 @@ import com.thingworx.types.InfoTable;
 public class DBStatement extends ScriptableObject {
     // region Private Members ...
     // --------------------------------------------------------------------------------
-    protected DBConnection  connection   = null ;
-    protected Statement     satement    = null;
+    protected DBConnection connection = null;
+    protected Statement stmt = null;
 
     protected static Statement getStatement(Scriptable me) {
-        DBStatement dbStatement = (DBStatement)me;
-        return dbStatement.satement;
+        DBStatement dbStatement = (DBStatement) me;
+        return dbStatement.stmt;
     }
+
     // endregion
     // region ScriptableObject basics
     // --------------------------------------------------------------------------------
     private static final long serialVersionUID = 1L;
 
-    public DBStatement() { }
+    public DBStatement() {
+    }
 
     public DBStatement(DBConnection dbCon) throws Exception {
         this.connection = dbCon;
-        this.satement  = createStatement(null);
+        this.stmt = createStatement(null);
     }
 
     protected Statement createStatement(String sql) throws Exception {
@@ -38,47 +40,67 @@ public class DBStatement extends ScriptableObject {
     }
 
     @Override
-    public String getClassName() { return "DBStatement"; }
+    public String getClassName() {
+        return "DBStatement";
+    }
 
     @Override
     protected void finalize() throws Throwable {
-        if( satement != null)
-            satement.close();
-        satement = null;
+        if (stmt != null)
+            stmt.close();
+        stmt = null;
     }
-    // endregion 
-    // region Statement Handling 
+
+    // endregion
+    // region Statement Handling
     // --------------------------------------------------------------------------------
     @JSFunction
-    public void close() throws SQLException {
-        if( satement != null)
-            satement.close();
-        satement = null;
-    }
-    
-    @JSFunction
-    public Boolean execute(String sql) throws Exception {
-        Boolean ret = satement.execute(sql);
-        return ret;
+    public void close() throws Exception {
+        try { 
+            if (stmt != null)
+                stmt.close();
+            stmt = null;
+        }
+        catch(Exception ex ) {
+            this.connection.logException("Error in close()", ex);
+            throw ex;
+        }
     }
 
     @JSFunction
-    public int executeUpdate (String sql) throws Exception {
-        if( satement == null )
-            return -1;
-        int ret = satement.executeUpdate(sql);
-        return ret;
+    public Boolean execute(String sql) throws Exception {
+        try {
+            Boolean ret = stmt.execute(sql);
+            return ret;
+        } catch (Exception ex) {
+            this.connection.logException("Error in execute()", ex);
+            throw ex;
+        }
+    }
+
+    @JSFunction
+    public int executeUpdate(String sql) throws Exception {
+        try {
+            int ret = stmt.executeUpdate(sql);
+            return ret;
+        } catch (Exception ex) {
+            this.connection.logException("Error in executeUpdate()", ex);
+            throw ex;
+        }
     }
 
     @JSFunction
     public InfoTable executeQuery(String sql) throws Exception {
         InfoTable result = null;
-        if( satement != null ) {
-            ResultSet rs = satement.executeQuery(sql);
-            result = SQLToInfoTableConversion.createInfoTableFromResultset(rs,null);
+        try {
+            ResultSet rs = stmt.executeQuery(sql);
+            result = SQLToInfoTableConversion.createInfoTableFromResultset(rs, null);
+            return result;
+        } catch (Exception ex) {
+            this.connection.logException("Error in executeQuery()", ex);
+            throw ex;
         }
-        return result;
     }
 
-    // endregion 
+    // endregion
 }

@@ -21,6 +21,7 @@ import twx.core.db.model.DbIndex;
 import twx.core.db.model.DbModel;
 import twx.core.db.model.DbSchema;
 import twx.core.db.model.DbTable;
+import twx.core.db.model.settings.DbColumnSetting;
 import twx.core.db.handler.DbInfo;
 
 public class AbstractDDLReader implements DDLReader {
@@ -52,7 +53,7 @@ public class AbstractDDLReader implements DDLReader {
         while (rs.next()) {
             String schemaName = rs.getString("TABLE_SCHEM");
             if (!this.dbInfo.isSystemSchema(schemaName)) {
-                DbSchema dbSchema = dbModel.createSchema(schemaName);
+                DbSchema dbSchema = this.dbInfo.isDefaultSchema(schemaName) ? dbModel.getDefaultSchema() : dbModel.getOrCreateSchema(schemaName);
                 queryModelTables(dbSchema, con);
             }
         }
@@ -60,37 +61,58 @@ public class AbstractDDLReader implements DDLReader {
     }
 
     protected DbSchema queryModelTables(DbSchema dbSchema, Connection con) throws SQLException {
-        ResultSet rs = con.getMetaData().getTables(null, dbSchema.getName(), null, null);
+        // check for default Schema Name ... 
+        String dbSchemaName = dbSchema.isDefault() ? dbInfo.getDefaultSchema() : dbSchema.getName();
+        ResultSet rs = con.getMetaData().getTables(null, dbSchemaName, null, null);
         while (rs.next()) {
             String tableSchema = rs.getString("TABLE_SCHEM");
             String tableName = rs.getString("TABLE_NAME");
-            if (tableSchema.equals(dbSchema.getName())) {
+            if (tableSchema.equals(dbSchemaName)) {
                 DbTable dbTable = dbSchema.createTable(tableName);
                 queryModelColumns(dbTable, con);
-                queryModelIndexes(dbTable, con);
+/*              queryModelIndexes(dbTable, con);
                 queryModelKeys(dbTable, con);
-            }
+ */            }
         }
         return dbSchema;
     }
 
     protected DbTable queryModelColumns(DbTable dbTable, Connection con) throws SQLException {
-        ResultSet rs = con.getMetaData().getColumns(null, dbTable.getSchema().getName(), dbTable.getName(), null);
+        // check for default Schema Name ... 
+        String dbSchemaName = dbTable.getSchema().isDefault() ? dbInfo.getDefaultSchema() : dbTable.getSchema().getName();
+        ResultSet rs = con.getMetaData().getColumns(null, dbSchemaName, dbTable.getName(), null);
         while (rs.next()) {
             DbColumn col = dbTable.createColumn(rs.getString("COLUMN_NAME"));
-            Integer typeId = rs.getInt("DATA_TYPE");
+            col.setOrdinal( rs.getInt("ORDINAL_POSITION") );
+            // type ... 
+            String typename = rs.getString("TYPE_NAME");
+            if( typename.equals("varchar") || typename.equals("varbinary") ) {
+                typename+= "(" + rs.getString("CHAR_OCTET_LENGTH") +")";
+            }
+            col.setType( typename );
+            // settings ... 
+            if( rs.getString("IS_NULLABLE").equals("NO") )
+                col.addSetting(DbColumnSetting.NOT_NULL, "true");
+            if( rs.getString("IS_AUTOINCREMENT").equals("YES") )
+                col.addSetting(DbColumnSetting.INCREMENT, "true");
+            // default value ... 
+            String defaultVal = rs.getString("COLUMN_DEF");
+            if( defaultVal != null ) {
+                col.addSetting(DbColumnSetting.DEFAULT, defaultVal);
+            }
+            
             // @Todo-AT: own type mapping ...
+/*
             JDBCType jdbcType = JDBCType.valueOf(typeId);
             BaseTypes twxType = BaseTypes.JDBCTypeToBaseType(typeId);
-
             col.setTwxType(twxType);
             col.setSqlType(jdbcType);
             col.setSqlTypeName(rs.getString("TYPE_NAME"));
             col.setSqlSize(rs.getInt("BUFFER_LENGTH"));
-            col.setOrdinal(rs.getInt("ORDINAL_POSITION"));
+            
             col.setNullable(((String) "YES").equals(rs.getString("IS_NULLABLE")));
             col.setAutoIncrement(((String) "YES").equals(rs.getString("IS_AUTOINCREMENT")));
-
+*/
             rs.getString("REMARKS"); // comments ...
             rs.getString("COLUMN_DEF"); // default value ...
         }
@@ -106,7 +128,7 @@ public class AbstractDDLReader implements DDLReader {
                 String colName = rs.getString("COLUMN_NAME");
                 Integer colOrdinal = rs.getInt("KEY_SEQ");
                 // set the column of the primary key ...
-                dbTable.getColumn(colName).setPrimaryKeySeq(colOrdinal);
+//                dbTable.getColumn(colName).setPrimaryKeySeq(colOrdinal);
             }
         }
         return dbTable;

@@ -1,62 +1,58 @@
 package twx.core.db.model;
 
 import java.sql.JDBCType;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Map;
 
 import org.json.JSONObject;
 
 import com.thingworx.types.BaseTypes;
 
-public class DbColumn extends DbObject<DbTable> {
+import twx.core.db.model.settings.DbColumnSetting;
+import twx.core.db.model.settings.DbTableSetting;
+import twx.core.db.model.settings.SettingHolder;
 
-    private static final long serialVersionUID = 1L;
-
-    protected BaseTypes twxType = BaseTypes.NOTHING;
-    protected JDBCType  sqlType = JDBCType.NULL;
-    protected String    sqlTypeName = null;
-    protected int       sqlTypeSize  = -1;
-    protected int       ordinal = 0;
-    protected int       primaryKeySeq = -1;
-    protected Boolean   nullable = false;
-    protected Boolean   autoIncrement = false;
+public class DbColumn extends DbObject<DbTable> implements SettingHolder<DbColumnSetting> {
+    protected final Map<DbColumnSetting, String> settings = new EnumMap<>(DbColumnSetting.class);
+    protected Integer   ordinal;
+    protected String    type;
 
     protected DbColumn(DbTable table, String name) {
         super(table, name);
     };
 
+    @Override
+    public void clear() {
+        super.clear();
+        this.settings.clear();
+    }
+
+    public DbTable getTable() {
+        return (DbTable)this.getParent();
+    }
+
+    public DbSchema getSchema() {
+        return this.getTable().getSchema();
+    }
+
+    // region Get/Set Settings ... 
+    // --------------------------------------------------------------------------------
+    @Override
+    public void addSetting(DbColumnSetting settingKey, String value) {
+        settings.put(settingKey, value);
+    }
+
+    public String getSetting(DbColumnSetting settingKey) {
+        return this.settings.get(settingKey);
+    }
+
+    public Map<DbColumnSetting, String> getSettings() {
+        return Collections.unmodifiableMap(settings);
+    }
+    // endregion
     // region Get/Set Table Properties
     // --------------------------------------------------------------------------------
-    public BaseTypes getTwxType() {
-        return twxType;
-    }
-
-    public void setTwxType(BaseTypes twxType) {
-        this.twxType = twxType;
-    }
-
-    public JDBCType getSqlType() {
-        return sqlType;
-    }
-
-    public void setSqlType(JDBCType sqlType) {
-        this.sqlType = sqlType;
-    }
-
-    public String getSqlTypeName() {
-        return this.sqlTypeName;
-    }
-    
-    public void setSqlTypeName(String sqlTypeName) {
-        this.sqlTypeName = sqlTypeName;
-    }
-
-    public int getSqlSize() {
-        return this.sqlTypeSize;
-    }
-
-    public void setSqlSize(int lenght) {
-        this.sqlTypeSize = lenght;
-    }
-    
     public int getOrdinal() {
         return ordinal;
     }
@@ -65,62 +61,14 @@ public class DbColumn extends DbObject<DbTable> {
         this.ordinal = ordinal;
     }
 
-    public Boolean getNullable() {
-        return nullable;
+    public String getType() {
+        return this.type;
     }
 
-    public void setNullable(Boolean nullable) {
-        this.nullable = nullable;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public Boolean getAutoIncrement() {
-        return autoIncrement;
-    }
-
-    public void setAutoIncrement(Boolean autoIncrement) {
-        this.autoIncrement = autoIncrement;
-    }
-
-    public void setPrimaryKeySeq(Integer keySeq) {
-        this.primaryKeySeq = keySeq;
-    }
-
-    public Integer getPrimaryKeySeq() {
-        return this.primaryKeySeq;
-    }
-
-    public Boolean isPrimaryKey() {
-        return (this.primaryKeySeq > 0);
-    }
-
-    public DbTypeCategory getTypeCategory() {
-        // @todo !!
-        return DbTypeCategory.NUMERIC;
-    }
-
-    public Boolean isNumericType() {
-        return getTypeCategory() == DbTypeCategory.NUMERIC;
-    }
-
-    public Boolean isDatetiemType() {
-        return getTypeCategory() == DbTypeCategory.DATETIME;
-    }
-
-    public Boolean isTexualType() {
-        return getTypeCategory() == DbTypeCategory.TEXTUAL;
-    }
-
-    public Boolean isBinaryType() {
-        return getTypeCategory() == DbTypeCategory.BINARY;
-    }
-
-    public Boolean isSpecialType() {
-        return getTypeCategory() == DbTypeCategory.SPECIAL;
-    }
-
-    public Boolean isOtherType() {
-        return getTypeCategory() == DbTypeCategory.OTHER;
-    }
     // endregion
     // region Serialization ...
     // --------------------------------------------------------------------------------
@@ -128,7 +76,7 @@ public class DbColumn extends DbObject<DbTable> {
     @Override
     public DbColumn fromJSON(JSONObject json) {
         super.fromJSON(json);
-        this.sqlType = json.has(DbConstants.MODEL_TAG_COLUMN_SQL_TYPE) ? JDBCType.valueOf(json.getString(DbConstants.MODEL_TAG_COLUMN_SQL_TYPE)) : JDBCType.NULL;
+/*         this.sqlType = json.has(DbConstants.MODEL_TAG_COLUMN_SQL_TYPE) ? JDBCType.valueOf(json.getString(DbConstants.MODEL_TAG_COLUMN_SQL_TYPE)) : JDBCType.NULL;
         this.twxType = json.has(DbConstants.MODEL_TAG_COLUMN_TWX_TYPE) ? BaseTypes.valueOf(json.getString(DbConstants.MODEL_TAG_COLUMN_TWX_TYPE)) : BaseTypes.NOTHING;
         this.sqlTypeName = json.has(DbConstants.MODEL_TAG_COLUMN_SQL_TYPENAME) ? json.getString(DbConstants.MODEL_TAG_COLUMN_SQL_TYPENAME) : "";
         this.sqlTypeSize = json.has(DbConstants.MODEL_TAG_COLUMN_SIZE) ? json.getInt(DbConstants.MODEL_TAG_COLUMN_SIZE) : 0;
@@ -136,12 +84,21 @@ public class DbColumn extends DbObject<DbTable> {
         this.nullable = json.has(DbConstants.MODEL_TAG_COLUMN_NULLABLE) ? json.getBoolean(DbConstants.MODEL_TAG_COLUMN_NULLABLE) : true;
         this.autoIncrement = json.has(DbConstants.MODEL_TAG_COLUMN_AUTOINCREMENT) ? json.getBoolean(DbConstants.MODEL_TAG_COLUMN_AUTOINCREMENT) : false;
         this.primaryKeySeq = json.has(DbConstants.MODEL_TAG_COLUMN_PRIMARY_KEY) ? json.getInt(DbConstants.MODEL_TAG_COLUMN_PRIMARY_KEY) : -1;
-        return this;
+ */        return this;
     }
 
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();
+        json.put(DbConstants.MODEL_TAG_ORDINAL, this.ordinal );
+        json.put(DbConstants.MODEL_TAG_TYPE, this.type );
+        // add Settings ... 
+        this.settings.entrySet().stream().forEach( s -> {
+            json.put( s.getKey().label, s.getValue() );
+        });
+
+        // 
+/*         
         if (this.twxType != null)
             json.put(DbConstants.MODEL_TAG_COLUMN_TWX_TYPE, twxType.name());
         if (this.sqlType != null)
@@ -156,7 +113,7 @@ public class DbColumn extends DbObject<DbTable> {
             json.put(DbConstants.MODEL_TAG_COLUMN_AUTOINCREMENT, this.autoIncrement);
         if (this.primaryKeySeq > 0)
             json.put(DbConstants.MODEL_TAG_COLUMN_PRIMARY_KEY, this.primaryKeySeq);
-        return json;
+ */        return json;
     }
     // endregion
 }

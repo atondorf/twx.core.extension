@@ -43,7 +43,7 @@ public class DbSchema extends DbObject<DbModel> {
     }
 
     public DbModel getModel() {
-        return (DbModel) this.getParent();
+        return (DbModel)this.getParent();
     }
 
     // endregion
@@ -224,6 +224,7 @@ public class DbSchema extends DbObject<DbModel> {
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();
+        // write Tables ... 
         var array = new JSONArray();
         for (DbTable table : this.tables) {
             array.put(table.toJSON());

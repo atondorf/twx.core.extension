@@ -30,9 +30,9 @@ public class DBCallableStatement extends DBStatement {
     @Override
     protected Statement createStatement(String sql) throws Exception {
         this.cstmt = dbCon.getConnection().prepareCall(sql);
-        if( this.satement != null )
-            this.satement.close();
-        this.satement  = cstmt;        
+        if( this.stmt != null )
+            this.stmt.close();
+        this.stmt  = cstmt;        
         return this.cstmt;
     }
 
@@ -43,27 +43,44 @@ public class DBCallableStatement extends DBStatement {
     // region Statement Handling 
     // --------------------------------------------------------------------------------
     @JSFunction
-    public void close() throws SQLException {
-        if( cstmt != null)
-            cstmt.close();
-        cstmt = null;
+    public void close() {
+        try {
+            if( cstmt != null)
+                cstmt.close();
+            cstmt = null;
+        }
+        catch(Exception ex ) {
+            this.connection.logException("Error in close()", ex);
+        }
     }
 
     @JSFunction
     public int executeUpdate() throws Exception {
-        if (cstmt == null)
-            return -1;
-        return cstmt.executeUpdate();
+        try {
+            if (cstmt == null)
+                return -1;
+            return cstmt.executeUpdate();
+        }
+        catch(Exception ex ) {
+            this.connection.logException("Error in executeUpdate()", ex);
+            throw ex;
+        }            
     }
 
     @JSFunction
     public InfoTable executeQuery() throws Exception {
-        InfoTable result = null;
-        if (cstmt != null) {
-            ResultSet rs = cstmt.executeQuery();
-            result = SQLToInfoTableConversion.createInfoTableFromResultset(rs, null);
+        try {        
+            InfoTable result = null;
+            if (cstmt != null) {
+                ResultSet rs = cstmt.executeQuery();
+                result = SQLToInfoTableConversion.createInfoTableFromResultset(rs, null);
+            }
+            return result;
         }
-        return result;
+        catch(Exception ex ) {
+            this.connection.logException("Error in executeUpdate()", ex);
+            throw ex;
+        }          
     }
 
     @JSFunction
@@ -72,7 +89,7 @@ public class DBCallableStatement extends DBStatement {
     }
 
     @JSFunction
-    public static void set(Context cx, Scriptable me, Object[] args, Function funObj) throws SQLException {
+    public static void set(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {
         if (args.length < 1)
             throw new IllegalArgumentException("Invalid Number of Arguments in DBPreparedStatement.set()");
         if (!(args[0] instanceof Number))

@@ -19,7 +19,7 @@ import com.thingworx.things.database.DBConstants;
 public class DbModel extends DbObject<DbObject<?>> {
     private final Set<DbSchema> schemas = new LinkedHashSet<>();
     private final Set<DbRelation> relations = new LinkedHashSet<>();
-
+    
     private DbProject dbProject = null;
 
     public DbModel() {

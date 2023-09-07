@@ -12,13 +12,19 @@ public interface DbHandler {
 
     // region TWX-Services Metadata Database ...
     // --------------------------------------------------------------------------------
+    public DbInfo getDbInfo();
+    
     public String getName();
 
     public String getKey();
 
     public String getDefaultCatalog();
+
+    public Boolean isDefaultCatalog(String catalogName);
     // get's the default Schema of the connection ... 
     public String getDefaultSchema();
+
+    public Boolean isDefaultSchema(String schemaName);
     // endregion
 
     // region Connections & Transactions ...
@@ -39,8 +45,6 @@ public interface DbHandler {
 
     // region DDL Handler ...
     // --------------------------------------------------------------------------------
-    public DbInfo getDbInfo();
-
     public DDLBuilder getDDLBuilder();
 
     public DDLReader getDDLReader();
@@ -52,6 +56,12 @@ public interface DbHandler {
     // --------------------------------------------------------------------------------
     public SQLBuilder getSqlBuilder();
 
+    // endregion
+    // region Exception & Logging Handler ...
+    // --------------------------------------------------------------------------------
+    public void logException(String message, Exception exception );
+
+    public  void logSQLException(String message, SQLException exception );
     // endregion
     // region Generic Handler ...
     // --------------------------------------------------------------------------------

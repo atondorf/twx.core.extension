@@ -7,6 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang3.tuple.MutableTriple;
@@ -17,7 +19,7 @@ import twx.core.db.model.settings.SettingHolder;
 
 public class DbIndex extends DbObject<DbTable> implements SettingHolder<DbIndexSetting> {
     private final Map<DbIndexSetting, String> settings = new EnumMap<>(DbIndexSetting.class);
-    private final Set<DbIndexColumn> columns = new LinkedHashSet<>();
+    private final List<DbIndexColumn> indexColumns = new LinkedList<>();
 
     public DbIndex(String name) {
         super(null, name);
@@ -30,7 +32,8 @@ public class DbIndex extends DbObject<DbTable> implements SettingHolder<DbIndexS
     @Override
     public void clear() {
         super.clear();
-        this.columns.clear();
+        this.indexColumns.stream().forEach(c -> c.clear());
+        this.indexColumns.clear();
         this.settings.clear();
     }
 
@@ -60,63 +63,57 @@ public class DbIndex extends DbObject<DbTable> implements SettingHolder<DbIndexS
     // endregion
     // region Get/Set Columns ...
     // --------------------------------------------------------------------------------
-    // reggion Internal Helpers
-    // --------------------------------------------------------------------------------
-    protected class DbIndexColumn {
-        public DbColumn column;
-        public Integer  ordinal = 0;
-
-        public DbIndexColumn(DbColumn column, Integer ordinal) {
-            this.column = column;
-            this.ordinal = ordinal;
-        }
-
-        @Override
-        public String toString() {
-            return column.getName();
-        }
-    }
-    protected Boolean hasColumn(final String name ) {
-        return columns.stream().anyMatch(c -> c.toString().equals(name));
+    public Boolean hasIndexColumn(final String name ) {
+        return DbObject.hasObject(this.indexColumns, name);
     }
 
-    protected DbIndexColumn getColumn(final String name ) {
-        return columns.stream().filter(c -> c.toString().equals(name)).findAny().orElse(null);
+    public DbIndexColumn getIndexColumn(final String name ) {
+        return DbObject.findObject(this.indexColumns, name);
     }
 
-    protected void setColumns( Collection<DbColumn> columns ) {
-        this.columns.clear();
-        columns.stream().forEach( col -> this.columns.add( new DbIndexColumn(col, this.columns.size())));
+    public List<DbIndexColumn> getIndexColumns() {
+        return Collections.unmodifiableList(indexColumns);
     }
 
-    // endregion 
-    public Set<DbColumn> getColumns() {
-        Set<DbColumn> set = new LinkedHashSet<>();
-        this.columns.stream().sorted( (o1,o2)-> o1.ordinal.compareTo(o2.ordinal)).forEach(idx -> set.add(idx.column));
-        return Collections.unmodifiableSet(set);
-    }
-    
-    public Set<DbIndexColumn> getColumnsOrdinal() {
-        return Collections.unmodifiableSet(columns);
-    }
-
-    public Integer addColumn(final String name) {
-        Integer ordinal = columns.size();
-        if( hasColumn(name) )
-            return -1;
+    public DbIndexColumn createIndexColumn(final String name) {
+        Integer ordinal = indexColumns.size();
+        DbIndexColumn idxColumn = new DbIndexColumn(this, name);
+        idxColumn.setOrdinal(ordinal);
+        // search for the column in table ...        
         var column = this.getTable().getColumn(name);
         if( column == null )
-            return -1;
-        columns.add( new DbIndexColumn(column, ordinal) );
-            return ordinal;
+            return null;
+        return addIndexColumn(idxColumn);
     }
 
-    public DbColumn removeColumn(final String name ) {
-        DbIndexColumn column = this.getColumn(name);
-        if( column == null )
-            return null;
-        this.columns.remove(column);
-        return column.column;
+    public DbIndexColumn getOrCreateIndexColumn(String name) {
+        var idxColumn = getIndexColumn(name);
+        if (idxColumn == null)
+            idxColumn = createIndexColumn(name);
+        return idxColumn;
+    }
+
+    public DbIndexColumn removeColumn(final String name ) {
+        DbIndexColumn idxColumn = this.getIndexColumn(name);
+        if( idxColumn != null )
+            this.indexColumns.remove(idxColumn);
+        return idxColumn;
+    }
+
+    public DbIndexColumn addIndexColumn(DbIndexColumn idxColumn) {
+        idxColumn.takeOwnerShip(this);
+        this.indexColumns.add(idxColumn);
+        return idxColumn;
+    }
+
+    public DbIndexColumn removeIndexColumn(DbIndexColumn idxColumn) {
+        this.indexColumns.remove(idxColumn);
+        idxColumn.parent = null;
+        return idxColumn;
+    }
+
+    public void sortIndexColumns() {
+        this.indexColumns.sort( (c1,c2)->c1.ordinal.compareTo(c2.ordinal));
     }
 
     // endregion

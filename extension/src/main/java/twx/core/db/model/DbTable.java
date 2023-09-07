@@ -1,11 +1,8 @@
 package twx.core.db.model;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -13,9 +10,6 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonArrayFormatVisitor;
-
-import twx.core.db.model.settings.DbRelationSetting;
 import twx.core.db.model.settings.DbTableSetting;
 import twx.core.db.model.settings.SettingHolder;
 
@@ -224,7 +218,16 @@ public class DbTable extends DbObject<DbSchema> implements SettingHolder<DbTable
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();
-        
+        // add Settings ... 
+        this.settings.entrySet().stream().forEach( s -> {
+            json.put( s.getKey().label, s.getValue() );
+        });
+        // add Columns ... 
+        var array = new JSONArray();
+        for (DbColumn column : this.columns ) {
+            array.put(column.toJSON());
+        }
+        json.put(DbConstants.MODEL_TAG_COLUMN_ARRAY, array);
         return json;
     }
     // endregion 

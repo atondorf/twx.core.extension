@@ -23,6 +23,7 @@ import twx.core.db.handler.DbHandlerFactory;
 import twx.core.db.impl.DataSourceConnectionManager;
 import twx.core.db.model.DbModel;
 import twx.core.db.model.DbSchema;
+import twx.core.db.model.settings.DbTableSetting;
 
 public class App {
 
@@ -43,14 +44,7 @@ public class App {
         Connection con = null;
         try {
             app.openDBConnection();
-            app.testHashSet();
-            // app.queryModelFromDB();
-            // app.manualModel();
-
-            // app.queryModelFromDB();
-            // app.createTable();
-            // app.queryModelFromDB();
-            // app.loadModelFromJSON();
+            app.queryModel();
 
         } catch (SQLException e) {
             printSQLException(e);
@@ -62,29 +56,15 @@ public class App {
         logger.info("---------- Exit-App ----------");
     }
 
-    private void testHashSet() {
-        logger.info("---------- testHashSet ----------");
-        Set<DbSchema> schemas = new LinkedHashSet<>();
-
-        logger.info( "Size: " + schemas.size() );
-        schemas.add( new DbSchema("Hallo") );
-        logger.info( "Size: " + schemas.size() );
-        schemas.add( new DbSchema("") );
-        logger.info( "Size: " + schemas.size() );   
-        schemas.add( new DbSchema("Hallo2") );
-        schemas.add( new DbSchema("Hallo3") );
-        schemas.add( new DbSchema("Hallo4") );
-        logger.info( "Size: " + schemas.size() );   
-
-        String name = "";
-        DbSchema val =  schemas.stream().filter(c -> name.equals(c.getName())).findAny().orElse(null);
-        if( val != null )
-            logger.info( "Name : " + val.getName() + " - Is default : " + val.isDefault() );   
-    }
-
     private void queryModel() throws SQLException {
         logger.info("---------- queryModel ----------");
         var model = handler.getDDLReader().queryModel(); // handler.getDbModel();
+
+        model.setNote("This is a note at the model");
+/*
+        model.getDefaultSchema().setNote("This is a note at the default schema");
+        model.getDefaultSchema().getTable("tab_1").addSetting(DbTableSetting.HEADERCOLOR, "0xffffff");
+        model.getDefaultSchema().getTable("tab_1").addSetting(DbTableSetting.THINGWORXTYPE, "test_DS");
 /*
         model.setDescription("This is a test");
         model.addTable("test_1");

@@ -1,5 +1,6 @@
 package twx.core.db.model;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.LinkedList;
@@ -15,9 +16,8 @@ import twx.core.db.model.settings.SettingHolder;
 
 public class DbRelation extends DbObject<DbModel> implements SettingHolder<DbRelationSetting> {
     private final Map<DbRelationSetting, String> settings = new EnumMap<>(DbRelationSetting.class);
+    protected final List<DbRelationColumn> relationColumns = new LinkedList<>();
     private final DbRelationType relationType = null;
-    private final List<DbColumn> from = new LinkedList();
-    private final List<DbColumn> to = new LinkedList();
 
     public DbRelation(String name) {
         super(null, name);
@@ -31,9 +31,14 @@ public class DbRelation extends DbObject<DbModel> implements SettingHolder<DbRel
     public void clear() {
         super.clear();
         this.settings.clear();
-        this.from.clear();
-        this.to.clear();
+        this.relationColumns.stream().forEach(c -> c.clear());
+        this.relationColumns.clear();
     }
+
+    public DbSchema getSchema() {
+        return (DbSchema)this.getParent();
+    }
+
     // region Get/Set Settings ... 
     // --------------------------------------------------------------------------------
     @Override
@@ -47,6 +52,22 @@ public class DbRelation extends DbObject<DbModel> implements SettingHolder<DbRel
     // endregion 
     // region Get/Set Properties
     // --------------------------------------------------------------------------------
+    public Boolean hasRelationFromColumn(final String fromColumnName ) {
+        return DbObject.hasObject(this.relationColumns, fromColumnName);
+    }
+
+    public DbRelationColumn getRelationFromColumn(final String fromColumnName ) {
+        return DbObject.findObject(this.relationColumns, fromColumnName);
+    }
+
+    public Boolean hasRelationToColumn(final String toColumnName ) {
+        return this.relationColumns.stream().anyMatch(c -> c.getToColumn().getName().equals(toColumnName));
+    }
+
+    public DbRelationColumn getRelationToColumn(final String toColumnName ) {
+         return this.relationColumns.stream().filter(c -> c.getToColumn().getName().equals(toColumnName)).findAny().orElse(null);
+    }
+
     public DbRelationType getRelationType() {
         return this.relationType;
     }
@@ -55,15 +76,13 @@ public class DbRelation extends DbObject<DbModel> implements SettingHolder<DbRel
         return this.relationType;
     }
 
-    public List<DbColumn> getFrom() {
-        return this.from;
+    public List<DbRelationColumn> getRelationColumns() {
+        return Collections.unmodifiableList(relationColumns);
     }
 
-    public List<DbColumn> getTo() {
-        return this.to;
-    }
     // region Compare and Hash ...
     // --------------------------------------------------------------------------------
+/*
     @Override
     public boolean equals(final Object o) {
         if (this == o)
@@ -83,6 +102,7 @@ public class DbRelation extends DbObject<DbModel> implements SettingHolder<DbRel
     public String toString() {
         return this.getFrom() + " " + this.relationType + " " + this.getTo();
     }
+*/    
     // endregion
     // region Serialization ...
     // --------------------------------------------------------------------------------
