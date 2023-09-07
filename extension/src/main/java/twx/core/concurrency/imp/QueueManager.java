@@ -1,7 +1,10 @@
 package twx.core.concurrency.imp;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Stream;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class QueueManager {
@@ -59,6 +62,24 @@ public class QueueManager {
         return null;
     }
 
+    public JSONArray popN(String name, Integer cnt) {
+        ConcurrentLinkedQueue<JSONObject> q = this.queueMap.get(name);
+        JSONArray outArray = new JSONArray();
+        if (q == null) 
+            return outArray;
+
+        Integer qSize = q.size();
+        if( cnt < 0 || cnt > qSize )
+            cnt = qSize;
+        if ( cnt == 0 )
+            return outArray;
+            
+        for( int id = 0; id < cnt; id++ ) {
+            outArray.put( q.poll() );
+        }
+        return outArray;
+    }
+
     public JSONObject peek(String name) {
         ConcurrentLinkedQueue<JSONObject> q = this.queueMap.get(name);
         if (q != null) {
@@ -66,6 +87,39 @@ public class QueueManager {
         }
         return null;
     }
+
+    public JSONArray peekN(String name, Integer cnt) {
+        ConcurrentLinkedQueue<JSONObject> q = this.queueMap.get(name);
+        JSONArray outArray = new JSONArray();
+        if (q == null) 
+            return outArray;
+
+        Integer qSize = q.size();
+        if( cnt < 0 || cnt > qSize )
+            cnt = qSize;
+        if ( cnt == 0 )
+            return outArray;
+            
+        var jsonArray = q.toArray();
+        for( int id = 0; id < cnt; id++ ) {
+            outArray.put( jsonArray[id] );
+        }
+        return outArray;
+    }
+
+
+    public JSONArray toArray(String name) {
+        ConcurrentLinkedQueue<JSONObject> q = this.queueMap.get(name);
+        JSONArray outArray = new JSONArray();
+        if (q != null) {
+            var queueArray = q.toArray();
+            for( var item : queueArray ) {
+                outArray.put(item);
+            }
+        }
+        return outArray;
+    }
+
 
     public Boolean emtpy(String name) {
         ConcurrentLinkedQueue<JSONObject> q = this.queueMap.get(name);
