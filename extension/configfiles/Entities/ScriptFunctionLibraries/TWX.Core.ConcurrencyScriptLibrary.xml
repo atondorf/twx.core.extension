@@ -97,12 +97,26 @@
 						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
 					</ParameterDefinitions>
 				</FunctionDefinition>
+				<FunctionDefinition name="queue_popN">
+					<ResultType baseType="JSON" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
+						<FieldDefinition baseType="LONG" name="count" ordinal="1" />						
+					</ParameterDefinitions>
+				</FunctionDefinition>
 				<FunctionDefinition name="queue_peek">
 					<ResultType baseType="JSON" name="result" ordinal="0" />
 					<ParameterDefinitions>
 						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
 					</ParameterDefinitions>
 				</FunctionDefinition>
+				<FunctionDefinition name="queue_peekN">
+					<ResultType baseType="JSON" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
+						<FieldDefinition baseType="LONG" name="count" ordinal="1" />
+					</ParameterDefinitions>
+				</FunctionDefinition>				
 				<FunctionDefinition name="queue_isEmtpy">
 					<ResultType baseType="BOOLEAN" name="result" ordinal="0" />
 					<ParameterDefinitions>
@@ -121,6 +135,12 @@
 						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
 					</ParameterDefinitions>
 				</FunctionDefinition>
+				<FunctionDefinition name="queue_toArray">
+					<ResultType baseType="JSON" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
+					</ParameterDefinitions>
+				</FunctionDefinition>				
 				<!-- Mutex Global -->				
 				<FunctionDefinition name="mtx_getTotalActiveLocks">
 					<ResultType baseType="LONG" description="Count" name="result" ordinal="0" />

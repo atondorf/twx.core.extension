@@ -3,6 +3,7 @@ package twx.core.concurrency;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import org.mozilla.javascript.Context;
@@ -195,6 +196,19 @@ public class ConcurrencyScriptLibrary {
         return object;
     }
 
+    public static Object queue_popN(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
+        if (args.length != 2)
+            throw new Exception("Invalid Number of Arguments in queue_pop");
+        if (!(args[0] instanceof String))
+            throw new Exception("The first queue_pop argument must be a string with queue name");
+        if (!(args[1] instanceof Integer) && !(args[1] instanceof Double) )
+            throw new Exception("Invalid Argument Type (not a Number) in queue_popN");            
+        String queueName = (String) args[0];
+        int count = argToInt(args[1]);
+        JSONArray array = QueueManager.getInstance().popN(queueName,count);
+        return array;
+    }
+
     public static Object queue_peek(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
         if (args.length != 1)
             throw new Exception("Invalid Number of Arguments in queue_peek");
@@ -203,6 +217,19 @@ public class ConcurrencyScriptLibrary {
         String queueName = (String) args[0];
         JSONObject object = QueueManager.getInstance().peek(queueName);
         return object;
+    }
+
+    public static Object queue_peekN(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
+        if (args.length != 2)
+            throw new Exception("Invalid Number of Arguments in queue_peek");
+        if (!(args[0] instanceof String))
+            throw new Exception("The first queue_peek argument must be a string with queue name");
+        if (!(args[1] instanceof Integer) && !(args[1] instanceof Double) )
+            throw new Exception("Invalid Argument Type (not a Number) in queue_peekN");            
+        String queueName = (String) args[0];
+        int count = argToInt(args[1]);        
+        JSONArray array = QueueManager.getInstance().peekN(queueName,count);
+        return array;
     }
 
     public static Object queue_isEmtpy(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
@@ -230,6 +257,15 @@ public class ConcurrencyScriptLibrary {
             throw new Exception("The first queue_clear argument must be a string with queue name");
         String queueName = (String) args[0];
         QueueManager.getInstance().clear(queueName);
+    }
+    
+    public static Object queue_toArray(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
+        if (args.length != 1)
+            throw new Exception("Invalid Number of Arguments in queue_clear");
+        if (!(args[0] instanceof String))
+            throw new Exception("The first queue_clear argument must be a string with queue name");
+        String queueName = (String) args[0];
+        return QueueManager.getInstance().toArray(queueName);
     }
     // endregion
 
