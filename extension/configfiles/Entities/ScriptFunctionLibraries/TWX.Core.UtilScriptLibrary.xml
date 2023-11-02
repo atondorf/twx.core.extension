@@ -23,6 +23,10 @@
 					description="Creates a JSON containing current position in SRC ...">
 					<ResultType baseType="JSON" name="result" ordinal="0" />
 				</FunctionDefinition>
+				<FunctionDefinition name="core_getStackTrace"
+					description="Creates a JSON containing current call stack in SRC ...">
+					<ResultType baseType="JSON" name="result" ordinal="0" />
+				</FunctionDefinition>
 				<FunctionDefinition name="core_createException"
 					description="Creates a JSON that can be thrown as exception using Message.format() ...">
 					<ResultType baseType="JSON" name="result" ordinal="0" />

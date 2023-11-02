@@ -3,13 +3,18 @@ package twx.core.utils;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.mozilla.javascript.RhinoException;
+import org.mozilla.javascript.JavaScriptException;
+import org.mozilla.javascript.ScriptStackElement;
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Evaluator;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
@@ -83,6 +88,34 @@ public class UtilScriptLibrary {
     }
     json.put("lineNumber", "-1");
     json.put("fileName", "Unknown");
+    return json;
+  }
+
+  public static JSONObject core_getStackTrace(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
+    AuthenticationUtilities.validateUserSecurityContext();    
+    JSONObject json = new JSONObject();
+    JSONArray stack = new JSONArray();
+    json.put( "stack", stack);
+
+    // Stack ...
+    StackTraceElement[] stackTrace = new Throwable().getStackTrace();
+    for (StackTraceElement st : stackTrace) {
+      String file = st.getFileName();
+      if (!(file == null || file.endsWith(".java"))) {
+        int line = st.getLineNumber();
+        if (line >= 0) {
+          JSONObject elem = new JSONObject();
+          elem.put( "fileName", st.getFileName() );
+          elem.put( "lineNumber", st.getLineNumber());
+          elem.put( "methodName", st.getMethodName());
+          elem.put( "moduleName", st.getModuleName());
+          elem.put( "moduleVersion", st.getModuleVersion());
+          elem.put( "classLoaderName", st.getClassLoaderName());
+          elem.put( "className", st.getClassName());
+          stack.put( elem );
+        }          
+      }
+    }
     return json;
   }
 
