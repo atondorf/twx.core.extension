@@ -16,7 +16,9 @@ import twx.core.db.model.settings.SettingHolder;
 public class DbColumn extends DbObject<DbTable> implements SettingHolder<DbColumnSetting> {
     protected final Map<DbColumnSetting, String> settings = new EnumMap<>(DbColumnSetting.class);
     protected Integer   ordinal;
-    protected String    type;
+    protected String    typeName;
+    protected Short     type;
+    protected Integer   size;
 
     protected DbColumn(DbTable table, String name) {
         super(table, name);
@@ -61,12 +63,28 @@ public class DbColumn extends DbObject<DbTable> implements SettingHolder<DbColum
         this.ordinal = ordinal;
     }
 
-    public String getType() {
+    public Integer getSize() {
+        return this.size;
+    }
+
+    public void setSize(Integer size) {
+        this.size = size;
+    }
+
+    public Short getType() {
         return this.type;
     }
 
-    public void setType(String type) {
+    public void setType(Short type) {
         this.type = type;
+    }
+
+    public String getTypeName() {
+        return this.typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
     // endregion
@@ -91,7 +109,9 @@ public class DbColumn extends DbObject<DbTable> implements SettingHolder<DbColum
     public JSONObject toJSON() {
         var json = super.toJSON();
         json.put(DbConstants.MODEL_TAG_ORDINAL, this.ordinal );
-        json.put(DbConstants.MODEL_TAG_TYPE, this.type );
+        json.put(DbConstants.MODEL_TAG_COLUMN_SQL_TYPE, this.type );
+        json.put(DbConstants.MODEL_TAG_TYPE_NAME, this.typeName );
+        json.put(DbConstants.MODEL_TAG_TYPE_SIZE, this.size);
         // add Settings ... 
         this.settings.entrySet().stream().forEach( s -> {
             json.put( s.getKey().label, s.getValue() );

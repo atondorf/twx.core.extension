@@ -22,7 +22,8 @@ public class DbConstants {
 	
     public static final String MODEL_TAG_ORDINAL                = "ordinal";
     public static final String MODEL_TAG_TYPE                   = "type";
-    
+    public static final String MODEL_TAG_TYPE_NAME              = "typeName";
+    public static final String MODEL_TAG_TYPE_SIZE              = "size";
     
 
     public static final String MODEL_TAG_TABLE_PRIMARY_KEY      = "primaryKey";

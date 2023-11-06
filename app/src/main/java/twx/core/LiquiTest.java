@@ -56,18 +56,6 @@ public class LiquiTest {
         }
     }
 
-    public static void log_changelog2(Connection con) throws Exception {
-
-        Path path = Paths.get(PATH);
-        logger.info("path: " + path);
-
-        Database database = DatabaseFactory.getInstance()
-                .findCorrectDatabaseImplementation(new JdbcConnection(con));
-        database.setDefaultSchemaName("dbo");
-
-        lb.update();
-    }
-
     public static void test_database(Connection con) throws Exception {
         ResourceAccessor accessor = new DirectoryResourceAccessor( Paths.get(PATH) );
         Map<String, Object> scopeObjects = new HashMap<>();

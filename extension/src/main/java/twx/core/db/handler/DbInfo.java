@@ -16,6 +16,7 @@ public class DbInfo {
     public  static final Integer MAX_STRING_LENGHT = -1;
 
     private final Set<String> systemSchemas = new HashSet<>();
+    private final Set<String> systemTables = new HashSet<>();
     private String defaultSchema = null;
     private Map<BaseTypes, TypeMapEntry> twx2sqlMap = new HashMap<>();
     private Map<JDBCType, TypeMapEntry>  sql2twxMap = new HashMap<>();
@@ -39,6 +40,15 @@ public class DbInfo {
 
     public Boolean isDefaultSchema(String schema) {
         return schema.equals(this.defaultSchema);
+    }
+
+    public void addSystemTable(String schema) {
+        systemTables.add(schema);
+    }
+
+    public Boolean isSystemTable(String table) {
+        String upperTable = table.toUpperCase();
+        return this.systemTables.contains(upperTable); 
     }
 
     public class TypeMapEntry {

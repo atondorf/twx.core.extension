@@ -67,7 +67,7 @@ public class AbstractDDLReader implements DDLReader {
         while (rs.next()) {
             String tableSchema = rs.getString("TABLE_SCHEM");
             String tableName = rs.getString("TABLE_NAME");
-            if (tableSchema.equals(dbSchemaName)) {
+            if ( tableSchema.equals(dbSchemaName) && !this.dbInfo.isSystemTable(tableName) ) {
                 DbTable dbTable = dbSchema.createTable(tableName);
                 queryModelColumns(dbTable, con);
 /*              queryModelIndexes(dbTable, con);
@@ -89,7 +89,12 @@ public class AbstractDDLReader implements DDLReader {
             if( typename.equals("varchar") || typename.equals("varbinary") ) {
                 typename+= "(" + rs.getString("CHAR_OCTET_LENGTH") +")";
             }
-            col.setType( typename );
+            col.setTypeName( typename );
+            Short type = rs.getShort("DATA_TYPE");
+            col.setType(type);
+            // size 
+            Integer typeSize = rs.getInt("COLUMN_SIZE");
+            col.setSize(typeSize);
             // settings ... 
             if( rs.getString("IS_NULLABLE").equals("NO") )
                 col.addSetting(DbColumnSetting.NOT_NULL, "true");

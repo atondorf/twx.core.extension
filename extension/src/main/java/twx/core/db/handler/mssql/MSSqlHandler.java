@@ -46,6 +46,10 @@ public class MsSqlHandler extends AbstractHandler {
         info.addSystemSchema("GUEST");
         info.addSystemSchema("INFORMATION_SCHEMA");
         info.addSystemSchema("SYS");
+        // system & liquibase tables ... 
+        info.addSystemTable("DATABASECHANGELOG");
+        info.addSystemTable("DATABASECHANGELOGLOCK");
+
         // Type Mapping ...
  
         // Mapp all types of BaseType ...Name to varchar ... 
