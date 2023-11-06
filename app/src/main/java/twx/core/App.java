@@ -46,6 +46,10 @@ public class App {
             app.openDBConnection();
             app.queryModel();
 
+            // LiquiTest.test_database( app.handler.getConnection() );
+            LiquiTest.test_database( app.handler.getConnection() );
+
+
         } catch (SQLException e) {
             printSQLException(e);
         } catch (Exception e) {

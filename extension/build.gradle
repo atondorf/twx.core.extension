@@ -1,5 +1,6 @@
 plugins {
     id 'java-library'
+    id 'distribution'
 }
 
 project.ext {
@@ -34,6 +35,15 @@ dependencies {
     implementation group: 'com.google.guava', name: 'guava', version: '12.0'
     implementation group: 'org.apache.commons', name: 'commons-csv', version: '1.10.0'    
     implementation group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '8.2.1.jre11'
+}
+
+distributions {
+    main {
+        distributionBaseName = 'someName'
+        contents {
+            from 'configfiles'
+        }
+    }
 }
 
 tasks.named('jar') {
@@ -85,6 +95,7 @@ def updateMetadata() {
 }
 
 tasks.register('twxPrepare') {
+    dependsOn   'jar'
     group       'TWX Extension'
     description 'Package all Extension files in ZIP-Folder'
 
@@ -128,7 +139,9 @@ task twxZip(type : Zip, dependsOn: twxPrepare) {
     from "${buildDir}/zip/"
 }
 
-tasks.named("build") { finalizedBy("twxZip") }
+tasks.named('distZip') {
+    println 'Distzip Config'
+}
 
 // overwrite test-task to use JUnit 5 ...
 tasks.named('test') {

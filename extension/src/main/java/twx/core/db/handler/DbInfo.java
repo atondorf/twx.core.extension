@@ -1,6 +1,7 @@
 package twx.core.db.handler;
 
 import java.sql.JDBCType;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -16,8 +17,8 @@ public class DbInfo {
 
     private final Set<String> systemSchemas = new HashSet<>();
     private String defaultSchema = null;
-    private static Map<BaseTypes, TypeMapEntry> twx2sqlMap;
-    private static Map<JDBCType, TypeMapEntry>  sql2twxMap;
+    private Map<BaseTypes, TypeMapEntry> twx2sqlMap = new HashMap<>();
+    private Map<JDBCType, TypeMapEntry>  sql2twxMap = new HashMap<>();
 
     public void addSystemSchema(String schema) {
         systemSchemas.add(schema);
