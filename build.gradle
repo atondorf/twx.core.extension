@@ -23,7 +23,7 @@ rootProject.ext {
 
 allprojects {
     configurations {
-        packageDependencies
+        packageDependencies 
         compile {
             extendsFrom packageDependencies
         }

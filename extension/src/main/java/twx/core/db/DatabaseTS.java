@@ -21,6 +21,11 @@ import twx.core.db.util.DatabaseUtil;
 public class DatabaseTS {
     private static Logger logger = LogUtilities.getInstance().getApplicationLogger(DatabaseTS.class);
 
+    // region TWX-Services DDL using Liquibase ... 
+    // --------------------------------------------------------------------------------
+    
+
+    // endregion
     // region TWX-Services Metadata Configuration ... 
     // --------------------------------------------------------------------------------
     @ThingworxServiceDefinition(name = "GetDBName", description = "", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })

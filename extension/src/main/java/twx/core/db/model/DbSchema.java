@@ -14,9 +14,10 @@ import org.json.JSONObject;
 public class DbSchema extends DbObject<DbModel> {
     public static final String DEFAULT_SCHEMA_NAME = "";
     private final Set<DbTable> tables = new LinkedHashSet<>();
+/*
     private final Set<DbEnum> enums = new LinkedHashSet<>();
     private final Set<DbTableGroup> tableGroups = new LinkedHashSet<>();
-
+*/
     public DbSchema(String name) {
         super(null, name);
         if (isDefaultName())
@@ -89,8 +90,8 @@ public class DbSchema extends DbObject<DbModel> {
         table.parent = null;
         return table;
     }
-
     // endregion
+/*
     // region Get/Set Enums
     // --------------------------------------------------------------------------------
     public Set<DbEnum> getEnums() {
@@ -178,6 +179,7 @@ public class DbSchema extends DbObject<DbModel> {
         return tableGroup;
     }
     // endregion
+ */        
     // region Model Join & Compare
     // --------------------------------------------------------------------------------
     public DbSchema mergeWith(DbSchema other) throws DbModelException {
@@ -201,6 +203,7 @@ public class DbSchema extends DbObject<DbModel> {
     // endregion
     // region Serialization ...
     // --------------------------------------------------------------------------------
+/*
     public DbTable addTableFromJSON(JSONObject json) {
         if (!json.has(DbConstants.MODEL_TAG_NAME))
             throw new DbModelException("JSON does not define a tag 'name'");
@@ -220,6 +223,7 @@ public class DbSchema extends DbObject<DbModel> {
         }
         return this;
     }
+ */
 
     @Override
     public JSONObject toJSON() {

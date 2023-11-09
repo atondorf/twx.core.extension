@@ -2,9 +2,15 @@ package twx.core.db.model;
 
 public class DbConstants {
  
-    public static final String MODEL_TAG_NAME                   = "name";
-    public static final String MODEL_TAG_NOTE                   = "note";
-    
+    public static final String MODEL_TAG_NAME                   = "name";       // used for all names in JSON
+    public static final String MODEL_TAG_NOTE                   = "note";       // used for all notes in JSON
+
+    public static final String MODEL_TAG_SCHEMA_ARRAY           = "schemas";    // used for schema in JSON    
+   
+
+
+    // To check ... 
+
     public static final String MODEL_SETTING_HEADERCOLOR        = "headerColor";
     public static final String MODEL_SETTING_PRIMARY_KEY        = "pk";
     public static final String MODEL_SETTING_NOT_NULL           = "notNull";
@@ -14,7 +20,6 @@ public class DbConstants {
     public static final String MODEL_SETTING_TWXTYPE            = "twxType";
     
 
-    public static final String MODEL_TAG_SCHEMA_ARRAY           = "schemas";
     public static final String MODEL_TAG_TABLE_ARRAY            = "tables";
     public static final String MODEL_TAG_COLUMN_ARRAY           = "columns";
     public static final String MODEL_TAG_INDEX_ARRAY            = "indexes";

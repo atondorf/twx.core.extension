@@ -1,24 +1,15 @@
 package twx.core.db.model;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
-import javax.xml.validation.Schema;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.thingworx.projects.Project;
-import com.thingworx.things.database.DBConstants;
-
 public class DbModel extends DbObject<DbObject<?>> {
     private final Set<DbSchema> schemas = new LinkedHashSet<>();
-    private final Set<DbRelation> relations = new LinkedHashSet<>();
+    // private final Set<DbRelation> relations = new LinkedHashSet<>();
     
     private DbProject dbProject = null;
 
@@ -35,8 +26,8 @@ public class DbModel extends DbObject<DbObject<?>> {
     @Override
     public void clear() {
         super.clear();
-        this.relations.stream().forEach(c -> c.clear());
-        this.relations.clear();
+//        this.relations.stream().forEach(c -> c.clear());
+//        this.relations.clear();
         this.schemas.stream().forEach(c -> c.clear());
         this.schemas.clear();
         this.dbProject = null;
@@ -102,6 +93,7 @@ public class DbModel extends DbObject<DbObject<?>> {
         return schema;
     }
     // endregion
+/*
     // region Get/Set Relations ...
     // --------------------------------------------------------------------------------
     public Set<DbRelation> getRelations() {
@@ -148,12 +140,8 @@ public class DbModel extends DbObject<DbObject<?>> {
         relation.parent = null;
         return relation;
     }
-
     // endregion
-    // region Get/Set Tables ... 
-    // --------------------------------------------------------------------------------
-
-    // endregion
+ */        
     // region Model Join & Compare
     // --------------------------------------------------------------------------------
     public DbModel mergeWith(DbModel other) throws DbModelException {

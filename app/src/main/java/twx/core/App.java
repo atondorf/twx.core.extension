@@ -44,10 +44,12 @@ public class App {
         Connection con = null;
         try {
             app.openDBConnection();
-            app.queryModel();
 
             // Liquibase Test ... 
-            // LiquiTest.test_database( app.handler.getConnection() );
+            LiquiTest.update( app.handler.getConnection() );
+
+            app.queryModel();
+
 
 
         } catch (SQLException e) {

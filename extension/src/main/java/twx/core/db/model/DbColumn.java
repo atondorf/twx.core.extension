@@ -116,24 +116,7 @@ public class DbColumn extends DbObject<DbTable> implements SettingHolder<DbColum
         this.settings.entrySet().stream().forEach( s -> {
             json.put( s.getKey().label, s.getValue() );
         });
-
-        // 
-/*         
-        if (this.twxType != null)
-            json.put(DbConstants.MODEL_TAG_COLUMN_TWX_TYPE, twxType.name());
-        if (this.sqlType != null)
-            json.put(DbConstants.MODEL_TAG_COLUMN_SQL_TYPE, sqlType.getName());
-        if ( this.sqlTypeName != null )
-            json.put(DbConstants.MODEL_TAG_COLUMN_SQL_TYPENAME, this.sqlTypeName);
-        json.put(DbConstants.MODEL_TAG_COLUMN_SIZE, this.sqlTypeSize);
-        json.put(DbConstants.MODEL_TAG_COLUMN_ORDINAL,this.ordinal );
-        if (this.nullable != null)
-            json.put(DbConstants.MODEL_TAG_COLUMN_NULLABLE, this.nullable);
-        if (this.autoIncrement)
-            json.put(DbConstants.MODEL_TAG_COLUMN_AUTOINCREMENT, this.autoIncrement);
-        if (this.primaryKeySeq > 0)
-            json.put(DbConstants.MODEL_TAG_COLUMN_PRIMARY_KEY, this.primaryKeySeq);
- */        return json;
+        return json;
     }
     // endregion
 }

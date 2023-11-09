@@ -18,10 +18,12 @@ import twx.core.db.handler.DbHandler;
 import twx.core.db.model.DbColumn;
 import twx.core.db.model.DbForeignKey;
 import twx.core.db.model.DbIndex;
+import twx.core.db.model.DbIndexColumn;
 import twx.core.db.model.DbModel;
 import twx.core.db.model.DbSchema;
 import twx.core.db.model.DbTable;
 import twx.core.db.model.settings.DbColumnSetting;
+import twx.core.db.model.settings.DbIndexSetting;
 import twx.core.db.handler.DbInfo;
 
 public class AbstractDDLReader implements DDLReader {
@@ -53,6 +55,7 @@ public class AbstractDDLReader implements DDLReader {
         while (rs.next()) {
             String schemaName = rs.getString("TABLE_SCHEM");
             if (!this.dbInfo.isSystemSchema(schemaName)) {
+                // DbSchema dbSchema = this.dbInfo.isDefaultSchema(schemaName) ? dbModel.getDefaultSchema() : dbModel.getOrCreateSchema(schemaName);
                 DbSchema dbSchema = this.dbInfo.isDefaultSchema(schemaName) ? dbModel.getDefaultSchema() : dbModel.getOrCreateSchema(schemaName);
                 queryModelTables(dbSchema, con);
             }
@@ -70,9 +73,9 @@ public class AbstractDDLReader implements DDLReader {
             if ( tableSchema.equals(dbSchemaName) && !this.dbInfo.isSystemTable(tableName) ) {
                 DbTable dbTable = dbSchema.createTable(tableName);
                 queryModelColumns(dbTable, con);
-/*              queryModelIndexes(dbTable, con);
+                queryModelIndexes(dbTable, con);
                 queryModelKeys(dbTable, con);
- */            }
+            }
         }
         return dbSchema;
     }
@@ -92,65 +95,56 @@ public class AbstractDDLReader implements DDLReader {
             col.setTypeName( typename );
             Short type = rs.getShort("DATA_TYPE");
             col.setType(type);
-            // size 
             Integer typeSize = rs.getInt("COLUMN_SIZE");
             col.setSize(typeSize);
-            // settings ... 
             if( rs.getString("IS_NULLABLE").equals("NO") )
                 col.addSetting(DbColumnSetting.NOT_NULL, "true");
             if( rs.getString("IS_AUTOINCREMENT").equals("YES") )
                 col.addSetting(DbColumnSetting.INCREMENT, "true");
-            // default value ... 
             String defaultVal = rs.getString("COLUMN_DEF");
             if( defaultVal != null ) {
                 col.addSetting(DbColumnSetting.DEFAULT, defaultVal);
             }
-            
-            // @Todo-AT: own type mapping ...
-/*
-            JDBCType jdbcType = JDBCType.valueOf(typeId);
-            BaseTypes twxType = BaseTypes.JDBCTypeToBaseType(typeId);
-            col.setTwxType(twxType);
-            col.setSqlType(jdbcType);
-            col.setSqlTypeName(rs.getString("TYPE_NAME"));
-            col.setSqlSize(rs.getInt("BUFFER_LENGTH"));
-            
-            col.setNullable(((String) "YES").equals(rs.getString("IS_NULLABLE")));
-            col.setAutoIncrement(((String) "YES").equals(rs.getString("IS_AUTOINCREMENT")));
-*/
-            rs.getString("REMARKS"); // comments ...
-            rs.getString("COLUMN_DEF"); // default value ...
+            String comment = rs.getString("REMARKS");    // comments ...
+            if( comment != null ) {
+                col.setNote(comment);
+            }
         }
         return dbTable;
     }
 
     protected DbTable queryModelKeys(DbTable dbTable, Connection con) throws SQLException {
-        ResultSet rs = con.getMetaData().getPrimaryKeys(null, dbTable.getSchemaName(), dbTable.getName());
+        // check for default Schema Name ... 
+        String dbSchemaName = dbTable.getSchema().isDefault() ? dbInfo.getDefaultSchema() : dbTable.getSchema().getName();
+
+        ResultSet rs = con.getMetaData().getPrimaryKeys(null, dbSchemaName, dbTable.getName());
         while (rs.next()) {
             String name = rs.getString("PK_NAME");
             if (name != null) {
-                // dbTable.setPrimaryKey(name);
-                String colName = rs.getString("COLUMN_NAME");
-                Integer colOrdinal = rs.getInt("KEY_SEQ");
-                // set the column of the primary key ...
-//                dbTable.getColumn(colName).setPrimaryKeySeq(colOrdinal);
+                DbColumn col = dbTable.getColumn(rs.getString("COLUMN_NAME"));
+                if( col != null ) {
+                    col.addSetting(DbColumnSetting.PRIMARY_KEY, name );
+                }
             }
         }
         return dbTable;
     }
 
     protected DbTable queryModelIndexes(DbTable dbTable, Connection con) throws SQLException {
-        ResultSet rs = con.getMetaData().getIndexInfo(null, dbTable.getSchemaName(), dbTable.getName(), false, false);
+        // check for default Schema Name ... 
+        String dbSchemaName = dbTable.getSchema().isDefault() ? dbInfo.getDefaultSchema() : dbTable.getSchema().getName();        
+        // 
+        ResultSet rs = con.getMetaData().getIndexInfo(null, dbSchemaName, dbTable.getName(), false, false);
         while (rs.next()) {
             String name = rs.getString("INDEX_NAME");
             if (name != null) {
                 DbIndex index = dbTable.getOrCreateIndex(name);
-                String colName = rs.getString("COLUMN_NAME");
-                Integer colOrdinal = rs.getInt("ORDINAL_POSITION");
-/*                index.addColumn(colName, colOrdinal);
-                index.setUnique(!rs.getBoolean("NON_UNIQUE"));
-            */
-                    }
+                DbIndexColumn indexColumn = index.getOrCreateIndexColumn( rs.getString("COLUMN_NAME") );
+                indexColumn.setOrdinal( rs.getInt("ORDINAL_POSITION") );
+                if( !rs.getBoolean("NON_UNIQUE") ) {
+                    index.addSetting(DbIndexSetting.UNIQUE, "true" );
+                }
+            }
         }
         return dbTable;
     }

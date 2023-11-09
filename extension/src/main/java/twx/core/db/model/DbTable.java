@@ -17,6 +17,7 @@ public class DbTable extends DbObject<DbSchema> implements SettingHolder<DbTable
     private final Map<DbTableSetting, String> settings = new EnumMap<>(DbTableSetting.class);
 	private final Set<DbColumn> columns = new LinkedHashSet<>();
     private final Set<DbIndex> indexes = new LinkedHashSet<>();
+    private final Set<DbForeignKey> foreignKeys = new LinkedHashSet<>();
     private String alias = null;    
     private String dataShapeName = null;
 
@@ -228,6 +229,15 @@ public class DbTable extends DbObject<DbSchema> implements SettingHolder<DbTable
             array.put(column.toJSON());
         }
         json.put(DbConstants.MODEL_TAG_COLUMN_ARRAY, array);
+        
+        // add indexes ... 
+        var indexes = new JSONArray();
+        for (DbIndex index : this.indexes ) {
+            indexes.put(index.toJSON());
+        }
+        if( indexes.length() > 0 )
+            json.put(DbConstants.MODEL_TAG_INDEX_ARRAY, indexes);
+
         return json;
     }
     // endregion 

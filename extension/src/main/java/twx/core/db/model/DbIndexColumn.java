@@ -5,8 +5,8 @@ import java.util.Objects;
 import org.json.JSONObject;
 
 public class DbIndexColumn extends DbObject<DbIndex> {
-    public Integer  ordinal = 0;
-    public DbColumn column;
+    protected Integer  ordinal = 0;
+    protected DbColumn column;
 
     public DbIndexColumn(String name) {
         super(null, name);
@@ -104,7 +104,7 @@ public class DbIndexColumn extends DbObject<DbIndex> {
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();
-        
+        json.put(DbConstants.MODEL_TAG_ORDINAL, this.ordinal );
         return json;
     }
     // endregion     

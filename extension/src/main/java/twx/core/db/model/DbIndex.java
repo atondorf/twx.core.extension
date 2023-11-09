@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang3.tuple.MutableTriple;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import twx.core.db.model.settings.DbIndexSetting;
@@ -174,6 +175,16 @@ public class DbIndex extends DbObject<DbTable> implements SettingHolder<DbIndexS
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();
+        // add Columns ... 
+        var array = new JSONArray();
+        for (DbIndexColumn col : this.indexColumns ) {
+            array.put( col.toJSON() );
+        }
+        json.put(DbConstants.MODEL_TAG_COLUMN_ARRAY, array);
+        // add Settings ... 
+        this.settings.entrySet().stream().forEach( s -> {
+            json.put( s.getKey().label, s.getValue() );
+        });
 
         return json;
     }

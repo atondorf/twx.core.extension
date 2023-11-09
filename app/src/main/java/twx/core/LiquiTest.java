@@ -6,6 +6,7 @@ import liquibase.Liquibase;
 import liquibase.Scope;
 import liquibase.command.CommandScope;
 import liquibase.command.core.UpdateCommandStep;
+import liquibase.command.core.ValidateCommandStep;
 import liquibase.command.core.helpers.DatabaseChangelogCommandStep;
 import liquibase.command.core.helpers.DbUrlConnectionCommandStep;
 import liquibase.database.Database;
@@ -56,17 +57,58 @@ public class LiquiTest {
         }
     }
 
-    public static void test_database(Connection con) throws Exception {
+    public static void update(Connection con) throws Exception {
         ResourceAccessor accessor = new DirectoryResourceAccessor( Paths.get(PATH) );
         Map<String, Object> scopeObjects = new HashMap<>();
         scopeObjects.put(Scope.Attr.resourceAccessor.name(), accessor );
         Scope.child(scopeObjects, () -> {
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(con));
+            // Liquibase liquibase  = new Liquibase( "\\data\\changelog.mssql.sql", accessor, database);
+            //  liquibase.update();
+
+            CommandScope updateCommand = new CommandScope(UpdateCommandStep.COMMAND_NAME);
+            updateCommand.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, database );
+            updateCommand.addArgumentValue(DbUrlConnectionCommandStep.DEFAULT_SCHEMA_NAME_ARG, "lb" );
+            
+            updateCommand.addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, FILE );
+            updateCommand.execute();
+                        
+        });
+    }
+
+    public static void validate(Connection con) throws Exception {
+        ResourceAccessor accessor = new DirectoryResourceAccessor( Paths.get(PATH) );
+        Map<String, Object> scopeObjects = new HashMap<>();
+        scopeObjects.put(Scope.Attr.resourceAccessor.name(), accessor );
+        Scope.child(scopeObjects, () -> {
+            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(con));
+            
             // Liquibase liquibase  = new Liquibase( "changelog.mssql.sql", accessor, database);
+
+
+            CommandScope updateCommand = new CommandScope(ValidateCommandStep.COMMAND_NAME);
+            updateCommand.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, database );
+            updateCommand.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, FILE );
+            updateCommand.execute();
+        });
+    }
+
+
+
+    public static void updateSQL(Connection con) throws Exception {
+        ResourceAccessor accessor = new DirectoryResourceAccessor( Paths.get(PATH) );
+        Map<String, Object> scopeObjects = new HashMap<>();
+        scopeObjects.put(Scope.Attr.resourceAccessor.name(), accessor );
+        Scope.child(scopeObjects, () -> {
+            Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(con));
+            Liquibase liquibase  = new Liquibase( "changelog.mssql.sql", accessor, database);
+//            liquibase.
+        /*
             CommandScope updateCommand = new CommandScope(UpdateCommandStep.COMMAND_NAME);
             updateCommand.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, database );
             updateCommand.addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, FILE );
             updateCommand.execute();
+        */            
         });
     }
 
