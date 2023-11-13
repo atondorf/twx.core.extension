@@ -12,10 +12,6 @@ public class DbNameUtil {
         return table + "." + column;
     }
 
-    public static String of(final DbEnum anEnum, final String value) {
-        return anEnum + "." + value;
-    }
-
     public static String ofTable(final String schema, final String table) {
         return schema.equals(DbSchema.DEFAULT_SCHEMA_NAME) ? table : schema + '.' + table;
     }

@@ -122,14 +122,6 @@ public class DbRelationColumn extends DbObject<DbRelation> {
     // endregion    
     // region Serialization ... 
     // --------------------------------------------------------------------------------
-
-    @Override
-    public DbRelationColumn fromJSON(JSONObject json) {
-        super.fromJSON(json);
-
-        return this;
-    }
-
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();

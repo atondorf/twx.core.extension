@@ -14,10 +14,7 @@ import org.json.JSONObject;
 public class DbSchema extends DbObject<DbModel> {
     public static final String DEFAULT_SCHEMA_NAME = "";
     private final Set<DbTable> tables = new LinkedHashSet<>();
-/*
-    private final Set<DbEnum> enums = new LinkedHashSet<>();
-    private final Set<DbTableGroup> tableGroups = new LinkedHashSet<>();
-*/
+
     public DbSchema(String name) {
         super(null, name);
         if (isDefaultName())
@@ -91,98 +88,9 @@ public class DbSchema extends DbObject<DbModel> {
         return table;
     }
     // endregion
-/*
-    // region Get/Set Enums
-    // --------------------------------------------------------------------------------
-    public Set<DbEnum> getEnums() {
-        return Collections.unmodifiableSet(this.enums);
-    }
-
-    public Boolean hasEnum(String name) {
-        return DbObject.hasObject(this.enums, name);
-    }
-
-    public DbEnum getEnum(String name) {
-        return DbObject.findObject(this.enums, name);
-    }
-
-    public DbEnum createEnum(String name) {
-        var en = new DbEnum(this, name);
-        return addEnum(en);
-    }
-
-    public DbEnum getOrCreateEnum(String name) {
-        var en = getEnum(name);
-        if (en == null)
-            en = createEnum(name);
-        return en;
-    }
-
-    public DbEnum removeSchema(String name) {
-        var en = getEnum(name);
-        return removeEnum(en);
-    }
-
-    public DbEnum addEnum(DbEnum en) {
-        en.takeOwnerShip(this);
-        this.enums.add(en);
-        return en;
-    }
-
-    public DbEnum removeEnum(DbEnum dbEnum) {
-        this.enums.remove(dbEnum);
-        dbEnum.parent = null;
-        return dbEnum;
-    }
-
-    // endregion
-    // region Get/Set TableGroups
-    // --------------------------------------------------------------------------------
-    public Set<DbTableGroup> getTableGroups() {
-        return Collections.unmodifiableSet(this.tableGroups);
-    }
-
-    public Boolean hasTableGroup(String name) {
-        return DbObject.hasObject(this.tableGroups, name);
-    }
-
-    public DbTableGroup getTableGroup(String name) {
-        return DbObject.findObject(this.tableGroups, name);
-    }
-
-    public DbTableGroup createTableGroup(String name) {
-        DbTableGroup tableGroup = new DbTableGroup(this, name);
-        return addTableGroup(tableGroup);
-    }
-
-    public DbTableGroup getOrCreateTableGroup(String name) {
-        var tableGroup = getTableGroup(name);
-        if (tableGroup == null)
-            tableGroup = createTableGroup(name);
-        return tableGroup;
-    }
-
-    public DbTableGroup removeTableGroup(String name) {
-        var tableGroup = getTableGroup(name);
-        return removeTableGroup(tableGroup);
-    }
-
-    public DbTableGroup addTableGroup(DbTableGroup tableGroup) {
-        tableGroup.takeOwnerShip(this);
-        this.tableGroups.add(tableGroup);
-        return tableGroup;
-    }
-
-    public DbTableGroup removeTableGroup(DbTableGroup tableGroup) {
-        this.tableGroups.remove(tableGroup);
-        tableGroup.parent = null;
-        return tableGroup;
-    }
-    // endregion
- */        
     // region Model Join & Compare
     // --------------------------------------------------------------------------------
-    public DbSchema mergeWith(DbSchema other) throws DbModelException {
+    public DbSchema mergeWith(DbTable other) throws DbModelException {
         return this;
     }
 
@@ -193,7 +101,6 @@ public class DbSchema extends DbObject<DbModel> {
     public Boolean validate() throws DbModelException {
         return true;
     }
-
     // endregion    
     // region Compare and Hash ...
     // --------------------------------------------------------------------------------
@@ -203,28 +110,6 @@ public class DbSchema extends DbObject<DbModel> {
     // endregion
     // region Serialization ...
     // --------------------------------------------------------------------------------
-/*
-    public DbTable addTableFromJSON(JSONObject json) {
-        if (!json.has(DbConstants.MODEL_TAG_NAME))
-            throw new DbModelException("JSON does not define a tag 'name'");
-        DbTable table = new DbTable(this, json.getString(DbConstants.MODEL_TAG_NAME));
-        table.fromJSON(json);
-        return addTable(table);
-    }
-
-    @Override
-    public DbSchema fromJSON(JSONObject json) {
-        super.fromJSON(json);
-        if (json.has("tables")) {
-            JSONArray tables = json.getJSONArray(DbConstants.MODEL_TAG_TABLE_ARRAY);
-            tables.forEach(item -> {
-                addTableFromJSON((JSONObject) item);
-            });
-        }
-        return this;
-    }
- */
-
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();

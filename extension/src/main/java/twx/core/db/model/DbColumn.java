@@ -1,16 +1,12 @@
 package twx.core.db.model;
 
-import java.sql.JDBCType;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 
 import org.json.JSONObject;
 
-import com.thingworx.types.BaseTypes;
-
 import twx.core.db.model.settings.DbColumnSetting;
-import twx.core.db.model.settings.DbTableSetting;
 import twx.core.db.model.settings.SettingHolder;
 
 public class DbColumn extends DbObject<DbTable> implements SettingHolder<DbColumnSetting> {
@@ -90,21 +86,6 @@ public class DbColumn extends DbObject<DbTable> implements SettingHolder<DbColum
     // endregion
     // region Serialization ...
     // --------------------------------------------------------------------------------
-
-    @Override
-    public DbColumn fromJSON(JSONObject json) {
-        super.fromJSON(json);
-/*         this.sqlType = json.has(DbConstants.MODEL_TAG_COLUMN_SQL_TYPE) ? JDBCType.valueOf(json.getString(DbConstants.MODEL_TAG_COLUMN_SQL_TYPE)) : JDBCType.NULL;
-        this.twxType = json.has(DbConstants.MODEL_TAG_COLUMN_TWX_TYPE) ? BaseTypes.valueOf(json.getString(DbConstants.MODEL_TAG_COLUMN_TWX_TYPE)) : BaseTypes.NOTHING;
-        this.sqlTypeName = json.has(DbConstants.MODEL_TAG_COLUMN_SQL_TYPENAME) ? json.getString(DbConstants.MODEL_TAG_COLUMN_SQL_TYPENAME) : "";
-        this.sqlTypeSize = json.has(DbConstants.MODEL_TAG_COLUMN_SIZE) ? json.getInt(DbConstants.MODEL_TAG_COLUMN_SIZE) : 0;
-        this.ordinal = json.has(DbConstants.MODEL_TAG_COLUMN_ORDINAL) ? json.getInt(DbConstants.MODEL_TAG_COLUMN_ORDINAL) : 0;
-        this.nullable = json.has(DbConstants.MODEL_TAG_COLUMN_NULLABLE) ? json.getBoolean(DbConstants.MODEL_TAG_COLUMN_NULLABLE) : true;
-        this.autoIncrement = json.has(DbConstants.MODEL_TAG_COLUMN_AUTOINCREMENT) ? json.getBoolean(DbConstants.MODEL_TAG_COLUMN_AUTOINCREMENT) : false;
-        this.primaryKeySeq = json.has(DbConstants.MODEL_TAG_COLUMN_PRIMARY_KEY) ? json.getInt(DbConstants.MODEL_TAG_COLUMN_PRIMARY_KEY) : -1;
- */        return this;
-    }
-
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();

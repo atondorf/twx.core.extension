@@ -1,17 +1,12 @@
 package twx.core.db.model;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
-import org.apache.commons.lang3.tuple.MutableTriple;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -39,7 +34,7 @@ public class DbIndex extends DbObject<DbTable> implements SettingHolder<DbIndexS
     }
 
     public DbTable getTable() {
-        return (DbTable) this.getParent();
+        return (DbTable)this.getParent();
     }
 
     public DbSchema getSchema() {
@@ -116,62 +111,19 @@ public class DbIndex extends DbObject<DbTable> implements SettingHolder<DbIndexS
     public void sortIndexColumns() {
         this.indexColumns.sort( (c1,c2)->c1.ordinal.compareTo(c2.ordinal));
     }
-
     // endregion
     // region Model Join & Compare
     // --------------------------------------------------------------------------------
-    public DbIndex mergeWith(DbIndex other) throws DbModelException {
-        return this;
-    }
 
-    public Boolean initialize() throws DbModelException {
-        return true;
-    }
-
-    public Boolean validate() throws DbModelException {
-        return true;
-    }
-
-    // endregion
+    // endregion        
     // region Compare and Hash ...
     // --------------------------------------------------------------------------------
-    /*
-     * @Override
-     * public boolean equals(final Object obj) {
-     * if (this == obj)
-     * return true;
-     * if (obj == null || getClass() != obj.getClass())
-     * return false;
-     * final DbTable that = (DbTable) obj;
-     * return Objects.equals(this.getSchema(), that.getSchema() ) &&
-     * this.getName().equals(that.getName());
-     * }
-     * 
-     * @Override
-     * public int hashCode() {
-     * return Objects.hash(this.getSchema(), this.getName());
-     * }
-     */
-    @Override
-    public String toString() {
-        /*
-         * return columns.entrySet()
-         * .stream()
-         * .map(e -> e.getValue() == null ? '`' + e.getKey() + '`' : e.getKey())
-         * .collect(Collectors.joining(", ", "(", ")"));
-         */ return null;
-    }
-    // endregion
+
+    
+
+    // endregion     
     // region Serialization ...
     // --------------------------------------------------------------------------------
-
-    @Override
-    public DbIndex fromJSON(JSONObject json) {
-        super.fromJSON(json);
-
-        return this;
-    }
-
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();
@@ -185,7 +137,6 @@ public class DbIndex extends DbObject<DbTable> implements SettingHolder<DbIndexS
         this.settings.entrySet().stream().forEach( s -> {
             json.put( s.getKey().label, s.getValue() );
         });
-
         return json;
     }
     // endregion

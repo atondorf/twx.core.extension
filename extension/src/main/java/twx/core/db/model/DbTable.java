@@ -18,17 +18,13 @@ public class DbTable extends DbObject<DbSchema> implements SettingHolder<DbTable
 	private final Set<DbColumn> columns = new LinkedHashSet<>();
     private final Set<DbIndex> indexes = new LinkedHashSet<>();
     private final Set<DbForeignKey> foreignKeys = new LinkedHashSet<>();
-    private String alias = null;    
-    private String dataShapeName = null;
 
     public DbTable(String name) {
         super(null, name);
-        this.dataShapeName = null;
     };
 
     protected DbTable(DbSchema schema, String name) {
         super(schema, name);
-        this.dataShapeName = null;
     };
     
     @Override
@@ -65,22 +61,6 @@ public class DbTable extends DbObject<DbSchema> implements SettingHolder<DbTable
     public String getSchemaName() {
         return this.getSchema().getName();
     }
-    
-    public String getDataShapeName() {
-        return this.dataShapeName;
-    }
-
-    public void setDataShapeName(String dataShapeName) {
-        this.dataShapeName = dataShapeName;
-    }
-
-	public String getAlias() {
-		return alias;
-	}
-	
-	public void setAlias(final String alias) {
-		this.alias = alias;
-	}
     // endregion
     // region Columns
     // --------------------------------------------------------------------------------
@@ -181,7 +161,6 @@ public class DbTable extends DbObject<DbSchema> implements SettingHolder<DbTable
     public Boolean validate() throws DbModelException {
         return true;
     }
-
     // endregion  
     // region Compare and Hash ...
     // --------------------------------------------------------------------------------
@@ -207,15 +186,6 @@ public class DbTable extends DbObject<DbSchema> implements SettingHolder<DbTable
     // endregion
     // region Serialization ... 
     // --------------------------------------------------------------------------------
-
-
-    @Override
-    public DbTable fromJSON(JSONObject json) {
-        super.fromJSON(json);
-
-        return this;
-    }
-
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();

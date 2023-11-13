@@ -1,13 +1,20 @@
 package twx.core.db.model;
 
 public class DbConstants {
- 
+    // TAG-Names for JSON IO of Model ... 
     public static final String MODEL_TAG_NAME                   = "name";       // used for all names in JSON
     public static final String MODEL_TAG_NOTE                   = "note";       // used for all notes in JSON
 
     public static final String MODEL_TAG_SCHEMA_ARRAY           = "schemas";    // used for schema in JSON    
-   
+    public static final String MODEL_TAG_TABLE_ARRAY            = "tables";   
+    public static final String MODEL_TAG_COLUMN_ARRAY           = "columns";
+    public static final String MODEL_TAG_INDEX_ARRAY            = "indexes";
+    public static final String MODEL_TAG_FKKEYS_ARRAY           = "foreignKeys";
 
+
+    // 
+    public static final String MODEL_SETTING_TABLE_TYPE         = "tableType";
+    public static final String MODEL_SETTING_TWXTYPE            = "twxType";
 
     // To check ... 
 
@@ -17,14 +24,7 @@ public class DbConstants {
     public static final String MODEL_SETTING_UNIQUE             = "unique";
     public static final String MODEL_SETTING_INCREMENT          = "increment";
     public static final String MODEL_SETTING_DEFAULT            = "default";
-    public static final String MODEL_SETTING_TWXTYPE            = "twxType";
     
-
-    public static final String MODEL_TAG_TABLE_ARRAY            = "tables";
-    public static final String MODEL_TAG_COLUMN_ARRAY           = "columns";
-    public static final String MODEL_TAG_INDEX_ARRAY            = "indexes";
-    public static final String MODEL_TAG_FKKEYS_ARRAY           = "foreignKeys";
-	
     public static final String MODEL_TAG_ORDINAL                = "ordinal";
     public static final String MODEL_TAG_TYPE                   = "type";
     public static final String MODEL_TAG_TYPE_NAME              = "typeName";

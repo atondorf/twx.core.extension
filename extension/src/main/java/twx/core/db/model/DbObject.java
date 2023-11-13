@@ -81,7 +81,6 @@ public class DbObject<ParentType extends DbObject<?>> {
             return this.getParent().getRoot();
     }
 
-
     public String getFullName() {
         String name = getName();
         String prefix = (!(this.isRoot()) ? getParent().getFullName() : null);
@@ -98,9 +97,7 @@ public class DbObject<ParentType extends DbObject<?>> {
 
     protected <T extends DbObject<?>> T checkOwnership(T obj) {
         if (obj.getParent() != this) {
-            throw new IllegalArgumentException(
-                    "Given " + obj.getClass().getSimpleName() + " is not owned by this " +
-                            getClass().getSimpleName());
+            throw new IllegalArgumentException("Given " + obj.getClass().getSimpleName() + " is not owned by this " + getClass().getSimpleName());
         }
         return obj;
     }
@@ -113,7 +110,7 @@ public class DbObject<ParentType extends DbObject<?>> {
         return objects.stream().filter(c -> c.getName().equals(name)).findAny().orElse(null);
     }
 
-    // region Compare and Hash ...
+    // region Compare and Hash ... used to keep Objects in Set<> ...
     // --------------------------------------------------------------------------------
     @Override
     public boolean equals(final Object obj) {
@@ -121,7 +118,7 @@ public class DbObject<ParentType extends DbObject<?>> {
             return true;
         if (obj == null || getClass() != obj.getClass())
             return false;
-        final DbSchema that = (DbSchema) obj;
+        final DbObject<?> that = (DbObject<?>) obj;
         return this.getName().equals(that.getName());
     }
 
@@ -144,16 +141,6 @@ public class DbObject<ParentType extends DbObject<?>> {
         if (note != null)
             json.put(DbConstants.MODEL_TAG_NOTE, this.note);
         return json;
-    }
-
-    public DbObject<?> fromJSON(JSONObject json) {
-        if (json.has(DbConstants.MODEL_TAG_NAME))
-            this.name = json.getString(DbConstants.MODEL_TAG_NAME);
-        if (json.has(DbConstants.MODEL_TAG_NOTE))
-            this.note = json.getString(DbConstants.MODEL_TAG_NOTE);
-        else
-            this.note = null;
-        return this;
     }
     // endregion
 }

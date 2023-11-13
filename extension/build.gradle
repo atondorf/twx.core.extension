@@ -1,6 +1,5 @@
 plugins {
     id 'java-library'
-    id 'distribution'
 }
 
 project.ext {
@@ -40,15 +39,6 @@ dependencies {
     packageDependencies group: 'org.liquibase', name: 'liquibase-core', version: '4.24.0'
 }
 
-distributions {
-    main {
-        distributionBaseName = 'someName'
-        contents {
-            from 'configfiles'
-        }
-    }
-}
-
 tasks.named('jar') {
     archiveFileName = extensionJar
     manifest {
@@ -82,6 +72,8 @@ def updateMetadata() {
         if (f.getName().startsWith('commons-codec') ||
             f.getName().startsWith('commons-io') ||
             f.getName().startsWith('commons-logging') ||
+            f.getName().startsWith('commons-collections') ||
+            f.getName().startsWith('opencsv') ||
             f.getName().startsWith('netty') ||
             f.getName().startsWith('log4j') ||
             f.getName().startsWith('httpclient') ||
@@ -140,10 +132,6 @@ task twxZip(type : Zip, dependsOn: twxPrepare) {
     archiveFileName = zipName
     destinationDirectory = new File(project.ext.zipDir)
     from "${buildDir}/zip/"
-}
-
-tasks.named('distZip') {
-    println 'Distzip Config'
 }
 
 // overwrite test-task to use JUnit 5 ...

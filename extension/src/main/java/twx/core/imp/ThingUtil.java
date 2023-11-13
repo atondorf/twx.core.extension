@@ -7,6 +7,8 @@ import com.thingworx.entities.utils.EntityUtilities;
 import com.thingworx.logging.LogUtilities;
 import com.thingworx.relationships.RelationshipTypes;
 import com.thingworx.things.Thing;
+import com.thingworx.things.repository.FileRepositoryThing;
+import com.thingworx.types.InfoTable;
 import com.thingworx.webservices.context.ThreadLocalContext;
 
 import ch.qos.logback.classic.Logger;
@@ -40,6 +42,23 @@ public class ThingUtil {
         if (thing != null)
             return thing;
         throw new ThingworxRuntimeException("Thing:" + thingName + " does not exist.");
+    }
+
+    public static FileRepositoryThing getFileRepos(String thingName) {
+        FileRepositoryThing thing = (FileRepositoryThing) EntityUtilities.findEntityDirect(thingName, RelationshipTypes.ThingworxRelationshipTypes.Thing);
+        if (thing != null) {
+            if (thing.isVisible())
+                return thing;
+            throw new ThingworxRuntimeException("FileRepository:" + thing.getName() + " is not visible for current user.");
+        }
+        throw new ThingworxRuntimeException("FileRepository:" + thingName + " does not exist.");
+    }
+
+    public static FileRepositoryThing getFileReposDirect(String thingName) {
+        FileRepositoryThing thing = (FileRepositoryThing) EntityUtilities.findEntityDirect(thingName, RelationshipTypes.ThingworxRelationshipTypes.Thing);
+        if (thing != null)
+            return thing;
+        throw new ThingworxRuntimeException("FileRepository:" + thingName + " does not exist.");
     }
 
 }

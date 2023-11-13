@@ -56,17 +56,6 @@ public class DbIndexColumn extends DbObject<DbIndex> {
     // endregion
     // region Model Join & Compare
     // --------------------------------------------------------------------------------
-    public DbIndexColumn mergeWith(DbIndexColumn other) throws DbModelException {
-        return this;
-    }
-
-    public Boolean initialize() throws DbModelException {
-        return true;
-    }
-
-    public Boolean validate() throws DbModelException {
-        return true;
-    }
 
     // endregion 
     // region Compare and Hash ...
@@ -90,17 +79,9 @@ public class DbIndexColumn extends DbObject<DbIndex> {
     public String toString() {
         return this.getName();
     }
-    // endregion    
+    // endregion 
     // region Serialization ... 
     // --------------------------------------------------------------------------------
-
-    @Override
-    public DbIndexColumn fromJSON(JSONObject json) {
-        super.fromJSON(json);
-
-        return this;
-    }
-
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();

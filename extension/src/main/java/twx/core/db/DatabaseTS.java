@@ -1,29 +1,49 @@
 package twx.core.db;
 
-import java.sql.Connection;
-
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 
-import com.thingworx.datashape.DataShape;
 import com.thingworx.logging.LogUtilities;
 import com.thingworx.metadata.annotations.ThingworxServiceDefinition;
 import com.thingworx.metadata.annotations.ThingworxServiceParameter;
 import com.thingworx.metadata.annotations.ThingworxServiceResult;
-import com.thingworx.types.InfoTable;
-import com.thingworx.types.collections.ValueCollection;
-import com.thingworx.types.primitives.StringPrimitive;
 
-import ch.qos.logback.core.db.dialect.DBUtil;
+import twx.core.db.liquibase.LiquibaseRunner;
 import twx.core.db.util.DatabaseUtil;
 
 public class DatabaseTS {
-    private static Logger logger = LogUtilities.getInstance().getApplicationLogger(DatabaseTS.class);
+    private static Logger logger = LogUtilities.getInstance().getDatabaseLogger(DatabaseTS.class);
 
     // region TWX-Services DDL using Liquibase ... 
     // --------------------------------------------------------------------------------
+    @ThingworxServiceDefinition(name = "GetLiquibaseConfig", description = "", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "JSON", aspects = {} )
+    public JSONObject GetLiquibaseConfig() throws Exception {
+        var lbRunner = new LiquibaseRunner(DatabaseUtil.getAbstractDatabase());
+        return lbRunner.getChangelog();
+    }
     
+    @ThingworxServiceDefinition(name = "Update", description = "", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
+    public void Update(
+        @ThingworxServiceParameter(name = "Contexts", description = "", baseType = "STRING", aspects = {"isRequired:false" }) String contexts,
+        @ThingworxServiceParameter(name = "Params", description = "", baseType = "JSON", aspects = {"isRequired:false" }) String jsonParam) throws Exception {
+        logger.info("----- Liquibase update -----");            
+        var lbRunner = new LiquibaseRunner(DatabaseUtil.getAbstractDatabase());
+        lbRunner.update();
+    }
+
+    @ThingworxServiceDefinition(name = "UpdateSQL", description = "", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "TEXT", aspects = {})
+    public String UpdateSQL(
+        @ThingworxServiceParameter(name = "Contexts", description = "", baseType = "STRING", aspects = {"isRequired:false" }) String contexts,
+        @ThingworxServiceParameter(name = "Params", description = "", baseType = "JSON", aspects = {"isRequired:false" }) String jsonParam) throws Exception {
+        logger.info("----- Liquibase updateSQL -----");
+        var lbRunner = new LiquibaseRunner(DatabaseUtil.getAbstractDatabase());
+        String sql = lbRunner.updateSQL();
+        logger.info(sql);
+        return sql;
+    }
 
     // endregion
     // region TWX-Services Metadata Configuration ... 
@@ -91,7 +111,7 @@ public class DatabaseTS {
     @ThingworxServiceDefinition(name = "CreateSchema", description = "", category = "Schema Handling", isAllowOverride = false, aspects = { "isAsync:false" })
 	@ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
 	public void CreateSchema( @ThingworxServiceParameter(name = "name", description = "", baseType = "STRING") String name) throws Exception {
-      
+
     }
 
     @ThingworxServiceDefinition(name = "DropSchema", description = "", category = "Schema Handling", isAllowOverride = false, aspects = { "isAsync:false" })

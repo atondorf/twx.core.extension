@@ -143,32 +143,6 @@ public class DbForeignKey extends DbObject<DbTable> {
     // endregion
     // region Serialization ... 
     // --------------------------------------------------------------------------------
-    public void addColumnFromJSON(JSONObject json) {
-        Integer colSeq = json.getInt(DbConstants.MODEL_TAG_INDEX_ORDINAL);
-        String localColumnName = json.getString(DbConstants.MODEL_TAG_INDEX_LOCAL_COLUMN);   
-        String foreignColumnName = json.getString(DbConstants.MODEL_TAG_INDEX_FOREIGN_COLUMN);   
-        this.addColumn(colSeq,localColumnName,foreignColumnName);  
-    }
-
-    @Override
-    public DbForeignKey fromJSON(JSONObject json) {
-        super.fromJSON(json);
-        if( json.has(DbConstants.MODEL_TAG_INDEX_FOREIGN_SCHEMA))
-            this.foreignSchemaName = json.getString(DbConstants.MODEL_TAG_INDEX_FOREIGN_SCHEMA);
-        if( json.has(DbConstants.MODEL_TAG_INDEX_FOREIGN_TABLE))
-            this.foreignTableName = json.getString(DbConstants.MODEL_TAG_INDEX_FOREIGN_TABLE);
-        if( json.has(DbConstants.MODEL_TAG_INDEX_ON_UPDATE))
-            this.onUpdate = FkRule.getByLabel(json.getString(DbConstants.MODEL_TAG_INDEX_ON_UPDATE));
-        if( json.has(DbConstants.MODEL_TAG_INDEX_ON_DELETE))
-            this.onDelete = FkRule.getByLabel(json.getString(DbConstants.MODEL_TAG_INDEX_ON_DELETE));
-        if( json.has(DbConstants.MODEL_TAG_COLUMN_ARRAY) ) {
-            JSONArray schemas = json.getJSONArray(DbConstants.MODEL_TAG_COLUMN_ARRAY);
-            schemas.forEach( item -> {
-                this.addColumnFromJSON((JSONObject)item);
-            });
-        }        
-        return this;
-    }
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();

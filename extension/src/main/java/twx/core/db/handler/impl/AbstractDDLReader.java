@@ -1,22 +1,13 @@
 package twx.core.db.handler.impl;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.net.ConnectException;
 import java.sql.Connection;
-import java.sql.JDBCType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.List;
 
-import com.thingworx.types.BaseTypes;
-
-import twx.core.db.handler.ConnectionCallback;
 import twx.core.db.handler.DDLReader;
 import twx.core.db.handler.DbHandler;
+import twx.core.db.handler.DbInfo;
 import twx.core.db.model.DbColumn;
-import twx.core.db.model.DbForeignKey;
 import twx.core.db.model.DbIndex;
 import twx.core.db.model.DbIndexColumn;
 import twx.core.db.model.DbModel;
@@ -24,7 +15,7 @@ import twx.core.db.model.DbSchema;
 import twx.core.db.model.DbTable;
 import twx.core.db.model.settings.DbColumnSetting;
 import twx.core.db.model.settings.DbIndexSetting;
-import twx.core.db.handler.DbInfo;
+import twx.core.db.model.settings.DbTableSetting;
 
 public class AbstractDDLReader implements DDLReader {
     private DbHandler   dbHandler = null;
@@ -70,8 +61,10 @@ public class AbstractDDLReader implements DDLReader {
         while (rs.next()) {
             String tableSchema = rs.getString("TABLE_SCHEM");
             String tableName = rs.getString("TABLE_NAME");
+            String tableType = rs.getString("TABLE_TYPE");
             if ( tableSchema.equals(dbSchemaName) && !this.dbInfo.isSystemTable(tableName) ) {
                 DbTable dbTable = dbSchema.createTable(tableName);
+                dbTable.addSetting(DbTableSetting.TABLE_TYPE, tableType);
                 queryModelColumns(dbTable, con);
                 queryModelIndexes(dbTable, con);
                 queryModelKeys(dbTable, con);

@@ -9,9 +9,6 @@ import org.json.JSONObject;
 
 public class DbModel extends DbObject<DbObject<?>> {
     private final Set<DbSchema> schemas = new LinkedHashSet<>();
-    // private final Set<DbRelation> relations = new LinkedHashSet<>();
-    
-    private DbProject dbProject = null;
 
     public DbModel() {
         super(null, "");
@@ -26,24 +23,13 @@ public class DbModel extends DbObject<DbObject<?>> {
     @Override
     public void clear() {
         super.clear();
-//        this.relations.stream().forEach(c -> c.clear());
-//        this.relations.clear();
         this.schemas.stream().forEach(c -> c.clear());
         this.schemas.clear();
-        this.dbProject = null;
         schemas.clear();
         this.createSchema(DbSchema.DEFAULT_SCHEMA_NAME);
     }
-
     // region Get/Set Properties
     // --------------------------------------------------------------------------------
-    public DbProject getProject() {
-		return this.dbProject;
-	}
-	
-	public void setProject(final DbProject dbProject) {
-		this.dbProject = dbProject;
-	}
 
     // endretion
     // region Get/Set Schemas
@@ -93,55 +79,6 @@ public class DbModel extends DbObject<DbObject<?>> {
         return schema;
     }
     // endregion
-/*
-    // region Get/Set Relations ...
-    // --------------------------------------------------------------------------------
-    public Set<DbRelation> getRelations() {
-        return Collections.unmodifiableSet(this.relations);
-    }
-
-    public Boolean hasRelation(String name) {
-        return this.relations.stream().anyMatch(c -> c.getName().equals(name));
-    }
-
-    public DbRelation getRelation(final String name) {
-        return this.relations.stream().filter(c -> c.getName().equals(name)).findAny().orElse(null);
-    }
-
-    public DbRelation createRelation(String name) {
-        DbRelation Relation = new DbRelation(this, name);
-        return addRelation(Relation);
-    }
-
-    public DbRelation getDefaultRelation() {
-        return getRelation(null);
-    }
-
-    public DbRelation getOrCreateRelation(String name) {
-        var Relation = getRelation(name);
-        if (Relation == null)
-            Relation = createRelation(name);
-        return Relation;
-    }
-
-    public DbRelation removeRelation(String name) {
-        var Relation = getRelation(name);
-        return removeRelation(Relation);
-    }
-
-    public DbRelation addRelation(DbRelation relation) {
-        relation.takeOwnerShip(this);
-        this.relations.add(relation);
-        return relation;
-    }
-
-    public DbRelation removeRelation(DbRelation relation) {
-        this.relations.remove(relation);
-        relation.parent = null;
-        return relation;
-    }
-    // endregion
- */        
     // region Model Join & Compare
     // --------------------------------------------------------------------------------
     public DbModel mergeWith(DbModel other) throws DbModelException {
@@ -156,38 +93,14 @@ public class DbModel extends DbObject<DbObject<?>> {
         return true;
     }
     // endregion
-    // region Compare and Hash ...
+    // region Compare and Hash ... used to keep Objects in Set<> ...
     // --------------------------------------------------------------------------------
-
-    // Nothing to do here ... use DbObject implementation by getName only ... 
-
-    // endregion  
-
+    
+    // Nothing to do here ... use DbObject implementation by getName only ...
+    
+    // endregion
     // region Serialization ...
     // --------------------------------------------------------------------------------
-    public DbSchema addSchemaFromJSON(JSONObject json) {
-        if (!json.has(DbConstants.MODEL_TAG_NAME))
-            throw new DbModelException("JSON does not define a tag 'name'");
-        DbSchema schema = new DbSchema(this, json.getString(DbConstants.MODEL_TAG_NAME));
-        schema.fromJSON(json);
-        return addSchema(schema);
-    }
-
-    @Override
-    public DbModel fromJSON(JSONObject json) {
-        // clear the model first ...
-        this.clear();
-        // now load from JSON ...
-        super.fromJSON(json);
-        if (json.has(DbConstants.MODEL_TAG_SCHEMA_ARRAY)) {
-            JSONArray schemas = json.getJSONArray(DbConstants.MODEL_TAG_SCHEMA_ARRAY);
-            schemas.forEach(item -> {
-                this.addSchemaFromJSON((JSONObject) item);
-            });
-        }
-        return this;
-    }
-
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();

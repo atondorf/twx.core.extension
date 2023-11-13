@@ -29,9 +29,9 @@ public class App {
 
     final static Logger logger = LoggerFactory.getLogger(App.class);
 
-    static final String DB_URL = "jdbc:sqlserver://localhost:1433;database=twdata;";
-    static final String USER = "twx";
-    static final String PASS = "twx@1234";
+    static final String DB_URL  = "jdbc:sqlserver://localhost:1433;database=twdata;";
+    static final String USER    = "twx";
+    static final String PASS    = "twx@1234";
     static final String appName = "TWX-Data";
 
     SQLServerDataSource ds = null;
@@ -46,9 +46,9 @@ public class App {
             app.openDBConnection();
 
             // Liquibase Test ... 
-            LiquiTest.update( app.handler.getConnection() );
+            LiquiTest.updateSQL( app.handler.getConnection() );
 
-            app.queryModel();
+            // app.queryModel();
 
 
 

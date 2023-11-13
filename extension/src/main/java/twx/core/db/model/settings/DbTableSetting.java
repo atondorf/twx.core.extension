@@ -4,8 +4,8 @@ import twx.core.db.model.DbConstants;
 import twx.core.db.model.DbForeignKey.FkRule;
 
 public enum DbTableSetting implements Setting {
-	HEADERCOLOR(0, DbConstants.MODEL_SETTING_HEADERCOLOR),
-	THINGWORXTYPE(99, DbConstants.MODEL_SETTING_TWXTYPE);
+	TABLE_TYPE(0, DbConstants.MODEL_SETTING_TABLE_TYPE),
+	THINGWORX_TYPE(99, DbConstants.MODEL_SETTING_TWXTYPE);
 
 	public Integer key;
 	public String label;
