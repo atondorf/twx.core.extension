@@ -19,7 +19,7 @@ public class DbSchemaTest {
         @BeforeEach
         void createNewSpec() {
             spec = new DbModel("Spec");
-            sut = spec.addSchema("Schema");
+            sut = spec.createSchema("Schema");
             log.info("DbSchemaTest.BeforeEach()");
         }
 
@@ -37,7 +37,7 @@ public class DbSchemaTest {
         @Test
         void shouldGiveValidParentAndSpec() {
             assertEquals(spec, sut.getParent());
-            assertEquals(spec, sut.getSpec());
+            assertEquals(spec, sut.getModel());
         }
 
         @Test
@@ -52,7 +52,7 @@ public class DbSchemaTest {
 
             @BeforeEach
             void createNewSpec() {
-                table = sut.addTable("Table");
+                table = sut.createTable("Table");
                 log.info("whenAddingATable.BeforeEach()");
             }
 

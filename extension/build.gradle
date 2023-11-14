@@ -1,6 +1,5 @@
 plugins {
     id 'java-library'
-    id 'distribution'
 }
 
 project.ext {
@@ -24,8 +23,6 @@ dependencies {
     implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
     implementation fileTree(dir: rootProject.ext.commonJarDir, include: ['*.jar'])
     implementation fileTree(dir: rootProject.ext.localJarDir, include: ['*.jar'])
-    packageDependencies fileTree(dir: rootProject.ext.localJarDir, include: ['*.jar'])
-    packageDependencies group: 'org.liquibase', name: 'liquibase-core', version: '4.24.0'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
     implementation group: 'com.google.collections', name: 'google-collections', version: '1.0'
     implementation group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
@@ -36,15 +33,10 @@ dependencies {
     implementation group: 'com.google.guava', name: 'guava', version: '12.0'
     implementation group: 'org.apache.commons', name: 'commons-csv', version: '1.10.0'    
     implementation group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '8.2.1.jre11'
-}
-
-distributions {
-    main {
-        distributionBaseName = 'someName'
-        contents {
-            from 'configfiles'
-        }
-    }
+    implementation group: 'org.liquibase', name: 'liquibase-core', version: '4.24.0'
+    // pach those also to the zip ... 
+    packageDependencies fileTree(dir: rootProject.ext.localJarDir, include: ['*.jar'])
+    packageDependencies group: 'org.liquibase', name: 'liquibase-core', version: '4.24.0'
 }
 
 tasks.named('jar') {
@@ -80,6 +72,8 @@ def updateMetadata() {
         if (f.getName().startsWith('commons-codec') ||
             f.getName().startsWith('commons-io') ||
             f.getName().startsWith('commons-logging') ||
+            f.getName().startsWith('commons-collections') ||
+            f.getName().startsWith('opencsv') ||
             f.getName().startsWith('netty') ||
             f.getName().startsWith('log4j') ||
             f.getName().startsWith('httpclient') ||
@@ -138,10 +132,6 @@ task twxZip(type : Zip, dependsOn: twxPrepare) {
     archiveFileName = zipName
     destinationDirectory = new File(project.ext.zipDir)
     from "${buildDir}/zip/"
-}
-
-tasks.named('distZip') {
-    println 'Distzip Config'
 }
 
 // overwrite test-task to use JUnit 5 ...

@@ -1,21 +1,19 @@
 package twx.core.db;
 
-import org.mozilla.javascript.*;
-import com.thingworx.types.InfoTable;
-import com.thingworx.types.collections.ValueCollection;
-import com.thingworx.types.BaseTypes;
-import com.thingworx.dsl.engine.DSLConverter;
-import com.thingworx.types.primitives.DatetimePrimitive;
-import com.thingworx.types.primitives.LongPrimitive;
-import com.thingworx.types.primitives.NumberPrimitive;
-import com.thingworx.types.primitives.StringPrimitive;
-import com.thingworx.data.util.InfoTableInstanceFactory;
-import com.thingworx.security.authentication.AuthenticationUtilities;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
 
-import twx.core.db.scriptable.QueryBuilder;
+import com.thingworx.dsl.engine.DSLConverter;
+import com.thingworx.security.authentication.AuthenticationUtilities;
+import com.thingworx.types.BaseTypes;
+import com.thingworx.types.primitives.StringPrimitive;
+
 import twx.core.db.scriptable.DBConnection;
 import twx.core.db.scriptable.DBPreparedStatement;
 import twx.core.db.scriptable.DBStatement;
+import twx.core.db.scriptable.QueryBuilder;
 
 public class DatabaseScriptLibrary {
 
@@ -69,5 +67,4 @@ public class DatabaseScriptLibrary {
         Object[] args_new = { desc.getValue() };
         return cx.newObject(me, "QueryBuilder", args_new);
     }
-
 }

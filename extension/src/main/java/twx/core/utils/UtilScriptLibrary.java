@@ -176,7 +176,6 @@ public class UtilScriptLibrary {
 
   public static JSONObject core_argTest(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
     JSONObject json = new JSONObject();
-    json.put("Greet", "Hello Thingworx!");
 
     var obj = args[0];
     json.put("ClassName", obj.getClass().getName());

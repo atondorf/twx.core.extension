@@ -1,0 +1,151 @@
+{
+    "schemas": [
+        {
+            "tables": [
+                {
+                    "indexes": [
+                        {
+                            "indexes": [
+                                {
+                                    "name": "id_1",
+                                    "ordinal": 1
+                                },
+                                {
+                                    "name": "id_2",
+                                    "ordinal": 2
+                                }
+                            ],
+                            "unique": true,
+                            "name": "tab_1_PK"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "sqlType": "INTEGER",
+                            "size": 10,
+                            "nullable": false,
+                            "name": "id_1",
+                            "twxType": "INTEGER"
+                        },
+                        {
+                            "sqlType": "INTEGER",
+                            "size": 10,
+                            "nullable": false,
+                            "name": "id_2",
+                            "twxType": "INTEGER"
+                        },
+                        {
+                            "sqlType": "VARCHAR",
+                            "size": 100,
+                            "nullable": true,
+                            "name": "val_1",
+                            "twxType": "STRING"
+                        }
+                    ],
+                    "name": "tab_1",
+                    "primaryKey": {
+                        "indexes": [
+                            {
+                                "name": "id_1",
+                                "ordinal": 1
+                            },
+                            {
+                                "name": "id_2",
+                                "ordinal": 2
+                            }
+                        ],
+                        "unique": false,
+                        "name": "tab_1_PK"
+                    }
+                },
+                {
+                    "foreignKeys": [
+                        {
+                            "onDelete": "noAction",
+                            "columns": [
+                                {
+                                    "foreignColumn": "id_1",
+                                    "name": "id_1",
+                                    "ordinal": 1
+                                },
+                                {
+                                    "foreignColumn": "id_2",
+                                    "name": "id_2",
+                                    "ordinal": 2
+                                }
+                            ],
+                            "name": "tab_2_FK",
+                            "onUpdate": "noAction",
+                            "foreignSchema": "dbo",
+                            "foreignTable": "tab_2"
+                        }
+                    ],
+                    "indexes": [
+                        {
+                            "indexes": [
+                                {
+                                    "name": "id_1",
+                                    "ordinal": 1
+                                },
+                                {
+                                    "name": "id_2",
+                                    "ordinal": 2
+                                },
+                                {
+                                    "name": "id_3",
+                                    "ordinal": 3
+                                }
+                            ],
+                            "unique": true,
+                            "name": "tab_2_PK"
+                        }
+                    ],
+                    "columns": [
+                        {
+                            "sqlType": "INTEGER",
+                            "size": 10,
+                            "nullable": false,
+                            "name": "id_1",
+                            "twxType": "INTEGER"
+                        },
+                        {
+                            "sqlType": "INTEGER",
+                            "size": 10,
+                            "nullable": false,
+                            "name": "id_2",
+                            "twxType": "INTEGER"
+                        },
+                        {
+                            "sqlType": "INTEGER",
+                            "size": 10,
+                            "nullable": false,
+                            "name": "id_3",
+                            "twxType": "INTEGER"
+                        }
+                    ],
+                    "name": "tab_2",
+                    "primaryKey": {
+                        "indexes": [
+                            {
+                                "name": "id_1",
+                                "ordinal": 1
+                            },
+                            {
+                                "name": "id_2",
+                                "ordinal": 2
+                            },
+                            {
+                                "name": "id_3",
+                                "ordinal": 3
+                            }
+                        ],
+                        "unique": false,
+                        "name": "tab_2_PK"
+                    }
+                }
+            ],
+            "name": "dbo"
+        }
+    ],
+    "name": "twdata"
+}

@@ -31,20 +31,15 @@ public class DbSpecTest {
         }
 
         @Test
-        void shouldReturnItselfAsSpec() {
-            assertEquals(sut, sut.getSpec());
-        }
-
-        @Test
         void shouldHaveValidName() {
             assertEquals("Name", sut.getName());
             assertEquals("Name", sut.getFullName());
         }
 
         @Test
-        void shouldHaveNoSchema() {
-            assertNull(sut.getDefaultSchema());
-            assertEquals(0, sut.getSchemas().size());
+        void shouldHaveDefaultSchema() {
+            assertNotNull(sut.getDefaultSchema());
+            assertEquals(1, sut.getSchemas().size());
         }
 
         @Test
@@ -59,7 +54,7 @@ public class DbSpecTest {
             @BeforeEach
             void addSchemas() {
                 // sut.addDefaultSchema();
-                sut.addSchema("Test");
+                sut.createSchema("Test");
             }
 
             @Test
@@ -73,7 +68,7 @@ public class DbSpecTest {
             void shouldGiveValidParentAndSpec() {
                 DbSchema schema = sut.getSchema("Test");
                 assertEquals(sut, schema.getParent());
-                assertEquals(sut, schema.getSpec());
+                assertEquals(sut, schema.getModel());
             }
 
             @Test
