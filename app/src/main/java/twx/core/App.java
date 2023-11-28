@@ -18,12 +18,14 @@ import org.slf4j.LoggerFactory;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 
+import liquibase.Liquibase;
 import twx.core.db.handler.DbHandler;
 import twx.core.db.handler.DbHandlerFactory;
 import twx.core.db.impl.DataSourceConnectionManager;
 import twx.core.db.model.DbModel;
 import twx.core.db.model.DbSchema;
 import twx.core.db.model.settings.DbTableSetting;
+import twx.core.imp.LiquibaseRunner;
 
 public class App {
 
@@ -36,6 +38,7 @@ public class App {
 
     SQLServerDataSource ds = null;
     DbHandler handler = null;
+    LiquibaseRunner lb = null;
 
     public static void main(String[] args) {
         var app = new App();
@@ -44,14 +47,8 @@ public class App {
         Connection con = null;
         try {
             app.openDBConnection();
-
-            // Liquibase Test ... 
-            LiquiTest.updateSQL( app.handler.getConnection() );
-
             // app.queryModel();
-
-
-
+            app.liquiTest();
         } catch (SQLException e) {
             printSQLException(e);
         } catch (Exception e) {
@@ -60,6 +57,10 @@ public class App {
             app.closeDBConnection();
         }
         logger.info("---------- Exit-App ----------");
+    }
+
+    private void liquiTest() throws Exception {
+        logger.info( lb.updateSQL() );
     }
 
     private void queryModel() throws SQLException {
@@ -95,29 +96,6 @@ public class App {
          */
     }
 
-    public void dropTable() throws Exception {
-        var con = this.ds.getConnection();
-        var st = con.createStatement();
-        String sql = "DROP TABLE test_1 ";
-
-        st.execute(sql);
-        con.commit();
-
-    }
-
-    public void createTable() throws Exception {
-        var con = this.ds.getConnection();
-        var st = con.createStatement();
-
-        String sql = "CREATE TABLE test_1 ( " +
-                "id_1 int NOT NULL," +
-                "id_2 int NOT NULL," +
-                "PRIMARY KEY (id_1,id_2)" +
-                ")";
-        st.execute(sql);
-        con.commit();
-    }
-
     protected void openDBConnection() throws Exception {
         logger.info("---------- openDBConnection ----------");
         DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
@@ -134,6 +112,8 @@ public class App {
         logger.info("Handler Name   : {}", this.handler.getName() );
         logger.info("Handler Key    : {}", this.handler.getKey()  );
         logger.info("Handler Catalog: {}", this.handler.getDefaultCatalog());
+
+        this.lb = new LiquibaseRunner( this.handler );
     }
 
     private void closeDBConnection() {
