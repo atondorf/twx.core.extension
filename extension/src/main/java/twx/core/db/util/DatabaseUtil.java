@@ -1,13 +1,5 @@
 package twx.core.db.util;
 
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
-import com.google.common.collect.Maps;
 import com.thingworx.common.exceptions.ThingworxRuntimeException;
 import com.thingworx.entities.RootEntity;
 import com.thingworx.entities.utils.EntityUtilities;
@@ -25,7 +17,7 @@ import twx.core.db.handler.DbHandlerFactory;
 import twx.core.db.liquibase.LiquibaseRunner;
 
 public class DatabaseUtil {
-    private static Logger _logger = LogUtilities.getInstance().getApplicationLogger(DatabaseUtil.class);
+    private static Logger _logger = LogUtilities.getInstance().getDatabaseLogger(DatabaseUtil.class);
     
     // region Database Handler ... 
     // --------------------------------------------------------------------------------  
@@ -84,15 +76,6 @@ public class DatabaseUtil {
         }
         throw new ThingworxRuntimeException("Thing:" + thingName + " does not exist.");
     }
-
-    public static DbHandler getDatabaseHandler() {
-        return null;
-    }
-
-    public static DbHandler getDatabaseHandler(AbstractDatabase abstractDatabase ) {
-        return null;
-    }
-
 
     // Helpers to get Core handlers from Abstract Database ... 
     // --------------------------------------------------------------------------------

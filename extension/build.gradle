@@ -2,6 +2,12 @@ plugins {
     id 'java-library'
 }
 
+java {
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(11))
+  }
+}
+
 project.ext {
     projectName     = rootProject.name + '.' + project.name
     extensionJar    = projectName + '_' + rootProject.ext.calculated_version + '.jar'

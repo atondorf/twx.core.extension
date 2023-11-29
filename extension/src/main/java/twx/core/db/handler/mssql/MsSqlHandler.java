@@ -84,50 +84,6 @@ public class MsSqlHandler extends AbstractHandler {
         info.registerTwxType(info.new TypeMapEntry(BaseTypes.NOTIFICATIONDEFINITIONNAME, JDBCType.NVARCHAR, "varchar", DbTypeCategory.TEXTUAL, DbInfo.DEFAULT_STRING_LENGTH) );
         info.registerTwxType(info.new TypeMapEntry(BaseTypes.STYLETHEMENAME, JDBCType.NVARCHAR, "varchar", DbTypeCategory.TEXTUAL, DbInfo.DEFAULT_STRING_LENGTH) );
 
-/*
- * // bidirectional types ... 
-        registerBiType( new TypeMapEntry(BaseTypes.NOTHING, JDBCType.NULL, "", DbTypeCategory.NULL) );
-/*
-        registerBiType(BaseTypes.STRING, JDBCType.NVARCHAR, MAX_STRING_LENGHT, DbTypeCategory.TEXTUAL);
-        registerBiType(BaseTypes.NUMBER, JDBCType.DOUBLE, 0, DbTypeCategory.NUMERIC);
-        registerBiType(BaseTypes.INTEGER, JDBCType.INTEGER, 0, DbTypeCategory.NUMERIC);
-        registerBiType(BaseTypes.LONG, JDBCType.BIGINT, 0, DbTypeCategory.NUMERIC);
-        registerBiType(BaseTypes.BOOLEAN, JDBCType.BOOLEAN, 0, DbTypeCategory.NUMERIC);
-        registerBiType(BaseTypes.DATETIME, JDBCType.TIMESTAMP, 0, DbTypeCategory.DATETIME);
-
-        registerBiType(BaseTypes.TEXT, JDBCType.LONGVARCHAR, MAX_STRING_LENGHT, DbTypeCategory.TEXTUAL);
-
-        /*
-        registerType(BaseTypes.IMAGE, JDBCType.NULL, 0, DbTypeCategory.NULL);
-
-        registerType(BaseTypes.INFOTABLE, JDBCType.NULL, 0, DbTypeCategory.NULL);
-        registerType(BaseTypes.LOCATION, JDBCType.NULL, 0, DbTypeCategory.NULL);
-        registerType(BaseTypes.XML, JDBCType.NULL, 0, DbTypeCategory.NULL);
-        registerType(BaseTypes.JSON, JDBCType.NULL, 0, DbTypeCategory.NULL);
-        registerType(BaseTypes.QUERY, JDBCType.NULL, 0, DbTypeCategory.NULL);
-
-        registerType(BaseTypes.HYPERLINK, JDBCType.NULL, 0, DbTypeCategory.NULL);
-        registerType(BaseTypes.IMAGELINK, JDBCType.NULL, 0, DbTypeCategory.NULL);
-        registerType(BaseTypes.PASSWORD, JDBCType.NULL, 0, DbTypeCategory.NULL);
-        registerType(BaseTypes.HTML, JDBCType.NULL, 0, DbTypeCategory.NULL);
-
-        registerType(BaseTypes.TAGS, JDBCType.NULL, 0, DbTypeCategory.NULL);
-        registerType(BaseTypes.SCHEDULE, JDBCType.NULL, 0, DbTypeCategory.NULL);
-        registerType(BaseTypes.VARIANT, JDBCType.NULL, 0, DbTypeCategory.NULL);
-        registerType(BaseTypes.GUID, JDBCType.NULL, 0, DbTypeCategory.NULL);
-        registerType(BaseTypes.BLOB, JDBCType.NULL, 0, DbTypeCategory.NULL);
-
-        registerType(BaseTypes.VEC2, JDBCType.NULL, 0, DbTypeCategory.NULL);
-        registerType(BaseTypes.VEC3, JDBCType.NULL, 0, DbTypeCategory.NULL);
-        registerType(BaseTypes.VEC4, JDBCType.NULL, 0, DbTypeCategory.NULL);
-        registerType(BaseTypes.THINGCODE, JDBCType.NULL, 0, DbTypeCategory.NULL);
-
-        // all the NAME Types => NVARCHAR(255)
-
-        // registerType(BaseTypes.TIMESPAN, JDBCType.NULL, 0, DbTypeCategory.NULL);
- */
-
-
         // create the DB-Model ... 
         this.setDbModel( new DbModel("Test") );
     }

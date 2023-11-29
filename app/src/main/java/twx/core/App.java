@@ -25,7 +25,7 @@ import twx.core.db.impl.DataSourceConnectionManager;
 import twx.core.db.model.DbModel;
 import twx.core.db.model.DbSchema;
 import twx.core.db.model.settings.DbTableSetting;
-import twx.core.imp.LiquibaseRunner;
+import twx.core.db.liquibase.LiquibaseRunner;
 
 public class App {
 
@@ -35,6 +35,9 @@ public class App {
     static final String USER    = "twx";
     static final String PASS    = "twx@1234";
     static final String appName = "TWX-Data";
+
+    static final String FILE = "changelog.master.xml";
+    static final String PATH = System.getProperty("user.dir") + "\\data";
 
     SQLServerDataSource ds = null;
     DbHandler handler = null;
@@ -60,8 +63,9 @@ public class App {
     }
 
     private void liquiTest() throws Exception {
-        lb.rollbackToTag("empty");
-        lb.update(null,null);
+        //  lb.rollbackToTag("empty");
+        //  lb.update("","");
+        // lb.changeLogSync();
 
         // logger.info("Status: " + lb.validate());
 //        logger.info("----- Status -----");
@@ -122,6 +126,7 @@ public class App {
         logger.info("Handler Catalog: {}", this.handler.getDefaultCatalog());
 
         this.lb = new LiquibaseRunner( this.handler );
+        lb.setChangelog(PATH, FILE);
     }
 
     private void closeDBConnection() {

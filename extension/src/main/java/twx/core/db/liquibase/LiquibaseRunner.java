@@ -23,6 +23,7 @@ import liquibase.command.core.ChangelogSyncSqlCommandStep;
 import liquibase.command.core.ChangelogSyncToTagCommandStep;
 import liquibase.command.core.ChangelogSyncToTagSqlCommandStep;
 import liquibase.command.core.InternalHistoryCommandStep;
+import liquibase.command.core.InternalHistoryCommandStep.DeploymentHistory;
 import liquibase.command.core.RollbackCommandStep;
 import liquibase.command.core.RollbackCountCommandStep;
 import liquibase.command.core.RollbackCountSqlCommandStep;
@@ -54,9 +55,9 @@ import twx.core.db.util.DatabaseUtil;
 import twx.core.imp.ThingUtil;
 
 public class LiquibaseRunner {
-
     private static Logger logger = LogUtilities.getInstance().getDatabaseLogger(LiquibaseRunner.class);
     private static LogService logService = new ThingworxLogService();
+
     private boolean useThingworxLogging = false;
     private String changelogPath = null;
     private String changelogFile = null;
@@ -250,6 +251,10 @@ public class LiquibaseRunner {
         return sw.toString();
     }
 
+    public void updateToTag(String tag) throws LiquibaseException {
+        updateToTag(tag, new Contexts(), new LabelExpression());
+    }
+
     public void updateToTag(String tag, String contexts, String labelExpression) throws LiquibaseException {
         updateToTag(tag, new Contexts(contexts), new LabelExpression(labelExpression));
     }
@@ -264,6 +269,10 @@ public class LiquibaseRunner {
             command.addArgumentValue(UpdateToTagCommandStep.TAG_ARG, tag);
             command.execute();
         });
+    }
+
+    public String updateToTagSQL(String tag) throws LiquibaseException {
+        return updateToTagSQL(tag, new Contexts(), new LabelExpression());
     }
 
     public String updateToTagSQL(String tag, String contexts, String labelExpression) throws LiquibaseException {
@@ -288,6 +297,10 @@ public class LiquibaseRunner {
     // endregion
     // Rollback Commands ...
     // --------------------------------------------------------------------------------
+    public void rollback(int changesToRollback) throws LiquibaseException {
+        rollback(changesToRollback, new Contexts(), new LabelExpression());
+    }
+
     public void rollback(int changesToRollback, String contexts, String labelExpression) throws LiquibaseException {
         rollback(changesToRollback, new Contexts(contexts), new LabelExpression(labelExpression));
     }
@@ -302,6 +315,10 @@ public class LiquibaseRunner {
             command.addArgumentValue(RollbackCountCommandStep.COUNT_ARG, changesToRollback);
             command.execute();
         });
+    }
+
+    public String rollbackSQL(int changesToRollback) throws LiquibaseException {
+        return rollbackSQL(changesToRollback, new Contexts(), new LabelExpression());
     }
 
     public String rollbackSQL(int changesToRollback, String contexts, String labelExpression) throws LiquibaseException {
@@ -323,6 +340,10 @@ public class LiquibaseRunner {
         return sw.toString();
     }
 
+    public void rollbackToDate(Date dateToRollBackTo) throws LiquibaseException {
+        rollbackToDate(dateToRollBackTo, new Contexts(), new LabelExpression());
+    }
+
     public void rollbackToDate(Date dateToRollBackTo, String contexts, String labelExpression) throws LiquibaseException {
         rollbackToDate(dateToRollBackTo, new Contexts(contexts), new LabelExpression(labelExpression));
     }
@@ -337,6 +358,10 @@ public class LiquibaseRunner {
             command.addArgumentValue(RollbackToDateCommandStep.DATE_ARG, dateToRollBackTo);
             command.execute();
         });
+    }
+
+    public String rollbackToDateSQL(Date dateToRollBackTo) throws LiquibaseException {
+        return rollbackToDateSQL(dateToRollBackTo, new Contexts(), new LabelExpression());
     }
 
     public String rollbackToDateSQL(Date dateToRollBackTo, String contexts, String labelExpression) throws LiquibaseException {
@@ -358,6 +383,10 @@ public class LiquibaseRunner {
         return sw.toString();
     }
 
+    public void rollbackToTag(String tagToRollBackTo) throws LiquibaseException {
+        rollbackToTag(tagToRollBackTo, new Contexts(), new LabelExpression());
+    }
+
     public void rollbackToTag(String tagToRollBackTo, String contexts, String labelExpression) throws LiquibaseException {
         rollbackToTag(tagToRollBackTo, new Contexts(contexts), new LabelExpression(labelExpression));
     }
@@ -372,6 +401,10 @@ public class LiquibaseRunner {
             command.addArgumentValue(RollbackCommandStep.TAG_ARG, tagToRollBackTo);
             command.execute();
         });
+    }
+
+    public String rollbackToTagSQL(String tagToRollBackTo) throws LiquibaseException {
+        return rollbackToTagSQL(tagToRollBackTo, new Contexts(), new LabelExpression());
     }
 
     public String rollbackToTagSQL(String tagToRollBackTo, String contexts, String labelExpression) throws LiquibaseException {
@@ -396,20 +429,20 @@ public class LiquibaseRunner {
     // endregion
     // Tracking Commands ...
     // --------------------------------------------------------------------------------
-    public void tag(String tagString) throws LiquibaseException {
+    public void tag(String tag) throws LiquibaseException {
         runInScope(() -> {
             CommandScope command = new CommandScope("tag");
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
-            command.addArgumentValue(TagCommandStep.TAG_ARG, tagString);
+            command.addArgumentValue(TagCommandStep.TAG_ARG, tag);
             command.execute();
         });
     }
 
-    public boolean tagExists(String tagString) throws LiquibaseException {
+    public boolean tagExists(String tag) throws LiquibaseException {
         Object obj = runInScopeWithReturn(() -> {
             CommandScope command = new CommandScope("tagExists");
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
-            command.addArgumentValue(TagExistsCommandStep.TAG_ARG, tagString);
+            command.addArgumentValue(TagExistsCommandStep.TAG_ARG, tag);
             CommandResults commandResults = command.execute();
             return commandResults.getResult(TagExistsCommandStep.TAG_EXISTS_RESULT);
         });
@@ -449,6 +482,10 @@ public class LiquibaseRunner {
         return sw.toString();
     }
 
+    public void changeLogSync() throws LiquibaseException {
+        changeLogSync(new Contexts(), new LabelExpression());
+    }
+
     public void changeLogSync(String contexts, String labelExpression) throws LiquibaseException {
         changeLogSync(new Contexts(contexts), new LabelExpression(labelExpression));
     }
@@ -462,6 +499,10 @@ public class LiquibaseRunner {
             command.addArgumentValue(DatabaseChangelogCommandStep.CONTEXTS_ARG, contexts != null ? contexts.toString() : null);
             command.execute();
         });
+    }
+
+    public String changeLogSyncSQL() throws LiquibaseException {
+        return changeLogSyncSQL(new Contexts(), new LabelExpression());
     }
 
     public String changeLogSyncSQL(String contexts, String labelExpression) throws LiquibaseException {
@@ -482,27 +523,35 @@ public class LiquibaseRunner {
         return sw.toString();
     }
 
-    public void changeLogSyncToTag(String tagString, String contexts, String labelExpression) throws LiquibaseException {
-        changeLogSyncToTag(tagString, new Contexts(contexts), new LabelExpression(labelExpression));
+    public void changeLogSyncToTag(String tag) throws LiquibaseException {
+        changeLogSyncToTag(tag, new Contexts(), new LabelExpression());
     }
 
-    public void changeLogSyncToTag(String tagString, Contexts contexts, LabelExpression labelExpression) throws LiquibaseException {
+    public void changeLogSyncToTag(String tag, String contexts, String labelExpression) throws LiquibaseException {
+        changeLogSyncToTag(tag, new Contexts(contexts), new LabelExpression(labelExpression));
+    }
+
+    public void changeLogSyncToTag(String tag, Contexts contexts, LabelExpression labelExpression) throws LiquibaseException {
         runInScope(() -> {
             CommandScope command = new CommandScope(ChangelogSyncToTagCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
             command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changelogFile);
             command.addArgumentValue(DatabaseChangelogCommandStep.LABEL_FILTER_ARG, labelExpression != null ? labelExpression.getOriginalString() : null);
             command.addArgumentValue(DatabaseChangelogCommandStep.CONTEXTS_ARG, contexts != null ? contexts.toString() : null);
-            command.addArgumentValue(ChangelogSyncToTagSqlCommandStep.TAG_ARG, tagString);
+            command.addArgumentValue(ChangelogSyncToTagSqlCommandStep.TAG_ARG, tag);
             command.execute();
         });
     }
 
-    public String changeLogSyncToTagSQL(String tagString, String contexts, String labelExpression) throws LiquibaseException {
-        return changeLogSyncToTagSQL(tagString, new Contexts(contexts), new LabelExpression(labelExpression));
+    public String changeLogSyncToTagSQL(String tag) throws LiquibaseException {
+        return changeLogSyncToTagSQL(tag, new Contexts(), new LabelExpression());
     }
 
-    public String changeLogSyncToTagSQL(String tagString, Contexts contexts, LabelExpression labelExpression) throws LiquibaseException {
+    public String changeLogSyncToTagSQL(String tag, String contexts, String labelExpression) throws LiquibaseException {
+        return changeLogSyncToTagSQL(tag, new Contexts(contexts), new LabelExpression(labelExpression));
+    }
+
+    public String changeLogSyncToTagSQL(String tag, Contexts contexts, LabelExpression labelExpression) throws LiquibaseException {
         StringWriter sw = new StringWriter();
         runInScope(() -> {
             CommandScope command = new CommandScope(ChangelogSyncToTagSqlCommandStep.COMMAND_NAME);
@@ -510,7 +559,7 @@ public class LiquibaseRunner {
             command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changelogFile);
             command.addArgumentValue(DatabaseChangelogCommandStep.LABEL_FILTER_ARG, labelExpression != null ? labelExpression.getOriginalString() : null);
             command.addArgumentValue(DatabaseChangelogCommandStep.CONTEXTS_ARG, contexts != null ? contexts.toString() : null);
-            command.addArgumentValue(ChangelogSyncToTagSqlCommandStep.TAG_ARG, tagString);
+            command.addArgumentValue(ChangelogSyncToTagSqlCommandStep.TAG_ARG, tag);
             command.setOutput(new WriterOutputStream(sw, Charset.forName("UTF-8")));
             command.execute();
         });

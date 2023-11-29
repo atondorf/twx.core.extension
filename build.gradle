@@ -10,6 +10,12 @@ jgitver {
     nonQualifierBranches "main"
 }
 
+java {
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(11))
+  }
+}
+
 rootProject.ext {
     localJarDir         = "${rootDir}/lib/local"    // if you have any jars that should be packed add them here
     commonJarDir        = "${rootDir}/lib/common"   // if you have any jars that should not be packed add them here
