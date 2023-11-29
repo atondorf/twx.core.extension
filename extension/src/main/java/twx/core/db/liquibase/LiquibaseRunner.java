@@ -57,8 +57,6 @@ import twx.core.imp.ThingUtil;
 public class LiquibaseRunner {
     private static Logger logger = LogUtilities.getInstance().getDatabaseLogger(LiquibaseRunner.class);
     private static LogService logService = new ThingworxLogService();
-
-    private boolean useThingworxLogging = false;
     private String changelogPath = null;
     private String changelogFile = null;
     private ResourceAccessor accessor = null;
@@ -85,7 +83,6 @@ public class LiquibaseRunner {
             String changelogFile = (String) (thing.getConfigurationSetting("LiquibaseChangelog", "ChangelogFile"));
 
             // first lookup for Repository thing ...
-            this.useThingworxLogging = true;
             this.changelogPath = ThingUtil.getFileRepos(changelogRepos).getRootPath() + (changelogPath != null ? changelogPath : "");
             this.changelogFile = changelogFile;
             this.accessor = new DirectoryResourceAccessor(Paths.get(this.changelogPath));
@@ -109,11 +106,11 @@ public class LiquibaseRunner {
         return true;
     }
 
-    protected Map<String, Object> getScope() {
+    protected Map<String, Object> getScope() throws LiquibaseException {
         Map<String, Object> scopeObjects = new HashMap<>();
+        scopeObjects.put(Scope.Attr.database.name(), this.getDatabase());
         scopeObjects.put(Scope.Attr.resourceAccessor.name(), this.accessor);
-        if (this.useThingworxLogging)
-            scopeObjects.put(Scope.Attr.logService.name(), logService);
+        scopeObjects.put(Scope.Attr.logService.name(), logService);
         return scopeObjects;
     }
 
@@ -122,9 +119,7 @@ public class LiquibaseRunner {
     }
 
     private void runInScope(Scope.ScopedRunner scopedRunner) throws LiquibaseException {
-        Map<String, Object> scopeObjects = new HashMap<>();
-        scopeObjects.put(Scope.Attr.database.name(), this.getDatabase());
-        scopeObjects.put(Scope.Attr.resourceAccessor.name(), this.accessor);
+        Map<String, Object> scopeObjects = this.getScope();
         try {
             Scope.child(scopeObjects, scopedRunner);
         } catch (Exception e) {
@@ -138,9 +133,7 @@ public class LiquibaseRunner {
     }
 
     private <ReturnType> ReturnType runInScopeWithReturn(Scope.ScopedRunnerWithReturn<ReturnType> scopedRunner) throws LiquibaseException {
-        Map<String, Object> scopeObjects = new HashMap<>();
-        scopeObjects.put(Scope.Attr.database.name(), this.getDatabase());
-        scopeObjects.put(Scope.Attr.resourceAccessor.name(), this.accessor);
+        Map<String, Object> scopeObjects = this.getScope();
         try {
             return Scope.child(scopeObjects, scopedRunner);
         } catch (Exception e) {

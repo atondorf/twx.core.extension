@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
+import com.thingworx.logging.LogUtilities;
 
 import twx.core.db.handler.DbHandler;
 import twx.core.db.handler.DbHandlerFactory;
@@ -39,6 +40,9 @@ public class App {
     public static void main(String[] args) {
         var app = new App();
         var scanner = new Scanner(System.in);
+        
+        logger.info("LogLevel: " + LogUtilities.getLoggerLevel(""));
+
         logger.info("---------- Start-App ----------");
         Connection con = null;
         try {
@@ -59,6 +63,8 @@ public class App {
         //  lb.rollbackToTag("empty");
         //  lb.update("","");
         // lb.changeLogSync();
+
+        lb.history();
 
         // logger.info("Status: " + lb.validate());
 //        logger.info("----- Status -----");
