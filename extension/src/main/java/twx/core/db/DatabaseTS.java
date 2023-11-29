@@ -16,25 +16,25 @@ public class DatabaseTS {
 
     // region TWX-Services Metadata Configuration ...
     // --------------------------------------------------------------------------------
-    @ThingworxServiceDefinition(name = "GetDBName", description = "", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "GetDBName", description = "get the type name of the database", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "STRING", aspects = {})
     public String GetDBName() throws Exception {
         return DatabaseUtil.getHandler().getName();
     }
 
-    @ThingworxServiceDefinition(name = "GetDBKey", description = "", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "GetDBKey", description = "get the jdbc identifiert of database type", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "STRING", aspects = {})
     public String GetDBKey() throws Exception {
         return DatabaseUtil.getHandler().getKey();
     }
 
-    @ThingworxServiceDefinition(name = "GetDBCatalog", description = "", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "GetDBCatalog", description = "get the catalog name of the database", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "STRING", aspects = {})
     public String GetDBCatalog() throws Exception {
         return DatabaseUtil.getHandler().getDefaultCatalog();
     }
 
-    @ThingworxServiceDefinition(name = "GetDBDefaultSchema", description = "", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "GetDBDefaultSchema", description = "get the default schema of dtabase", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "STRING", aspects = {})
     public String GetDBDefaultSchema() throws Exception {
         return DatabaseUtil.getHandler().getDefaultSchema();
@@ -64,69 +64,69 @@ public class DatabaseTS {
     // --------------------------------------------------------------------------------
     // region Liquibase Update
     // --------------------------------------------------------------------------------
-    @ThingworxServiceDefinition(name = "LiquiValidate", description = "validates the changelog for errors", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
-    @ThingworxServiceResult(name = "Result", description = "", baseType = "INTEGER", aspects = {})
-    public Integer LiquiValidate() throws Exception {
+    @ThingworxServiceDefinition(name = "LBvalidate", description = "validates the changeLog for errors", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "ErrorCode, 0 is OK", baseType = "INTEGER", aspects = {})
+    public Integer LBvalidate() throws Exception {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         return lbRunner.validate();
     }
 
-    @ThingworxServiceDefinition(name = "LiquiUpdate", description = "Updates the DB to latest changeset", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "LBupdate", description = "Updates the DB to latest changeset", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
-    public void LiquiUpdate(
-            @ThingworxServiceParameter(name = "contexts", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
-            @ThingworxServiceParameter(name = "labels", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
+    public void LBupdate(
+            @ThingworxServiceParameter(name = "contexts", description = "comma separated list of context to filter changesets", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
+            @ThingworxServiceParameter(name = "labels", description = "label filter, see Liquibase documentation", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         lbRunner.update(contexts, labels);
     }
 
-    @ThingworxServiceDefinition(name = "LiquiUpdateSQL", description = "Creates SQL to update the DB to latest changeset, but does not apply", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
-    @ThingworxServiceResult(name = "Result", description = "", baseType = "TEXT", aspects = {})
-    public String LiquiUpdateSQL(
-            @ThingworxServiceParameter(name = "contexts", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
-            @ThingworxServiceParameter(name = "labels", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
+    @ThingworxServiceDefinition(name = "LBupdateSQL", description = "Creates SQL to update the DB to latest changeset, but does not apply", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "generated SQL code", baseType = "STRING", aspects = {})
+    public String LBupdateSQL(
+            @ThingworxServiceParameter(name = "contexts", description = "comma separated list of context to filter changesets", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
+            @ThingworxServiceParameter(name = "labels", description = "label filter, see Liquibase documentation", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         String sql = lbRunner.updateSQL(contexts, labels);
         return sql;
     }
 
-    @ThingworxServiceDefinition(name = "LiquiUpdateCount", description = "Updates the DB with N changesets", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "LBupdateCount", description = "Updates the DB with N changesets", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
-    public void LiquiUpdateCount(
-            @ThingworxServiceParameter(name = "changesToApply", description = "", baseType = "INTEGER", aspects = { "isRequired:true" }) Integer changesToApply,
-            @ThingworxServiceParameter(name = "contexts", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
-            @ThingworxServiceParameter(name = "labels", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
+    public void LBupdateCount(
+            @ThingworxServiceParameter(name = "changesToApply", description = "integer specifying how many changes Liquibase applies", baseType = "INTEGER", aspects = { "isRequired:true" }) Integer changesToApply,
+            @ThingworxServiceParameter(name = "contexts", description = "comma separated list of context to filter changesets", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
+            @ThingworxServiceParameter(name = "labels", description = "label filter, see Liquibase documentation", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         lbRunner.update(changesToApply, contexts, labels);
     }
 
-    @ThingworxServiceDefinition(name = "LiquiUpdateCountSQL", description = "Creates SQL to update the DB with N changesets", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
-    @ThingworxServiceResult(name = "Result", description = "", baseType = "TEXT", aspects = {})
-    public String LiquiUpdateCountSQL(
-            @ThingworxServiceParameter(name = "changesToApply", description = "", baseType = "INTEGER", aspects = { "isRequired:true" }) Integer changesToApply,
-            @ThingworxServiceParameter(name = "contexts", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
-            @ThingworxServiceParameter(name = "labels", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
+    @ThingworxServiceDefinition(name = "LBupdateCountSQL", description = "Creates SQL to update the DB with N changesets", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "generated SQL code", baseType = "STRING", aspects = {})
+    public String LBupdateCountSQL(
+            @ThingworxServiceParameter(name = "changesToApply", description = "integer specifying how many changes Liquibase applies", baseType = "INTEGER", aspects = { "isRequired:true" }) Integer changesToApply,
+            @ThingworxServiceParameter(name = "contexts", description = "comma separated list of context to filter changesets", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
+            @ThingworxServiceParameter(name = "labels", description = "label filter, see Liquibase documentation", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         String sql = lbRunner.updateSQL(changesToApply, contexts, labels);
         return sql;
     }
 
-    @ThingworxServiceDefinition(name = "LiquiUpdateToTag", description = "Updates the DB to the to defened Tag", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "LBupdateToTag", description = "Updates the DB to the to defened Tag", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
-    public void LiquiUpdateToTag(
-            @ThingworxServiceParameter(name = "tag", description = "", baseType = "STRING", aspects = { "isRequired:true" }) String tag,
-            @ThingworxServiceParameter(name = "contexts", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
-            @ThingworxServiceParameter(name = "labels", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
+    public void LBupdateToTag(
+            @ThingworxServiceParameter(name = "tag", description = "tag identifying which tagged changesets in the changelog to evaluate", baseType = "STRING", aspects = { "isRequired:true" }) String tag,
+            @ThingworxServiceParameter(name = "contexts", description = "comma separated list of context to filter changesets", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
+            @ThingworxServiceParameter(name = "labels", description = "label filter, see Liquibase documentation", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         lbRunner.updateToTag(tag, contexts, labels);
     }
 
-    @ThingworxServiceDefinition(name = "LiquiUpdateToTagSQL", description = "Creates SQL to update the to defened Tag", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
-    @ThingworxServiceResult(name = "Result", description = "", baseType = "TEXT", aspects = {})
-    public String LiquiUpdateToTagSQL(
-            @ThingworxServiceParameter(name = "tag", description = "", baseType = "STRING", aspects = { "isRequired:true" }) String tag,
-            @ThingworxServiceParameter(name = "contexts", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
-            @ThingworxServiceParameter(name = "labels", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
+    @ThingworxServiceDefinition(name = "LBupdateToTagSQL", description = "Creates SQL to update the to defened Tag", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "generated SQL code", baseType = "STRING", aspects = {})
+    public String LBupdateToTagSQL(
+            @ThingworxServiceParameter(name = "tag", description = "tag identifying which tagged changesets in the changelog to evaluate", baseType = "STRING", aspects = { "isRequired:true" }) String tag,
+            @ThingworxServiceParameter(name = "contexts", description = "comma separated list of context to filter changesets", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
+            @ThingworxServiceParameter(name = "labels", description = "label filter, see Liquibase documentation", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         String sql = lbRunner.updateToTagSQL(tag, contexts, labels);
         return sql;
@@ -135,64 +135,64 @@ public class DatabaseTS {
     // endregion
     // region Liquibase Rollback
     // --------------------------------------------------------------------------------
-    @ThingworxServiceDefinition(name = "LiquiRollbackCount", description = "Rolls back N changesets", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "LBrollbackCount", description = "Rolls back N changesets", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
-    public void LiquiRollbackCount(
-            @ThingworxServiceParameter(name = "changesToRollback", description = "", baseType = "INTEGER", aspects = { "isRequired:true" }) Integer changesToRollback,
-            @ThingworxServiceParameter(name = "contexts", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
-            @ThingworxServiceParameter(name = "labels", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
+    public void LBrollbackCount(
+            @ThingworxServiceParameter(name = "changesToRollback", description = "integer specifying how many changes Liquibase applies", baseType = "INTEGER", aspects = { "isRequired:true" }) Integer changesToRollback,
+            @ThingworxServiceParameter(name = "contexts", description = "comma separated list of context to filter changesets", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
+            @ThingworxServiceParameter(name = "labels", description = "label filter, see Liquibase documentation", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         lbRunner.rollback(changesToRollback, contexts, labels);
     }
 
-    @ThingworxServiceDefinition(name = "LiquiRollbackCountSQL", description = "Creates SQL to roll back N changesets", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
-    @ThingworxServiceResult(name = "Result", description = "", baseType = "TEXT", aspects = {})
-    public String LiquiRollbackCountSQL(
-            @ThingworxServiceParameter(name = "changesToRollback", description = "", baseType = "INTEGER", aspects = { "isRequired:true" }) Integer changesToRollback,
-            @ThingworxServiceParameter(name = "contexts", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
-            @ThingworxServiceParameter(name = "labels", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
+    @ThingworxServiceDefinition(name = "LBrollbackCountSQL", description = "Creates SQL to roll back N changesets", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "generated SQL code", baseType = "STRING", aspects = {})
+    public String LBrollbackCountSQL(
+            @ThingworxServiceParameter(name = "changesToRollback", description = "integer specifying how many changes Liquibase applies", baseType = "INTEGER", aspects = { "isRequired:true" }) Integer changesToRollback,
+            @ThingworxServiceParameter(name = "contexts", description = "comma separated list of context to filter changesets", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
+            @ThingworxServiceParameter(name = "labels", description = "label filter, see Liquibase documentation", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         String sql = lbRunner.rollbackSQL(changesToRollback, contexts, labels);
         return sql;
     }
 
-    @ThingworxServiceDefinition(name = "LiquiRollbackToDate", description = "Rolls back to given date", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "LBrollbackToDate", description = "Rolls back to given date", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
-    public void LiquiRollbackToDate(
-            @ThingworxServiceParameter(name = "dateToRollBackTo", description = "", baseType = "DATETIME", aspects = { "isRequired:true" }) DateTime dateToRollBackTo,
-            @ThingworxServiceParameter(name = "contexts", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
-            @ThingworxServiceParameter(name = "labels", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
+    public void LBrollbackToDate(
+            @ThingworxServiceParameter(name = "dateToRollBackTo", description = "The date and time your database rolls back to", baseType = "DATETIME", aspects = { "isRequired:true" }) DateTime dateToRollBackTo,
+            @ThingworxServiceParameter(name = "contexts", description = "comma separated list of context to filter changesets", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
+            @ThingworxServiceParameter(name = "labels", description = "label filter, see Liquibase documentation", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         lbRunner.rollbackToDate(dateToRollBackTo.toDate(), contexts, labels);
     }
 
-    @ThingworxServiceDefinition(name = "LiquiRollbackToDateSQL", description = "Creates SQL to roll back to given date", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
-    @ThingworxServiceResult(name = "Result", description = "", baseType = "TEXT", aspects = {})
-    public String LiquiRollbackToDateSQL(
-            @ThingworxServiceParameter(name = "dateToRollBackTo", description = "", baseType = "DATETIME", aspects = { "isRequired:true" }) DateTime dateToRollBackTo,
-            @ThingworxServiceParameter(name = "contexts", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
-            @ThingworxServiceParameter(name = "labels", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
+    @ThingworxServiceDefinition(name = "LBrollbackToDateSQL", description = "Creates SQL to roll back to given date", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "generated SQL code", baseType = "STRING", aspects = {})
+    public String LBrollbackToDateSQL(
+            @ThingworxServiceParameter(name = "dateToRollBackTo", description = "The date and time your database rolls back to", baseType = "DATETIME", aspects = { "isRequired:true" }) DateTime dateToRollBackTo,
+            @ThingworxServiceParameter(name = "contexts", description = "comma separated list of context to filter changesets", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
+            @ThingworxServiceParameter(name = "labels", description = "label filter, see Liquibase documentation", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         String sql = lbRunner.rollbackToDateSQL(dateToRollBackTo.toDate(), contexts, labels);
         return sql;
     }
 
-    @ThingworxServiceDefinition(name = "LiquiRollbackToTag", description = "Rolls back to given tag", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "LBrollbackToTag", description = "Rolls back to given tag", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
-    public void LiquiRollbackToTag(
-            @ThingworxServiceParameter(name = "tag", description = "", baseType = "STRING", aspects = { "isRequired:true" }) String tag,
-            @ThingworxServiceParameter(name = "contexts", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
-            @ThingworxServiceParameter(name = "labels", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
+    public void LBrollbackToTag(
+            @ThingworxServiceParameter(name = "tag", description = "tag identifying which tagged changesets in the changelog to evaluate", baseType = "STRING", aspects = { "isRequired:true" }) String tag,
+            @ThingworxServiceParameter(name = "contexts", description = "comma separated list of context to filter changesets", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
+            @ThingworxServiceParameter(name = "labels", description = "label filter, see Liquibase documentation", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         lbRunner.rollbackToTag(tag, contexts, labels);
     }
 
-    @ThingworxServiceDefinition(name = "LiquiRollbackToTagSQL", description = "Creates SQL to roll back to given tag", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
-    @ThingworxServiceResult(name = "Result", description = "", baseType = "TEXT", aspects = {})
-    public String LiquiRollbackToTagSQL(
-            @ThingworxServiceParameter(name = "tag", description = "", baseType = "STRING", aspects = { "isRequired:true" }) String tag,
-            @ThingworxServiceParameter(name = "contexts", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
-            @ThingworxServiceParameter(name = "labels", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
+    @ThingworxServiceDefinition(name = "LBrollbackToTagSQL", description = "Creates SQL to roll back to given tag", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "generated SQL code", baseType = "STRING", aspects = {})
+    public String LBrollbackToTagSQL(
+            @ThingworxServiceParameter(name = "tag", description = "tag identifying which tagged changesets in the changelog to evaluate", baseType = "STRING", aspects = { "isRequired:true" }) String tag,
+            @ThingworxServiceParameter(name = "contexts", description = "comma separated list of context to filter changesets", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
+            @ThingworxServiceParameter(name = "labels", description = "label filter, see Liquibase documentation", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         String sql = lbRunner.rollbackToTagSQL(tag, contexts, labels);
         return sql;
@@ -200,73 +200,73 @@ public class DatabaseTS {
     // endregion
     // region Liquibase Tracking Commands ...
     // --------------------------------------------------------------------------------
-    @ThingworxServiceDefinition(name = "LiquiTag", description = "Creates a Tag in the current db, to mark a rollout", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "LBtag", description = "Creates a Tag in the current db, to mark a rollout", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
-    public void LiquiTag(
-            @ThingworxServiceParameter(name = "tag", description = "", baseType = "STRING", aspects = { "isRequired:true" }) String tag ) throws Exception {
+    public void LBtag(
+            @ThingworxServiceParameter(name = "tag", description = "tag identifying which tagged changesets in the changelog to evaluate", baseType = "STRING", aspects = { "isRequired:true" }) String tag ) throws Exception {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         lbRunner.tag(tag);
     }
 
-	@ThingworxServiceDefinition(name = "LiquiTagExists", description = "checks whether the tag already exists in the db", category = "LiquiBase", isAllowOverride = false, aspects = {"isAsync:false" })
+	@ThingworxServiceDefinition(name = "LBtagExists", description = "checks whether the tag already exists in the db", category = "LiquiBase", isAllowOverride = false, aspects = {"isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "BOOLEAN", aspects = {})
-    public Boolean LiquiTagExists(
-                @ThingworxServiceParameter(name = "tag", description = "", baseType = "STRING") String tag) throws Exception  {
+    public Boolean LBtagExists(
+                @ThingworxServiceParameter(name = "tag", description = "tag identifying which tagged changesets in the changelog to evaluate", baseType = "STRING") String tag) throws Exception  {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         return lbRunner.tagExists(tag);
     }
 
-    @ThingworxServiceDefinition(name = "LiquiStatus", description = "States the number of undeployed changesets", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "LBstatus", description = "States the number of undeployed changesets", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "STRING", aspects = {})
-    public String LiquiStatus(
-            @ThingworxServiceParameter(name = "contexts", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
-            @ThingworxServiceParameter(name = "labels", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
+    public String LBstatus(
+            @ThingworxServiceParameter(name = "contexts", description = "comma separated list of context to filter changesets", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
+            @ThingworxServiceParameter(name = "labels", description = "label filter, see Liquibase documentation", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         return lbRunner.status(contexts, labels);
     }
 
-    @ThingworxServiceDefinition(name = "LiquiHistory", description = "lists all deployed changesets and their deploymentIds.", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "LBhistory", description = "lists all deployed changesets and their deploymentIds.", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "STRING", aspects = {})
-    public String LiquiHistory() throws Exception {
+    public String LBhistory() throws Exception {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         return lbRunner.history();
     }
 
-    @ThingworxServiceDefinition(name = "LiquiChangeLogSync", description = "Rolls back to given tag", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "LBchangeLogSync", description = "Rolls back to given tag", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
-    public void LiquiChangeLogSync(
-            @ThingworxServiceParameter(name = "contexts", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
-            @ThingworxServiceParameter(name = "labels", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
+    public void LBchangeLogSync(
+            @ThingworxServiceParameter(name = "contexts", description = "comma separated list of context to filter changesets", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
+            @ThingworxServiceParameter(name = "labels", description = "label filter, see Liquibase documentation", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         lbRunner.changeLogSync(contexts, labels);
     }
 
-    @ThingworxServiceDefinition(name = "LiquiChangeLogSyncSQL", description = "Creates SQL to roll back to given tag", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
-    @ThingworxServiceResult(name = "Result", description = "", baseType = "TEXT", aspects = {})
-    public String LiquiChangeLogSyncSQL(
-            @ThingworxServiceParameter(name = "tag", description = "", baseType = "STRING", aspects = { "isRequired:true" }) String tag,
-            @ThingworxServiceParameter(name = "contexts", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
-            @ThingworxServiceParameter(name = "labels", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
+    @ThingworxServiceDefinition(name = "LBchangeLogSyncSQL", description = "Creates SQL to roll back to given tag", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "generated SQL code", baseType = "STRING", aspects = {})
+    public String LBchangeLogSyncSQL(
+            @ThingworxServiceParameter(name = "tag", description = "tag identifying which tagged changesets in the changelog to evaluate", baseType = "STRING", aspects = { "isRequired:true" }) String tag,
+            @ThingworxServiceParameter(name = "contexts", description = "comma separated list of context to filter changesets", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
+            @ThingworxServiceParameter(name = "labels", description = "label filter, see Liquibase documentation", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         return lbRunner.changeLogSyncSQL(contexts, labels);
     }
 
-    @ThingworxServiceDefinition(name = "LiquiChangeLogSyncToTag", description = "Rolls back to given tag", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "LBchangeLogSyncToTag", description = "Rolls back to given tag", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
-    public void LiquiChangeLogSyncToTag(
-            @ThingworxServiceParameter(name = "tag", description = "", baseType = "STRING", aspects = { "isRequired:true" }) String tag,
-            @ThingworxServiceParameter(name = "contexts", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
-            @ThingworxServiceParameter(name = "labels", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
+    public void LBchangeLogSyncToTag(
+            @ThingworxServiceParameter(name = "tag", description = "tag identifying which tagged changesets in the changelog to evaluate", baseType = "STRING", aspects = { "isRequired:true" }) String tag,
+            @ThingworxServiceParameter(name = "contexts", description = "comma separated list of context to filter changesets", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
+            @ThingworxServiceParameter(name = "labels", description = "label filter, see Liquibase documentation", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         lbRunner.changeLogSyncToTag(tag, contexts, labels);
     }
 
-    @ThingworxServiceDefinition(name = "LiquiChangeLogSyncToTagSQL", description = "Creates SQL to roll back to given tag", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
-    @ThingworxServiceResult(name = "Result", description = "", baseType = "TEXT", aspects = {})
-    public String LiquiChangeLogSyncToTagSQL(
-            @ThingworxServiceParameter(name = "tag", description = "", baseType = "STRING", aspects = { "isRequired:true" }) String tag,
-            @ThingworxServiceParameter(name = "contexts", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
-            @ThingworxServiceParameter(name = "labels", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
+    @ThingworxServiceDefinition(name = "LBchangeLogSyncToTagSQL", description = "Creates SQL to roll back to given tag", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "generated SQL code", baseType = "STRING", aspects = {})
+    public String LBchangeLogSyncToTagSQL(
+            @ThingworxServiceParameter(name = "tag", description = "tag identifying which tagged changesets in the changelog to evaluate", baseType = "STRING", aspects = { "isRequired:true" }) String tag,
+            @ThingworxServiceParameter(name = "contexts", description = "comma separated list of context to filter changesets", baseType = "STRING", aspects = { "isRequired:false" }) String contexts,
+            @ThingworxServiceParameter(name = "labels", description = "label filter, see Liquibase documentation", baseType = "STRING", aspects = { "isRequired:false" }) String labels) throws Exception {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         return lbRunner.changeLogSyncToTagSQL(tag, contexts, labels);
     }

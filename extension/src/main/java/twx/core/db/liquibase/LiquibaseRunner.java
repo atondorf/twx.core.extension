@@ -23,7 +23,6 @@ import liquibase.command.core.ChangelogSyncSqlCommandStep;
 import liquibase.command.core.ChangelogSyncToTagCommandStep;
 import liquibase.command.core.ChangelogSyncToTagSqlCommandStep;
 import liquibase.command.core.InternalHistoryCommandStep;
-import liquibase.command.core.InternalHistoryCommandStep.DeploymentHistory;
 import liquibase.command.core.RollbackCommandStep;
 import liquibase.command.core.RollbackCountCommandStep;
 import liquibase.command.core.RollbackCountSqlCommandStep;
@@ -57,8 +56,8 @@ import twx.core.imp.ThingUtil;
 public class LiquibaseRunner {
     private static Logger logger = LogUtilities.getInstance().getDatabaseLogger(LiquibaseRunner.class);
     private static LogService logService = new ThingworxLogService();
-    private String changelogPath = null;
-    private String changelogFile = null;
+    private String changeLogPath = null;
+    private String changeLogFile = null;
     private ResourceAccessor accessor = null;
     private DbHandler dbHandler = null;
 
@@ -83,11 +82,11 @@ public class LiquibaseRunner {
             String changelogFile = (String) (thing.getConfigurationSetting("LiquibaseChangelog", "ChangelogFile"));
 
             // first lookup for Repository thing ...
-            this.changelogPath = ThingUtil.getFileRepos(changelogRepos).getRootPath() + (changelogPath != null ? changelogPath : "");
-            this.changelogFile = changelogFile;
-            this.accessor = new DirectoryResourceAccessor(Paths.get(this.changelogPath));
+            this.changeLogPath = ThingUtil.getFileRepos(changelogRepos).getRootPath() + (changelogPath != null ? changelogPath : "");
+            this.changeLogFile = changelogFile;
+            this.accessor = new DirectoryResourceAccessor(Paths.get(this.changeLogPath));
         } catch (Exception ex) {
-            logger.error("Error on update Database", ex);
+            logger.error("Can not get config from Thing", ex);
             return false;
         }
         return true;
@@ -96,11 +95,11 @@ public class LiquibaseRunner {
     public Boolean setChangelog(String path, String file) {
         try {
             // first lookup for Repository thing ...
-            this.changelogPath = (path != null ? path : "");
-            this.changelogFile = file;
-            this.accessor = new DirectoryResourceAccessor(Paths.get(this.changelogPath));
+            this.changeLogPath = (path != null ? path : "");
+            this.changeLogFile = file;
+            this.accessor = new DirectoryResourceAccessor(Paths.get(this.changeLogPath));
         } catch (Exception ex) {
-            logger.error("Error on update Database", ex);
+            logger.error("Can not find ChangelogFile", ex);
             return false;
         }
         return true;
@@ -153,7 +152,7 @@ public class LiquibaseRunner {
         Object obj = runInScopeWithReturn(() -> {
             CommandScope command = new CommandScope(ValidateCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
-            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changelogFile);
+            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
             CommandResults commandResults = command.execute();
             return commandResults.getResult("statusCode");
         });
@@ -172,7 +171,7 @@ public class LiquibaseRunner {
         runInScope(() -> {
             CommandScope command = new CommandScope(UpdateCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
-            command.addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, this.changelogFile);
+            command.addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
             command.addArgumentValue(UpdateCommandStep.LABEL_FILTER_ARG, labelExpression != null ? labelExpression.getOriginalString() : null);
             command.addArgumentValue(UpdateCommandStep.CONTEXTS_ARG, contexts != null ? contexts.toString() : null);
             command.execute();
@@ -192,7 +191,7 @@ public class LiquibaseRunner {
         runInScope(() -> {
             CommandScope command = new CommandScope(UpdateSqlCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
-            command.addArgumentValue(UpdateSqlCommandStep.CHANGELOG_FILE_ARG, this.changelogFile);
+            command.addArgumentValue(UpdateSqlCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
             command.addArgumentValue(UpdateSqlCommandStep.LABEL_FILTER_ARG, labelExpression != null ? labelExpression.getOriginalString() : null);
             command.addArgumentValue(UpdateSqlCommandStep.CONTEXTS_ARG, contexts != null ? contexts.toString() : null);
             command.setOutput(new WriterOutputStream(sw, Charset.forName("UTF-8")));
@@ -213,7 +212,7 @@ public class LiquibaseRunner {
         runInScope(() -> {
             CommandScope command = new CommandScope(UpdateCountCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
-            command.addArgumentValue(UpdateCountCommandStep.CHANGELOG_FILE_ARG, this.changelogFile);
+            command.addArgumentValue(UpdateCountCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
             command.addArgumentValue(UpdateCountCommandStep.LABEL_FILTER_ARG, labelExpression != null ? labelExpression.getOriginalString() : null);
             command.addArgumentValue(UpdateCountCommandStep.CONTEXTS_ARG, contexts != null ? contexts.toString() : null);
             command.addArgumentValue(UpdateCountCommandStep.COUNT_ARG, changesToApply);
@@ -234,7 +233,7 @@ public class LiquibaseRunner {
         runInScope(() -> {
             CommandScope command = new CommandScope(UpdateCountSqlCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
-            command.addArgumentValue(UpdateCountSqlCommandStep.CHANGELOG_FILE_ARG, this.changelogFile);
+            command.addArgumentValue(UpdateCountSqlCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
             command.addArgumentValue(UpdateCountSqlCommandStep.LABEL_FILTER_ARG, labelExpression != null ? labelExpression.getOriginalString() : null);
             command.addArgumentValue(UpdateCountSqlCommandStep.CONTEXTS_ARG, contexts != null ? contexts.toString() : null);
             command.addArgumentValue(UpdateCountSqlCommandStep.COUNT_ARG, changesToApply);
@@ -256,7 +255,7 @@ public class LiquibaseRunner {
         runInScope(() -> {
             CommandScope command = new CommandScope(UpdateToTagCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
-            command.addArgumentValue(UpdateToTagCommandStep.CHANGELOG_FILE_ARG, this.changelogFile);
+            command.addArgumentValue(UpdateToTagCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
             command.addArgumentValue(UpdateToTagCommandStep.LABEL_FILTER_ARG, labelExpression != null ? labelExpression.getOriginalString() : null);
             command.addArgumentValue(UpdateToTagCommandStep.CONTEXTS_ARG, contexts != null ? contexts.toString() : null);
             command.addArgumentValue(UpdateToTagCommandStep.TAG_ARG, tag);
@@ -277,7 +276,7 @@ public class LiquibaseRunner {
         runInScope(() -> {
             CommandScope command = new CommandScope(UpdateToTagSqlCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
-            command.addArgumentValue(UpdateToTagSqlCommandStep.CHANGELOG_FILE_ARG, this.changelogFile);
+            command.addArgumentValue(UpdateToTagSqlCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
             command.addArgumentValue(UpdateToTagSqlCommandStep.LABEL_FILTER_ARG, labelExpression != null ? labelExpression.getOriginalString() : null);
             command.addArgumentValue(UpdateToTagSqlCommandStep.CONTEXTS_ARG, contexts != null ? contexts.toString() : null);
             command.addArgumentValue(UpdateToTagSqlCommandStep.TAG_ARG, tag);
@@ -302,7 +301,7 @@ public class LiquibaseRunner {
         runInScope(() -> {
             CommandScope command = new CommandScope(RollbackCountCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
-            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changelogFile);
+            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
             command.addArgumentValue(DatabaseChangelogCommandStep.LABEL_FILTER_ARG, labelExpression != null ? labelExpression.getOriginalString() : null);
             command.addArgumentValue(DatabaseChangelogCommandStep.CONTEXTS_ARG, (contexts != null ? contexts.toString() : null));
             command.addArgumentValue(RollbackCountCommandStep.COUNT_ARG, changesToRollback);
@@ -323,7 +322,7 @@ public class LiquibaseRunner {
         runInScope(() -> {
             CommandScope command = new CommandScope(RollbackCountSqlCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
-            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changelogFile);
+            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
             command.addArgumentValue(DatabaseChangelogCommandStep.LABEL_FILTER_ARG, labelExpression != null ? labelExpression.getOriginalString() : null);
             command.addArgumentValue(DatabaseChangelogCommandStep.CONTEXTS_ARG, (contexts != null ? contexts.toString() : null));
             command.addArgumentValue(RollbackCountSqlCommandStep.COUNT_ARG, changesToRollback);
@@ -345,7 +344,7 @@ public class LiquibaseRunner {
         runInScope(() -> {
             CommandScope command = new CommandScope(RollbackToDateCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
-            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changelogFile);
+            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
             command.addArgumentValue(DatabaseChangelogCommandStep.LABEL_FILTER_ARG, labelExpression != null ? labelExpression.getOriginalString() : null);
             command.addArgumentValue(DatabaseChangelogCommandStep.CONTEXTS_ARG, (contexts != null ? contexts.toString() : null));
             command.addArgumentValue(RollbackToDateCommandStep.DATE_ARG, dateToRollBackTo);
@@ -366,7 +365,7 @@ public class LiquibaseRunner {
         runInScope(() -> {
             CommandScope command = new CommandScope(RollbackToDateSqlCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
-            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changelogFile);
+            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
             command.addArgumentValue(DatabaseChangelogCommandStep.LABEL_FILTER_ARG, labelExpression != null ? labelExpression.getOriginalString() : null);
             command.addArgumentValue(DatabaseChangelogCommandStep.CONTEXTS_ARG, (contexts != null ? contexts.toString() : null));
             command.addArgumentValue(RollbackToDateSqlCommandStep.DATE_ARG, dateToRollBackTo);
@@ -388,7 +387,7 @@ public class LiquibaseRunner {
         runInScope(() -> {
             CommandScope command = new CommandScope(RollbackCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
-            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changelogFile);
+            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
             command.addArgumentValue(DatabaseChangelogCommandStep.LABEL_FILTER_ARG, labelExpression != null ? labelExpression.getOriginalString() : null);
             command.addArgumentValue(DatabaseChangelogCommandStep.CONTEXTS_ARG, (contexts != null ? contexts.toString() : null));
             command.addArgumentValue(RollbackCommandStep.TAG_ARG, tagToRollBackTo);
@@ -409,7 +408,7 @@ public class LiquibaseRunner {
         runInScope(() -> {
             CommandScope command = new CommandScope(RollbackSqlCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
-            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changelogFile);
+            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
             command.addArgumentValue(DatabaseChangelogCommandStep.LABEL_FILTER_ARG, labelExpression != null ? labelExpression.getOriginalString() : null);
             command.addArgumentValue(DatabaseChangelogCommandStep.CONTEXTS_ARG, (contexts != null ? contexts.toString() : null));
             command.addArgumentValue(RollbackSqlCommandStep.TAG_ARG, tagToRollBackTo);
@@ -455,7 +454,7 @@ public class LiquibaseRunner {
         runInScope(() -> {
             CommandScope command = new CommandScope(StatusCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
-            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changelogFile);
+            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
             command.addArgumentValue(DatabaseChangelogCommandStep.LABEL_FILTER_ARG, labelExpression != null ? labelExpression.getOriginalString() : null);
             command.addArgumentValue(DatabaseChangelogCommandStep.CONTEXTS_ARG, contexts != null ? contexts.toString() : null);
             command.setOutput(new WriterOutputStream(sw, Charset.forName("UTF-8")));
@@ -487,7 +486,7 @@ public class LiquibaseRunner {
         runInScope(() -> {
             CommandScope command = new CommandScope(ChangelogSyncCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
-            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changelogFile);
+            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
             command.addArgumentValue(DatabaseChangelogCommandStep.LABEL_FILTER_ARG, labelExpression != null ? labelExpression.getOriginalString() : null);
             command.addArgumentValue(DatabaseChangelogCommandStep.CONTEXTS_ARG, contexts != null ? contexts.toString() : null);
             command.execute();
@@ -507,7 +506,7 @@ public class LiquibaseRunner {
         runInScope(() -> {
             CommandScope command = new CommandScope(ChangelogSyncSqlCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
-            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changelogFile);
+            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
             command.addArgumentValue(DatabaseChangelogCommandStep.LABEL_FILTER_ARG, labelExpression != null ? labelExpression.getOriginalString() : null);
             command.addArgumentValue(DatabaseChangelogCommandStep.CONTEXTS_ARG, contexts != null ? contexts.toString() : null);
             command.setOutput(new WriterOutputStream(sw, Charset.forName("UTF-8")));
@@ -528,7 +527,7 @@ public class LiquibaseRunner {
         runInScope(() -> {
             CommandScope command = new CommandScope(ChangelogSyncToTagCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
-            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changelogFile);
+            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
             command.addArgumentValue(DatabaseChangelogCommandStep.LABEL_FILTER_ARG, labelExpression != null ? labelExpression.getOriginalString() : null);
             command.addArgumentValue(DatabaseChangelogCommandStep.CONTEXTS_ARG, contexts != null ? contexts.toString() : null);
             command.addArgumentValue(ChangelogSyncToTagSqlCommandStep.TAG_ARG, tag);
@@ -549,7 +548,7 @@ public class LiquibaseRunner {
         runInScope(() -> {
             CommandScope command = new CommandScope(ChangelogSyncToTagSqlCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
-            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changelogFile);
+            command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
             command.addArgumentValue(DatabaseChangelogCommandStep.LABEL_FILTER_ARG, labelExpression != null ? labelExpression.getOriginalString() : null);
             command.addArgumentValue(DatabaseChangelogCommandStep.CONTEXTS_ARG, contexts != null ? contexts.toString() : null);
             command.addArgumentValue(ChangelogSyncToTagSqlCommandStep.TAG_ARG, tag);
