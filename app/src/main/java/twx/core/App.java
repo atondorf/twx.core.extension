@@ -7,9 +7,7 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.LinkedHashSet;
 import java.util.Scanner;
-import java.util.Set;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -18,13 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 
-import liquibase.Liquibase;
 import twx.core.db.handler.DbHandler;
 import twx.core.db.handler.DbHandlerFactory;
-import twx.core.db.impl.DataSourceConnectionManager;
-import twx.core.db.model.DbModel;
-import twx.core.db.model.DbSchema;
-import twx.core.db.model.settings.DbTableSetting;
 import twx.core.db.liquibase.LiquibaseRunner;
 
 public class App {
