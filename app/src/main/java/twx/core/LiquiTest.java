@@ -67,7 +67,7 @@ public class LiquiTest {
         scopeObjects.put(Scope.Attr.resourceAccessor.name(), accessor );
         Scope.child(scopeObjects, () -> {
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(con));
-            // Liquibase liquibase  = new Liquibase( "\\data\\changelog.mssql.sql", accessor, database);
+            Liquibase liquibase  = new Liquibase( "\\data\\changelog.mssql.sql", accessor, database);
             // liquibase.update();
 
             CommandScope updateCommand = new CommandScope(UpdateCommandStep.COMMAND_NAME);
@@ -87,10 +87,10 @@ public class LiquiTest {
         Scope.child(scopeObjects, () -> {
             Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(con));
             StringWriter sw = new StringWriter();
-/*
+
             Liquibase liquibase  = new Liquibase( FILE, accessor, database);
             liquibase.update( new Contexts(), sw );
- */
+
             CommandScope updateCommand = new CommandScope(UpdateSqlCommandStep.COMMAND_NAME);
             updateCommand.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, database );
             updateCommand.addArgumentValue(UpdateSqlCommandStep.CHANGELOG_FILE_ARG, FILE );

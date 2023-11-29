@@ -7,6 +7,11 @@
                         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-                        <include file="dbo/changelog.mssql.sql"/>
-                        <!-- <include file="mdes/changelog.mssql.sql"/> -->
+    <changeSet  author="atondorf"  id="empty">  
+        <tagDatabase  tag="empty"/>  
+    </changeSet>
+    <include file="dbo/changelog.mssql.sql"/>
+    <changeSet  author="atondorf"  id="tagDatabase-example">  
+        <tagDatabase  tag="v1.0"/>  
+    </changeSet>
 </databaseChangeLog>

@@ -60,7 +60,15 @@ public class App {
     }
 
     private void liquiTest() throws Exception {
-        logger.info( lb.updateSQL() );
+        lb.rollbackToTag("empty");
+        lb.update(null,null);
+
+        // logger.info("Status: " + lb.validate());
+//        logger.info("----- Status -----");
+//        logger.info( lb.status() );
+
+        // logger.info( lb.history() );        
+//        logger.info( lb.changeLogSyncSQL() );        
     }
 
     private void queryModel() throws SQLException {

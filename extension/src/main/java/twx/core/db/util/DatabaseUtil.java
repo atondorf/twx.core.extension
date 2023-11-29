@@ -22,6 +22,7 @@ import com.thingworx.webservices.context.ThreadLocalContext;
 import ch.qos.logback.classic.Logger;
 import twx.core.db.handler.DbHandler;
 import twx.core.db.handler.DbHandlerFactory;
+import twx.core.db.liquibase.LiquibaseRunner;
 
 public class DatabaseUtil {
     private static Logger _logger = LogUtilities.getInstance().getApplicationLogger(DatabaseUtil.class);
@@ -41,7 +42,14 @@ public class DatabaseUtil {
     public static DbHandler getHandler(AbstractDatabase abstractDatabase) throws Exception {
         return DbHandlerFactory.getInstance().getDbHandler(abstractDatabase);
     }
-
+    // endregion 
+    // Helpers to get Liquibase Runner ... 
+    // --------------------------------------------------------------------------------
+    public static LiquibaseRunner getLiquibaseRunner() throws Exception  {
+        AbstractDatabase abstractDatabase = getAbstractDatabase();
+        LiquibaseRunner lbRunner = new LiquibaseRunner(abstractDatabase);
+        return lbRunner;
+    }
     // endregion 
     // Helpers to get Abstract Database ... 
     // --------------------------------------------------------------------------------
