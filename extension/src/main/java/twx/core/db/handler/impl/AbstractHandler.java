@@ -19,7 +19,7 @@ import twx.core.db.handler.SQLBuilder;
 import twx.core.db.model.DbModel;
 
 public abstract class AbstractHandler implements DbHandler {
-    private static Logger _logger = LogUtilities.getInstance().getApplicationLogger(TransactionManager.class);
+    private static Logger _logger = LogUtilities.getInstance().getDatabaseLogger(TransactionManager.class);
 
     private ConnectionManager conncetionManager = null;
     private TransactionManager transactionManager = null;
