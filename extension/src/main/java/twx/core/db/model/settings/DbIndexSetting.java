@@ -3,10 +3,8 @@ package twx.core.db.model.settings;
 import twx.core.db.model.DbConstants;
 
 public enum DbIndexSetting implements Setting {
-	TYPE(0, DbConstants.MODEL_SETTING_PRIMARY_KEY),
-	NAME(1, DbConstants.MODEL_SETTING_PRIMARY_KEY),
-	UNIQUE(2, DbConstants.MODEL_SETTING_PRIMARY_KEY),
-	PK(3, DbConstants.MODEL_SETTING_PRIMARY_KEY);
+	UNIQUE(0, DbConstants.MODEL_SETTING_UNIQUE),
+	PK(1, DbConstants.MODEL_SETTING_PRIMARY_KEY);
 
 	public Integer key;
 	public String label;

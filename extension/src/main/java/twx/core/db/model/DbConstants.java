@@ -11,21 +11,26 @@ public class DbConstants {
     public static final String MODEL_TAG_INDEX_ARRAY            = "indexes";
     public static final String MODEL_TAG_FKKEYS_ARRAY           = "foreignKeys";
 
-
+    public static final String MODEL_SETTING_UNIQUE             = "unique";
+    public static final String MODEL_SETTING_PRIMARY_KEY        = "pk";
+    
     // 
     public static final String MODEL_SETTING_TABLE_TYPE         = "tableType";
     public static final String MODEL_SETTING_TWXTYPE            = "twxType";
+    
+    public static final String MODEL_TAG_ORDINAL                = "ordinal";
 
+    
     // To check ... 
 
     public static final String MODEL_SETTING_HEADERCOLOR        = "headerColor";
-    public static final String MODEL_SETTING_PRIMARY_KEY        = "pk";
+
     public static final String MODEL_SETTING_NOT_NULL           = "notNull";
-    public static final String MODEL_SETTING_UNIQUE             = "unique";
+
     public static final String MODEL_SETTING_INCREMENT          = "increment";
     public static final String MODEL_SETTING_DEFAULT            = "default";
     
-    public static final String MODEL_TAG_ORDINAL                = "ordinal";
+
     public static final String MODEL_TAG_TYPE                   = "type";
     public static final String MODEL_TAG_TYPE_NAME              = "typeName";
     public static final String MODEL_TAG_TYPE_SIZE              = "size";

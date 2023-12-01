@@ -148,6 +148,49 @@ public class DbTable extends DbObject<DbSchema> implements SettingHolder<DbTable
         return index;
     }
     // endregion
+    // region Indexes
+    // --------------------------------------------------------------------------------
+    public Set<DbForeignKey> getForeignKeys() {
+        return Collections.unmodifiableSet(this.foreignKeys);
+    }
+
+    public Boolean hasForeignKey(String name) {
+        return DbObject.hasObject(this.foreignKeys, name);
+    }
+
+    public DbForeignKey getForeignKey(String name) {
+        return DbObject.findObject(this.foreignKeys, name);
+    }
+
+    public DbForeignKey createForeignKey(String name) {
+        var foreignKey = new DbForeignKey(this, name);
+        return addForeignKey(foreignKey);
+    }
+
+    public DbForeignKey getOrCreateForeignKey(String name) {
+        var foreignKey = getForeignKey(name);
+        if (foreignKey == null)
+            foreignKey = createForeignKey(name);
+        return foreignKey;
+    }
+
+    public DbForeignKey removeForeignKey(String name) {
+        var foreignKey = getForeignKey(name);
+        return removeForeignKey(foreignKey);
+    }
+
+    public DbForeignKey addForeignKey(DbForeignKey foreignKey) {
+        foreignKey.takeOwnerShip(this);
+        this.foreignKeys.add(foreignKey);
+        return foreignKey;
+    }
+
+    public DbForeignKey removeForeignKey(DbForeignKey foreignKey) {
+        this.foreignKeys.remove(foreignKey);
+        foreignKey.parent = null;
+        return foreignKey;
+    }
+    // endregion
     // region Model Join & Compare
     // --------------------------------------------------------------------------------
     public DbTable mergeWith(DbTable other) throws DbModelException {
@@ -207,6 +250,14 @@ public class DbTable extends DbObject<DbSchema> implements SettingHolder<DbTable
         }
         if( indexes.length() > 0 )
             json.put(DbConstants.MODEL_TAG_INDEX_ARRAY, indexes);
+
+        // add ForeignKeys ... 
+        var foreignKeys = new JSONArray();
+        for (DbForeignKey foreignKey : this.foreignKeys ) {
+            foreignKeys.put(foreignKey.toJSON());
+        }
+        if( foreignKeys.length() > 0 )
+            json.put(DbConstants.MODEL_TAG_FKKEYS_ARRAY, foreignKeys);
 
         return json;
     }

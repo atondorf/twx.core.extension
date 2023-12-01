@@ -47,8 +47,10 @@ public class App {
         Connection con = null;
         try {
             app.openDBConnection();
-            // app.queryModel();
             app.liquiTest();
+
+            app.queryModel();
+
         } catch (SQLException e) {
             printSQLException(e);
         } catch (Exception e) {
@@ -60,23 +62,14 @@ public class App {
     }
 
     private void liquiTest() throws Exception {
-        //  lb.rollbackToTag("empty");
-        //  lb.update("","");
-        // lb.changeLogSync();
-
-        lb.history();
-
-        // logger.info("Status: " + lb.validate());
-//        logger.info("----- Status -----");
-//        logger.info( lb.status() );
-
-        // logger.info( lb.history() );        
-//        logger.info( lb.changeLogSyncSQL() );        
+        // lb.rollbackToTag("empty");
+        lb.update();
+     
     }
 
     private void queryModel() throws SQLException {
         logger.info("---------- queryModel ----------");
-        var model = handler.getDDLReader().queryModel(); // handler.getDbModel();
+        var model = handler.getDDLReader().queryModel();
 
         model.setNote("This is a note at the model");
 /*

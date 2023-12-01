@@ -13,9 +13,10 @@ import org.json.JSONObject;
 import twx.core.db.model.settings.DbIndexSetting;
 import twx.core.db.model.settings.SettingHolder;
 
-public class DbIndex extends DbObject<DbTable> implements SettingHolder<DbIndexSetting> {
-    private final Map<DbIndexSetting, String> settings = new EnumMap<>(DbIndexSetting.class);
+public class DbIndex extends DbObject<DbTable> {
     private final List<DbIndexColumn> indexColumns = new LinkedList<>();
+    private Boolean unique = false;
+    private Boolean pk = false;
 
     public DbIndex(String name) {
         super(null, name);
@@ -30,7 +31,6 @@ public class DbIndex extends DbObject<DbTable> implements SettingHolder<DbIndexS
         super.clear();
         this.indexColumns.stream().forEach(c -> c.clear());
         this.indexColumns.clear();
-        this.settings.clear();
     }
 
     public DbTable getTable() {
@@ -43,18 +43,21 @@ public class DbIndex extends DbObject<DbTable> implements SettingHolder<DbIndexS
 
     // region Get/Set Settings ...
     // --------------------------------------------------------------------------------
-    @Override
-    public void addSetting(DbIndexSetting settingKey, String value) {
-        this.settings.put(settingKey, value);
+    public Boolean isUnique() {
+        return this.unique;
     }
 
-    public String getSetting(DbIndexSetting settingKey) {
-        return this.settings.get(settingKey);
+    public void setUnique(Boolean unique) {
+        this.unique = unique;
     }
 
-    public Map<DbIndexSetting, String> getSettings() {
-        return Collections.unmodifiableMap(this.settings);
+    public Boolean isPrimarayKey() {
+        return this.pk;
     }
+
+    public void setPrimarayKey(Boolean pk) {
+        this.pk = pk;
+    }    
 
     // endregion
     // region Get/Set Columns ...
@@ -119,8 +122,6 @@ public class DbIndex extends DbObject<DbTable> implements SettingHolder<DbIndexS
     // region Compare and Hash ...
     // --------------------------------------------------------------------------------
 
-    
-
     // endregion     
     // region Serialization ...
     // --------------------------------------------------------------------------------
@@ -134,9 +135,8 @@ public class DbIndex extends DbObject<DbTable> implements SettingHolder<DbIndexS
         }
         json.put(DbConstants.MODEL_TAG_COLUMN_ARRAY, array);
         // add Settings ... 
-        this.settings.entrySet().stream().forEach( s -> {
-            json.put( s.getKey().label, s.getValue() );
-        });
+        json.put(DbConstants.MODEL_SETTING_UNIQUE, this.unique );
+        json.put(DbConstants.MODEL_SETTING_PRIMARY_KEY, this.pk );
         return json;
     }
     // endregion

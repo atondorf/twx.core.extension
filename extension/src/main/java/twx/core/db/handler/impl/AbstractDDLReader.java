@@ -8,6 +8,8 @@ import twx.core.db.handler.DDLReader;
 import twx.core.db.handler.DbHandler;
 import twx.core.db.handler.DbInfo;
 import twx.core.db.model.DbColumn;
+import twx.core.db.model.DbForeignKey;
+import twx.core.db.model.DbForeignKeyColumn;
 import twx.core.db.model.DbIndex;
 import twx.core.db.model.DbIndexColumn;
 import twx.core.db.model.DbModel;
@@ -37,7 +39,10 @@ public class AbstractDDLReader implements DDLReader {
     public DbModel queryModel(Connection con) throws SQLException {
         String catalog = con.getCatalog();
         DbModel dbModel = new DbModel(catalog);
+        // 1. Iteration, get schemas, tables, columns, indexes ... 
         queryModelSchemas(dbModel, con);
+        // 2. Iteration, get foreign keys
+        queryModelForeignKeys(dbModel, con);
         return dbModel;
     }
 
@@ -106,23 +111,6 @@ public class AbstractDDLReader implements DDLReader {
         return dbTable;
     }
 
-    protected DbTable queryModelKeys(DbTable dbTable, Connection con) throws SQLException {
-        // check for default Schema Name ... 
-        String dbSchemaName = dbTable.getSchema().isDefault() ? dbInfo.getDefaultSchema() : dbTable.getSchema().getName();
-
-        ResultSet rs = con.getMetaData().getPrimaryKeys(null, dbSchemaName, dbTable.getName());
-        while (rs.next()) {
-            String name = rs.getString("PK_NAME");
-            if (name != null) {
-                DbColumn col = dbTable.getColumn(rs.getString("COLUMN_NAME"));
-                if( col != null ) {
-                    col.addSetting(DbColumnSetting.PRIMARY_KEY, name );
-                }
-            }
-        }
-        return dbTable;
-    }
-
     protected DbTable queryModelIndexes(DbTable dbTable, Connection con) throws SQLException {
         // check for default Schema Name ... 
         String dbSchemaName = dbTable.getSchema().isDefault() ? dbInfo.getDefaultSchema() : dbTable.getSchema().getName();        
@@ -135,13 +123,68 @@ public class AbstractDDLReader implements DDLReader {
                 DbIndexColumn indexColumn = index.getOrCreateIndexColumn( rs.getString("COLUMN_NAME") );
                 indexColumn.setOrdinal( rs.getInt("ORDINAL_POSITION") );
                 if( !rs.getBoolean("NON_UNIQUE") ) {
-                    index.addSetting(DbIndexSetting.UNIQUE, "true" );
+                    index.setUnique(true);
                 }
             }
         }
         return dbTable;
     }
 
-    
+    protected DbTable queryModelKeys(DbTable dbTable, Connection con) throws SQLException {
+        // check for default Schema Name ... 
+        String dbSchemaName = dbTable.getSchema().isDefault() ? dbInfo.getDefaultSchema() : dbTable.getSchema().getName();
+
+        ResultSet rs = con.getMetaData().getPrimaryKeys(null, dbSchemaName, dbTable.getName());
+        while (rs.next()) {
+            String name = rs.getString("PK_NAME");
+            if (name != null) {
+                var index = dbTable.getIndex(name);
+                if( index != null ) {
+                    index.setPrimarayKey(true);
+                }
+                DbColumn col = dbTable.getColumn(rs.getString("COLUMN_NAME"));
+                if( col != null ) {
+                    col.addSetting(DbColumnSetting.PRIMARY_KEY, name );
+                }
+            }
+        }
+        return dbTable;
+    }
+  
+    protected DbModel queryModelForeignKeys(DbModel dbModel, Connection con) throws SQLException {
+        var schemas = dbModel.getSchemas();
+        schemas.stream().forEach( schema -> {
+            var tables = schema.getTables();
+            tables.stream().forEach( table -> {
+                try {
+                    queryModelForeignKeys(table, con);
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            });
+        });
+        return dbModel;
+    }
+
    
+    protected DbTable queryModelForeignKeys(DbTable dbTable, Connection con) throws SQLException {
+        ResultSet rs = con.getMetaData().getImportedKeys(null, dbTable.getSchemaName(), dbTable.getName());
+        while (rs.next()) {
+            String name = rs.getString("FK_NAME");
+            if (name != null) {
+                DbForeignKey foreignKey = dbTable.getOrCreateForeignKey(name);
+                foreignKey.setForeignSchemaName(rs.getString("PKTABLE_SCHEM"));
+                foreignKey.setForeignTableName(rs.getString("PKTABLE_NAME"));
+                foreignKey.setOnDelete(rs.getInt("UPDATE_RULE"));
+                foreignKey.setOnUpdate(rs.getInt("DELETE_RULE"));
+                DbForeignKeyColumn foreignKeyColumn = foreignKey.getOrCreateForeignKeyColumn( rs.getString("FKCOLUMN_NAME") );
+                foreignKeyColumn.setOrdinal( rs.getInt("KEY_SEQ") );
+                foreignKeyColumn.setForeignColumnName( rs.getString("PKCOLUMN_NAME") );
+                
+            }
+        }
+        return dbTable;
+    }
+
 }
