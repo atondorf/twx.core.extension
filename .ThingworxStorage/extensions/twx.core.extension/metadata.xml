@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><Entities>
+    
+  <ExtensionPackages>
+        
+    <ExtensionPackage dependsOn="" description="" minimumThingWorxVersion="9.3.0" name="twx.core.extension" packageVersion="0.5.3" buildNumber="13" vendor="atondorf">
+            
+      <JarResources>
+                
+        <FileResource type="JAR" file="twx.core.extension_0.5.4-13-feature_liquibase.jar"/>
+                
+        <FileResource type="JAR" file="liquibase-core-4.24.0.jar"/>
+                
+        <FileResource type="JAR" file="commons-text-1.10.0.jar"/>
+                
+        <FileResource type="JAR" file="commons-lang3-3.12.0.jar"/>
+                
+        <FileResource type="JAR" file="snakeyaml-2.2.jar"/>
+                
+        <FileResource type="JAR" file="jaxb-api-2.3.1.jar"/>
+              
+      </JarResources>
+          
+    </ExtensionPackage>
+      
+  </ExtensionPackages>
+  
+</Entities>

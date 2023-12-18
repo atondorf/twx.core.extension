@@ -49,7 +49,7 @@ public class App {
             app.openDBConnection();
             app.liquiTest();
 
-            app.queryModel();
+            // app.queryModel();
 
         } catch (SQLException e) {
             printSQLException(e);
@@ -62,9 +62,10 @@ public class App {
     }
 
     private void liquiTest() throws Exception {
-        // lb.rollbackToTag("empty");
-        lb.update();
-     
+        lb.rollback(10);
+        // lb.update("","");
+        lb.updateToTag("v1.0");
+        logger.info( lb.history() );
     }
 
     private void queryModel() throws SQLException {

@@ -4,18 +4,12 @@ import java.util.Optional;
 
 import com.thingworx.common.exceptions.ThingworxRuntimeException;
 import com.thingworx.entities.utils.EntityUtilities;
-import com.thingworx.logging.LogUtilities;
 import com.thingworx.relationships.RelationshipTypes;
 import com.thingworx.things.Thing;
 import com.thingworx.things.repository.FileRepositoryThing;
-import com.thingworx.types.InfoTable;
 import com.thingworx.webservices.context.ThreadLocalContext;
 
-import ch.qos.logback.classic.Logger;
-
 public class ThingUtil {
-    private static Logger _logger = LogUtilities.getInstance().getApplicationLogger(ThingUtil.class);
-
     public static Thing getMeThing() throws Exception {
         Object ctx = ThreadLocalContext.getMeContext();
         if (ctx instanceof Thing)

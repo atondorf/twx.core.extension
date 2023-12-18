@@ -3,13 +3,28 @@ package twx.core.db;
 import org.joda.time.DateTime;
 import org.json.JSONObject;
 import org.slf4j.Logger;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
+// import com.thingworx.connections.Connection;
+import com.thingworx.datashape.DataShape;
+import com.thingworx.datashape.DataShapeUtilities;
 import com.thingworx.logging.LogUtilities;
+import com.thingworx.metadata.FieldDefinition;
 import com.thingworx.metadata.annotations.ThingworxServiceDefinition;
 import com.thingworx.metadata.annotations.ThingworxServiceParameter;
 import com.thingworx.metadata.annotations.ThingworxServiceResult;
+import com.thingworx.things.database.SQLToInfoTableConversion;
+import com.thingworx.types.BaseTypes;
+import com.thingworx.types.InfoTable;
+import com.thingworx.types.collections.ValueCollection;
+import com.thingworx.types.primitives.StringPrimitive;
 
+import liquibase.snapshot.ResultSetCache;
+import twx.core.db.handler.DbHandler;
+import twx.core.db.model.DbModel;
 import twx.core.db.util.DatabaseUtil;
+import twx.core.imp.DataShapeUtils;
 
 public class DatabaseTS {
     private static Logger logger = LogUtilities.getInstance().getDatabaseLogger(DatabaseTS.class);
@@ -43,20 +58,128 @@ public class DatabaseTS {
     // endregion
     // region TWX-Services Metadata Database ...
     // --------------------------------------------------------------------------------
-    @ThingworxServiceDefinition(name = "GetDBModel", description = "Get's the Model from the internal Model Cache ...", category = "DB Model", isAllowOverride = false, aspects = { "isAsync:false" })
-    @ThingworxServiceResult(name = "Result", description = "", baseType = "JSON", aspects = {})
-    public JSONObject GetDBModel() throws Exception {
-        return DatabaseUtil.getHandler().getDbModel().toJSON();
-    }
-
     @ThingworxServiceDefinition(name = "QueryDBModel", description = "Queries the Model from Database, does not store it to the Model Tree", category = "Metadata Database", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "JSON", aspects = {})
     public JSONObject QueryDBModel() throws Exception {
         return DatabaseUtil.getHandler().getDDLReader().queryModel().toJSON();
     }
 
+    @ThingworxServiceDefinition(name = "GetDBModel", description = "Get's the Model from the internal Model Cache ...", category = "DB Model", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "JSON", aspects = {})
+    public JSONObject GetDBModel() throws Exception {
+        JSONObject result = null;
+        var model = DatabaseUtil.getHandler().getDbModel();
+        if (model != null) {
+            result = model.toJSON();
+        } else {
+            result = new JSONObject();
+        }
+        return result;
+    }
+
+    @ThingworxServiceDefinition(name = "UpdateDBModel", description = "Updates the Model in the internal Model Cache ...", category = "DB Model", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "JSON", aspects = {})
+    public JSONObject UpdateDBModel() throws Exception {
+        // TODO: Move Datashapes Info from old => new ...
+        DatabaseUtil.getHandler().updateDbModel();
+        return DatabaseUtil.getHandler().getDbModel().toJSON();
+    }
+
+    @ThingworxServiceDefinition(name = "RegisterDBDataShape", description = "", category = "DB Model", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
+    public void RegisterDBDataShape(
+            @ThingworxServiceParameter(name = "schemaName", description = "", baseType = "STRING") String schemaName,
+            @ThingworxServiceParameter(name = "tableName", description = "", baseType = "STRING") String tableName,
+            @ThingworxServiceParameter(name = "dataShapeName", description = "", baseType = "DATASHAPENAME") String dataShapeName) throws Exception {
+        var dbModel = DatabaseUtil.getHandler().getDbModel();
+        dbModel.getSchema(schemaName).getTable(tableName).setDataShapeName(dataShapeName);
+    }
+
+    @ThingworxServiceDefinition(name = "ValidateDBDataShape", description = "", category = "DB Model", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "JSON", aspects = {})
+    public JSONObject ValidateDBDataShape(
+            @ThingworxServiceParameter(name = "schemaName", description = "", baseType = "STRING") String schemaName,
+            @ThingworxServiceParameter(name = "tableName", description = "", baseType = "STRING") String tableName,
+            @ThingworxServiceParameter(name = "dataShapeName", description = "", baseType = "DATASHAPENAME") String dataShapeName) throws Exception {
+
+        JSONObject obj = new JSONObject();
+        DataShape ds = DataShapeUtils.getDatashapeDirect(dataShapeName);
+
+        obj.put("Datashape", ds.getName());
+
+        return obj;
+    }
+
+    @ThingworxServiceDefinition(name = "GetDBTables", description = "", category = "DB Model", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
+    public InfoTable GetDBTables() throws Exception {
+        var dbModel = DatabaseUtil.getHandler().getDbModel();
+        InfoTable table = new InfoTable();
+        table.addField(new FieldDefinition("schema", BaseTypes.STRING));
+        table.addField(new FieldDefinition("table", BaseTypes.STRING));
+        table.addField(new FieldDefinition("dataShape", BaseTypes.STRING));
+
+        for (var dbSchema : dbModel.getSchemas()) {
+            for (var dbTable : dbSchema.getTables()) {
+                ValueCollection values = new ValueCollection();
+                values.put("schema", new StringPrimitive(dbSchema.getName()));
+                values.put("table", new StringPrimitive(dbTable.getName()));
+                values.put("dataShape", new StringPrimitive(dbTable.getDataShapeName()));
+                table.addRow(values);
+            }
+        }
+        return table;
+    }
+
+    @ThingworxServiceDefinition(name = "GetDBTables", description = "", category = "DB Model", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
+    public InfoTable GetDBTableColumns(             
+            @ThingworxServiceParameter(name = "schemaName", description = "", baseType = "STRING") String schemaName,
+            @ThingworxServiceParameter(name = "tableName", description = "", baseType = "STRING") String tableName,) throws Exception {
+        var dbModel = DatabaseUtil.getHandler().getDbModel();
+        InfoTable table = new InfoTable();
+        table.addField(new FieldDefinition("schema", BaseTypes.STRING));
+        table.addField(new FieldDefinition("table", BaseTypes.STRING));
+        table.addField(new FieldDefinition("dataShape", BaseTypes.STRING));
+
+        for (var dbSchema : dbModel.getSchemas()) {
+            for (var dbTable : dbSchema.getTables()) {
+                ValueCollection values = new ValueCollection();
+                values.put("schema", new StringPrimitive(dbSchema.getName()));
+                values.put("table", new StringPrimitive(dbTable.getName()));
+                values.put("dataShape", new StringPrimitive(dbTable.getDataShapeName()));
+                table.addRow(values);
+            }
+        }
+        return table;
+    }
+
     // endregion
-    // region TWX-Services Metadata Database ...
+    // region TWX-Services Basic DB Operations ...
+    // --------------------------------------------------------------------------------
+    @ThingworxServiceDefinition(name = "ExecuteUpdate", description = "", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "INTEGER", aspects = { "isEntityDataShape:true" })
+    public Integer ExecuteCmd(
+            @ThingworxServiceParameter(name = "sql", description = "SQL to execute", baseType = "STRING", aspects = { "isRequired:false" }) String sql) throws Exception {
+        return DatabaseUtil.getHandler().executeUpdate(sql);
+    }
+
+    @ThingworxServiceDefinition(name = "ExecuteBatchUpdate", description = "", category = "", isAllowOverride = false, aspects = {"isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
+    public InfoTable ExecuteBatchCmd(
+            @ThingworxServiceParameter(name = "sqlQueries", description = "", baseType = "INFOTABLE", aspects = {"isEntityDataShape:true" }) InfoTable sqlQueries) throws Exception {
+        return DatabaseUtil.getHandler().executeBatchUpdate(sqlQueries);
+    }
+
+    @ThingworxServiceDefinition(name = "ExecuteQuery", description = "", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
+    public InfoTable ExecuteQuery(
+            @ThingworxServiceParameter(name = "sql", description = "SQL to execute", baseType = "STRING", aspects = { "isRequired:false" }) String sql) throws Exception {
+        return DatabaseUtil.getHandler().executeQuery(sql);
+    }
+
+    // endregion
+    // region TWX-Services Basic DB Operations ...
     // --------------------------------------------------------------------------------
 
     // endregion
@@ -197,23 +320,31 @@ public class DatabaseTS {
         String sql = lbRunner.rollbackToTagSQL(tag, contexts, labels);
         return sql;
     }
+
     // endregion
     // region Liquibase Tracking Commands ...
     // --------------------------------------------------------------------------------
     @ThingworxServiceDefinition(name = "LBtag", description = "Creates a Tag in the current db, to mark a rollout", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
     public void LBtag(
-            @ThingworxServiceParameter(name = "tag", description = "tag identifying which tagged changesets in the changelog to evaluate", baseType = "STRING", aspects = { "isRequired:true" }) String tag ) throws Exception {
+            @ThingworxServiceParameter(name = "tag", description = "tag identifying which tagged changesets in the changelog to evaluate", baseType = "STRING", aspects = { "isRequired:true" }) String tag) throws Exception {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         lbRunner.tag(tag);
     }
 
-	@ThingworxServiceDefinition(name = "LBtagExists", description = "checks whether the tag already exists in the db", category = "LiquiBase", isAllowOverride = false, aspects = {"isAsync:false" })
+    @ThingworxServiceDefinition(name = "LBtagExists", description = "checks whether the tag already exists in the db", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "BOOLEAN", aspects = {})
     public Boolean LBtagExists(
-                @ThingworxServiceParameter(name = "tag", description = "tag identifying which tagged changesets in the changelog to evaluate", baseType = "STRING") String tag) throws Exception  {
+            @ThingworxServiceParameter(name = "tag", description = "tag identifying which tagged changesets in the changelog to evaluate", baseType = "STRING") String tag) throws Exception {
         var lbRunner = DatabaseUtil.getLiquibaseRunner();
         return lbRunner.tagExists(tag);
+    }
+
+    @ThingworxServiceDefinition(name = "LBgetTags", description = "Get a list of TAGS and apply date", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
+    public InfoTable LBgetTags() throws Exception {
+        String sql = "SELECT TAG, DATEEXECUTED FROM dbo.DATABASECHANGELOG WHERE TAG IS NOT NULL";
+        return this.ExecuteQuery(sql);
     }
 
     @ThingworxServiceDefinition(name = "LBstatus", description = "States the number of undeployed changesets", category = "LiquiBase", isAllowOverride = false, aspects = { "isAsync:false" })

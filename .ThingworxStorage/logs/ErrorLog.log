@@ -1,0 +1,2 @@
+2023-12-18 10:31:39.164+0000 [L: ERROR] [O: E.c.q.l.c.Logger] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-5] Exception on callbackIncorrect syntax near 'val'. 
+2023-12-18 10:31:39.165+0000 [L: ERROR] [O: E.c.q.l.c.Logger] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-5] Unable to Invoke Service ExecuteUpdate on TWX.Core.DBExample : Incorrect syntax near 'val'. 

@@ -11,6 +11,8 @@ import org.mozilla.javascript.annotations.JSFunction;
 import com.thingworx.things.database.SQLToInfoTableConversion;
 import com.thingworx.types.InfoTable;
 
+import twx.core.db.util.InfoTableUtil;
+
 public class DBStatement extends ScriptableObject {
     // region Private Members ...
     // --------------------------------------------------------------------------------
@@ -55,7 +57,7 @@ public class DBStatement extends ScriptableObject {
     // region Statement Handling
     // --------------------------------------------------------------------------------
     @JSFunction
-    public void close() throws Exception {
+    public void close() throws SQLException {
         try { 
             if (stmt != null)
                 stmt.close();
@@ -68,7 +70,7 @@ public class DBStatement extends ScriptableObject {
     }
 
     @JSFunction
-    public Boolean execute(String sql) throws Exception {
+    public Boolean execute(String sql) throws SQLException {
         try {
             Boolean ret = stmt.execute(sql);
             return ret;
@@ -79,7 +81,7 @@ public class DBStatement extends ScriptableObject {
     }
 
     @JSFunction
-    public int executeUpdate(String sql) throws Exception {
+    public int executeUpdate(String sql) throws SQLException {
         try {
             int ret = stmt.executeUpdate(sql);
             return ret;
@@ -90,17 +92,35 @@ public class DBStatement extends ScriptableObject {
     }
 
     @JSFunction
-    public InfoTable executeQuery(String sql) throws Exception {
+    public InfoTable executeQuery(String sql) throws SQLException {
         InfoTable result = null;
         try {
             ResultSet rs = stmt.executeQuery(sql);
-            result = SQLToInfoTableConversion.createInfoTableFromResultset(rs, null);
+            result = InfoTableUtil.createInfoTableFromResultset(rs);
             return result;
         } catch (Exception ex) {
             this.connection.logException("Error in executeQuery()", ex);
             throw ex;
         }
     }
+
+    @JSFunction 
+    public void addBatch(String sql) throws SQLException {
+        this.stmt.addBatch(sql);
+    }
+
+    @JSFunction 
+    public void clearBatch() throws SQLException {
+        this.stmt.clearBatch();
+    }
+
+    @JSFunction
+    public InfoTable executeBatch()  throws SQLException {
+        
+        return null;
+    }
+
+    
 
     // endregion
 }

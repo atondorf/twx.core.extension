@@ -26,8 +26,8 @@ import com.thingworx.types.InfoTable;
 import com.thingworx.types.BaseTypes;
 
 import ch.qos.logback.classic.Logger;
-import twx.core.db.TransactionManager;
 import twx.core.db.handler.DbHandler;
+import twx.core.db.handler.TransactionManager;
 import twx.core.db.model.DbColumn;
 import twx.core.db.util.DatabaseUtil;
 

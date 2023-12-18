@@ -1,10 +1,11 @@
 package twx.core.db.handler;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import twx.core.db.ConnectionManager;
-import twx.core.db.TransactionManager;
+import com.thingworx.types.InfoTable;
+
 import twx.core.db.handler.DbInfo;
 import twx.core.db.model.DbModel;
 
@@ -43,18 +44,22 @@ public interface DbHandler {
 
     // endregion
 
-    // region DDL Handler ...
+    // region Model Handling ...
     // --------------------------------------------------------------------------------
-    public DDLBuilder getDDLBuilder();
-
-    public DDLReader getDDLReader();
-
     public DbModel getDbModel();
+
+    public void setDbModel(DbModel model);
+    
+    public void updateDbModel();
 
     // endregion
     // region DSL Handler ...
     // --------------------------------------------------------------------------------
     public SQLBuilder getSqlBuilder();
+
+    public DDLBuilder getDDLBuilder();
+
+    public DDLReader getDDLReader();
 
     // endregion
     // region Exception & Logging Handler ...
@@ -63,12 +68,15 @@ public interface DbHandler {
 
     public  void logSQLException(String message, SQLException exception );
     // endregion
-    // region Generic Handler ...
+    // region Transactions Handlers ...
     // --------------------------------------------------------------------------------
     public <T> T execute(ConnectionCallback<T> callback) throws SQLException;
 
-    public <T> T executeTransaction(ConnectionCallback<T> callback) throws SQLException;
+    public int executeUpdate(String sql) throws SQLException;
 
-    // endregion
+    public InfoTable executeBatchUpdate(InfoTable sqlTable) throws SQLException;
+
+    public InfoTable executeQuery(String sql) throws SQLException;
+    // endregion 
 
 }

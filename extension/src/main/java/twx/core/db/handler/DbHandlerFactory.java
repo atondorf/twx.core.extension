@@ -7,10 +7,7 @@ import javax.sql.DataSource;
 
 import com.thingworx.things.database.AbstractDatabase;
 
-import twx.core.db.ConnectionManager;
 import twx.core.db.handler.mssql.MsSqlHandler;
-import twx.core.db.impl.AbstractDatabaseConnectionManager;
-import twx.core.db.impl.DataSourceConnectionManager;
 import twx.core.db.util.DatabaseUtil;
 
 public class DbHandlerFactory {

@@ -87,7 +87,7 @@ public class DbForeignKeyColumn extends DbObject<DbForeignKey> {
     public JSONObject toJSON() {
         var json = super.toJSON();
         json.put(DbConstants.MODEL_TAG_ORDINAL, this.ordinal );
-        json.put(DbConstants.MODEL_TAG_INDEX_FOREIGN_COLUMN, this.foreignColumnName);
+        json.put(DbConstants.MODEL_TAG_FOREIGN_COLUMN, this.foreignColumnName);
         return json;
     }
     // endregion     

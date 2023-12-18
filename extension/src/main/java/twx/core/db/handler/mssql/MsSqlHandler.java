@@ -6,12 +6,12 @@ import java.sql.SQLException;
 
 import com.thingworx.types.BaseTypes;
 
-import twx.core.db.ConnectionManager;
-import twx.core.db.TransactionManager;
+import twx.core.db.handler.ConnectionManager;
 import twx.core.db.handler.DDLBuilder;
 import twx.core.db.handler.DDLReader;
 import twx.core.db.handler.DbInfo;
 import twx.core.db.handler.SQLBuilder;
+import twx.core.db.handler.TransactionManager;
 import twx.core.db.handler.impl.AbstractHandler;
 import twx.core.db.model.DbModel;
 import twx.core.db.model.DbTypeCategory;
@@ -83,9 +83,6 @@ public class MsSqlHandler extends AbstractHandler {
         info.registerTwxType(info.new TypeMapEntry(BaseTypes.NOTIFICATIONCONTENTNAME, JDBCType.NVARCHAR, "varchar", DbTypeCategory.TEXTUAL, DbInfo.DEFAULT_STRING_LENGTH) );
         info.registerTwxType(info.new TypeMapEntry(BaseTypes.NOTIFICATIONDEFINITIONNAME, JDBCType.NVARCHAR, "varchar", DbTypeCategory.TEXTUAL, DbInfo.DEFAULT_STRING_LENGTH) );
         info.registerTwxType(info.new TypeMapEntry(BaseTypes.STYLETHEMENAME, JDBCType.NVARCHAR, "varchar", DbTypeCategory.TEXTUAL, DbInfo.DEFAULT_STRING_LENGTH) );
-
-        // create the DB-Model ... 
-        this.setDbModel( new DbModel("Test") );
     }
 
     // region TWX-Services Metadata Database ...

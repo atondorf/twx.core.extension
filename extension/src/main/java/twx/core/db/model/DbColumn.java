@@ -6,15 +6,19 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
-import twx.core.db.model.settings.DbColumnSetting;
-import twx.core.db.model.settings.SettingHolder;
+import com.thingworx.datashape.DataShape;
 
-public class DbColumn extends DbObject<DbTable> implements SettingHolder<DbColumnSetting> {
-    protected final Map<DbColumnSetting, String> settings = new EnumMap<>(DbColumnSetting.class);
-    protected Integer   ordinal;
-    protected String    typeName;
-    protected Short     type;
-    protected Integer   size;
+import com.thingworx.types.BaseTypes;
+
+public class DbColumn extends DbObject<DbTable> {
+    private Integer ordinal;
+    private String typeName;
+    private Integer type;
+    private Integer size;
+    private Boolean nullable = true;
+    private Boolean autoIncrement = false;
+    private String defaultValue = null;
+    private BaseTypes twxType = BaseTypes.NOTHING;
 
     protected DbColumn(DbTable table, String name) {
         super(table, name);
@@ -23,64 +27,80 @@ public class DbColumn extends DbObject<DbTable> implements SettingHolder<DbColum
     @Override
     public void clear() {
         super.clear();
-        this.settings.clear();
     }
 
     public DbTable getTable() {
-        return (DbTable)this.getParent();
+        return (DbTable) this.getParent();
     }
 
     public DbSchema getSchema() {
         return this.getTable().getSchema();
     }
 
-    // region Get/Set Settings ... 
-    // --------------------------------------------------------------------------------
-    @Override
-    public void addSetting(DbColumnSetting settingKey, String value) {
-        settings.put(settingKey, value);
-    }
-
-    public String getSetting(DbColumnSetting settingKey) {
-        return this.settings.get(settingKey);
-    }
-
-    public Map<DbColumnSetting, String> getSettings() {
-        return Collections.unmodifiableMap(settings);
-    }
-    // endregion
     // region Get/Set Table Properties
     // --------------------------------------------------------------------------------
-    public int getOrdinal() {
-        return ordinal;
-    }
-
-    public void setOrdinal(int ordinal) {
+    public void setOrdinal(Integer ordinal) {
         this.ordinal = ordinal;
     }
 
-    public Integer getSize() {
-        return this.size;
+    public int getOrdinal() {
+        return this.ordinal;
     }
 
-    public void setSize(Integer size) {
-        this.size = size;
+    public void setType(Integer type) {
+        this.type = type;
     }
 
-    public Short getType() {
+    public Integer getType() {
         return this.type;
     }
 
-    public void setType(Short type) {
-        this.type = type;
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
     public String getTypeName() {
         return this.typeName;
     }
 
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
+    public void setSize(Integer size) {
+        this.size = size;
+    }
+
+    public Integer getSize() {
+        return this.size;
+    }
+
+    public void setNullable(Boolean notNull) {
+        this.nullable = notNull;
+    }
+
+    public Boolean getNullable() {
+        return this.nullable;
+    }
+
+    public void setAutoIncrement(Boolean autoIncrement) {
+        this.autoIncrement = autoIncrement;
+    }
+
+    public Boolean getAutoIncrement() {
+        return autoIncrement;
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setTwxType(BaseTypes twxType) {
+        this.twxType = twxType;
+    }
+
+    public BaseTypes getTwxType() {
+        return twxType;
     }
 
     // endregion
@@ -89,14 +109,18 @@ public class DbColumn extends DbObject<DbTable> implements SettingHolder<DbColum
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();
-        json.put(DbConstants.MODEL_TAG_ORDINAL, this.ordinal );
-        json.put(DbConstants.MODEL_TAG_COLUMN_SQL_TYPE, this.type );
-        json.put(DbConstants.MODEL_TAG_TYPE_NAME, this.typeName );
+        json.put(DbConstants.MODEL_TAG_ORDINAL, this.ordinal);
+        json.put(DbConstants.MODEL_TAG_SQL_TYPE, this.type);
+        json.put(DbConstants.MODEL_TAG_TYPE_NAME, this.typeName);
         json.put(DbConstants.MODEL_TAG_TYPE_SIZE, this.size);
-        // add Settings ... 
-        this.settings.entrySet().stream().forEach( s -> {
-            json.put( s.getKey().label, s.getValue() );
-        });
+        if( this.nullable )
+            json.put(DbConstants.MODEL_TAG_NULLABLE, this.nullable);
+        if( this.autoIncrement )
+            json.put(DbConstants.MODEL_TAG_AUTOINCREMENT, this.autoIncrement);
+        if( this.defaultValue != null )
+            json.put(DbConstants.MODEL_TAG_DEFAULT_VALUE, this.defaultValue);
+        if( this.twxType != BaseTypes.NOTHING )
+            json.put(DbConstants.MODEL_TAG_TWX_BASETYPE, this.twxType.friendlyName() );
         return json;
     }
     // endregion

@@ -6,55 +6,38 @@ public class DbConstants {
     public static final String MODEL_TAG_NOTE                   = "note";       // used for all notes in JSON
 
     public static final String MODEL_TAG_SCHEMA_ARRAY           = "schemas";    // used for schema in JSON    
-    public static final String MODEL_TAG_TABLE_ARRAY            = "tables";   
-    public static final String MODEL_TAG_COLUMN_ARRAY           = "columns";
-    public static final String MODEL_TAG_INDEX_ARRAY            = "indexes";
+    public static final String MODEL_TAG_TABLE_ARRAY            = "tables";     // used for tables in JSON  
+    public static final String MODEL_TAG_COLUMN_ARRAY           = "columns";    // used for columsn in JSON
+    public static final String MODEL_TAG_INDEX_ARRAY            = "indexes";    // used for indexes in JSON
     public static final String MODEL_TAG_FKKEYS_ARRAY           = "foreignKeys";
 
-    public static final String MODEL_SETTING_UNIQUE             = "unique";
-    public static final String MODEL_SETTING_PRIMARY_KEY        = "pk";
-    
-    // 
-    public static final String MODEL_SETTING_TABLE_TYPE         = "tableType";
-    public static final String MODEL_SETTING_TWXTYPE            = "twxType";
-    
-    public static final String MODEL_TAG_ORDINAL                = "ordinal";
-
-    
-    // To check ... 
-
-    public static final String MODEL_SETTING_HEADERCOLOR        = "headerColor";
-
-    public static final String MODEL_SETTING_NOT_NULL           = "notNull";
-
-    public static final String MODEL_SETTING_INCREMENT          = "increment";
-    public static final String MODEL_SETTING_DEFAULT            = "default";
-    
-
-    public static final String MODEL_TAG_TYPE                   = "type";
     public static final String MODEL_TAG_TYPE_NAME              = "typeName";
+    public static final String MODEL_TAG_SQL_TYPE               = "sqlType";
     public static final String MODEL_TAG_TYPE_SIZE              = "size";
-    
+    public static final String MODEL_TAG_ORDINAL                = "ordinal";
+    public static final String MODEL_TAG_UNIQUE                 = "unique";
+    public static final String MODEL_TAG_NULLABLE               = "nullable";
+    public static final String MODEL_TAG_PRIMARY_KEY            = "pk";
+    public static final String MODEL_TAG_AUTOINCREMENT          = "autoIncrement";
+    public static final String MODEL_TAG_DEFAULT_VALUE          = "defaultValue";
+    // 
+    public static final String MODEL_TAG_TWX_BASETYPE           = "twxType";
+    public static final String MODEL_TAG_TWX_DATASHAPE          = "twxType";
 
-    public static final String MODEL_TAG_TABLE_PRIMARY_KEY      = "primaryKey";
-    public static final String MODEL_TAG_TABLE_DATASHAPE_NAME   = "dataShape";
+    // foreign key special tags ... 
+    public static final String MODEL_TAG_FOREIGN_SCHEMA         = "foreignSchema";
+    public static final String MODEL_TAG_FOREIGN_TABLE          = "foreignTable";
+    public static final String MODEL_TAG_FOREIGN_COLUMN         = "foreignColumn"; 
 
-    public static final String MODEL_TAG_COLUMN_TWX_TYPE        = "twxType";
-    public static final String MODEL_TAG_COLUMN_SQL_TYPE        = "sqlType";
-    public static final String MODEL_TAG_COLUMN_SQL_TYPENAME    = "sqlTypeName";
-    public static final String MODEL_TAG_COLUMN_SIZE	        = "size";
-    public static final String MODEL_TAG_COLUMN_ORDINAL         = "ordinal";    
-    public static final String MODEL_TAG_COLUMN_PRECISION       = "precision";
-    public static final String MODEL_TAG_COLUMN_NULLABLE        = "nullable";
-    public static final String MODEL_TAG_COLUMN_AUTOINCREMENT   = "autoIncrement";
-    public static final String MODEL_TAG_COLUMN_PRIMARY_KEY     = "primaryKeySeq";
+    public static final String MODEL_TAG_FOREIGN_ON_UPDATE      = "onUpdate";
+    public static final String MODEL_TAG_FOREIGN_ON_DELETE      = "onDelete";
 
-    public static final String MODEL_TAG_INDEX_LOCAL_COLUMN     = "name";
-    public static final String MODEL_TAG_INDEX_UNIQUE           = "unique";
-    public static final String MODEL_TAG_INDEX_ORDINAL          = "ordinal";
-    public static final String MODEL_TAG_INDEX_FOREIGN_SCHEMA   = "foreignSchema";
-    public static final String MODEL_TAG_INDEX_FOREIGN_TABLE    = "foreignTable";
-    public static final String MODEL_TAG_INDEX_FOREIGN_COLUMN   = "foreignColumn";    
-    public static final String MODEL_TAG_INDEX_ON_UPDATE        = "onUpdate";
-    public static final String MODEL_TAG_INDEX_ON_DELETE        = "onDelete";
+    public static final String MODEL_VALUE_FOREIGN_CASCADE      = "cascade";
+    public static final String MODEL_VALUE_FOREIGN_RESTRICT     = "restrict";
+    public static final String MODEL_VALUE_FOREIGN_SETNULL      = "setNull";
+    public static final String MODEL_VALUE_FOREIGN_NOACTION     = "noAction";
+    public static final String MODEL_VALUE_FOREIGN_SETDEFAULT   = "setDefault";
+
+
+
 }

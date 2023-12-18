@@ -28,8 +28,25 @@ public class DbModel extends DbObject<DbObject<?>> {
         schemas.clear();
         this.createSchema(DbSchema.DEFAULT_SCHEMA_NAME);
     }
-    // region Get/Set Properties
+    // region Get/Set Tables
     // --------------------------------------------------------------------------------
+    public Set<DbTable> getTables() {
+        Set<DbTable> tableSet = new LinkedHashSet<>(); 
+        for( DbSchema schema : this.schemas ) {
+          tableSet.addAll(schema.getTables() );
+        }
+        return Collections.unmodifiableSet(tableSet);
+    }
+
+    public DbTable getTable(String tableName) {
+
+        return null;
+    }
+
+    public DbTable getTable(String schemaName, String tableName ) {
+        return getSchema(schemaName).getTable(tableName);
+    }
+
 
     // endretion
     // region Get/Set Schemas

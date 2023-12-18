@@ -3,20 +3,24 @@ package twx.core.db.handler.impl;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.thingworx.logging.LogUtilities;
+import com.thingworx.types.InfoTable;
+import com.thingworx.types.collections.ValueCollection;
 
 import ch.qos.logback.classic.Logger;
-import twx.core.db.ConnectionManager;
-import twx.core.db.TransactionManager;
 import twx.core.db.handler.ConnectionCallback;
+import twx.core.db.handler.ConnectionManager;
 import twx.core.db.handler.DDLBuilder;
 import twx.core.db.handler.DDLReader;
 import twx.core.db.handler.DbHandler;
 import twx.core.db.handler.DbInfo;
 import twx.core.db.handler.SQLBuilder;
+import twx.core.db.handler.TransactionManager;
 import twx.core.db.model.DbModel;
+import twx.core.db.util.InfoTableUtil;
 
 public abstract class AbstractHandler implements DbHandler {
     private static Logger _logger = LogUtilities.getInstance().getDatabaseLogger(TransactionManager.class);
@@ -95,6 +99,16 @@ public abstract class AbstractHandler implements DbHandler {
         this.dbModel = dbModel;
     }
 
+    public void updateDbModel() {
+        try {
+            this.dbModel = this.getDDLReader().queryModel();    
+        }
+        catch (SQLException ex) {
+            logSQLException("Unable to updateDbModel", ex );
+            this.dbModel = null;
+        } 
+    }
+
     // endregion
     // region DSL Handler ...
     // --------------------------------------------------------------------------------
@@ -134,20 +148,48 @@ public abstract class AbstractHandler implements DbHandler {
     // endregion
     // region DSL Handler ...
     // --------------------------------------------------------------------------------
-    public <T> T execute(ConnectionCallback<T> callback) throws SQLException {
-        Connection connection = null;
-        try {
-            connection = this.conncetionManager.getConnection();
-            return callback.execute(connection);
-        } catch (SQLException ex) {
-            _logger.error("Exception on callback" + ex.getMessage() );
-            throw ex;
-        } finally {
-           this.conncetionManager.close(connection);
-        }
+    public int executeUpdate(String sql) throws SQLException {
+        return this.execute((Connection con ) -> { 
+            try( var stm = con.createStatement() ) {
+                return stm.executeUpdate(sql);
+            }
+            catch(SQLException ex ) {
+                throw ex;
+            }
+        });
     }
 
-    public <T> T executeTransaction(ConnectionCallback<T> callback) throws SQLException {
+    public InfoTable executeBatchUpdate(InfoTable sqlTable) throws SQLException {
+        return this.execute((Connection con ) -> { 
+            try( var stm = con.createStatement() ) {
+                for( ValueCollection val : sqlTable.getRows() ) {
+                    String sql = val.getStringValue("sql");
+                    stm.addBatch(sql);
+                }
+                int[] result = stm.executeBatch();
+                return InfoTableUtil.createInfoTableFromIntArray(result);
+            }
+            catch(SQLException ex) {
+                throw ex;
+            }
+        });
+    }
+
+    public InfoTable executeQuery(String sql) throws SQLException {
+        return this.execute((Connection con ) -> { 
+            try( var stm = con.createStatement() ) {
+                var rs = stm.executeQuery(sql);
+                var table = InfoTableUtil.createInfoTableFromResultset(rs);
+                rs.close();
+                return table;
+            }
+            catch(SQLException ex) {
+                throw ex;
+            }
+        });
+    }
+
+    public <T> T execute(ConnectionCallback<T> callback) throws SQLException {
         Connection connection = null;
         try {
             connection = this.conncetionManager.getConnection();
@@ -163,5 +205,4 @@ public abstract class AbstractHandler implements DbHandler {
         }
     }
     // endregion
-
 }

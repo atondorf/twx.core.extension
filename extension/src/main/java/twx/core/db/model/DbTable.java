@@ -1,23 +1,23 @@
 package twx.core.db.model;
 
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import twx.core.db.model.settings.DbTableSetting;
-import twx.core.db.model.settings.SettingHolder;
+import com.thingworx.datashape.DataShape;
 
-public class DbTable extends DbObject<DbSchema> implements SettingHolder<DbTableSetting> {
-    private final Map<DbTableSetting, String> settings = new EnumMap<>(DbTableSetting.class);
+import liquibase.structure.core.Data;
+
+public class DbTable extends DbObject<DbSchema> {
 	private final Set<DbColumn> columns = new LinkedHashSet<>();
     private final Set<DbIndex> indexes = new LinkedHashSet<>();
     private final Set<DbForeignKey> foreignKeys = new LinkedHashSet<>();
+    private String twxDataShapeName = null;
+    private DataShape twxDataShape = null;
 
     public DbTable(String name) {
         super(null, name);
@@ -34,24 +34,8 @@ public class DbTable extends DbObject<DbSchema> implements SettingHolder<DbTable
         this.columns.clear();
         this.indexes.stream().forEach(c -> c.clear());
         this.indexes.clear();
-        this.settings.clear();
     }
 
-    // region Get/Set Settings ... 
-    // --------------------------------------------------------------------------------
-    @Override
-    public void addSetting(DbTableSetting settingKey, String value) {
-        settings.put(settingKey, value);
-    }
-
-    public String getSetting(DbTableSetting settingKey) {
-        return this.settings.get(settingKey);
-    }
-
-    public Map<DbTableSetting, String> getSettings() {
-        return Collections.unmodifiableMap(settings);
-    }
-    // endregion
     // region Get/Set Properties
     // --------------------------------------------------------------------------------
     public DbSchema getSchema() {
@@ -147,6 +131,14 @@ public class DbTable extends DbObject<DbSchema> implements SettingHolder<DbTable
         index.parent = null;
         return index;
     }
+
+    public String getDataShapeName() {
+        return this.twxDataShapeName;
+    }
+
+    public void setDataShapeName(String dataShapeName) {
+        this.twxDataShapeName = dataShapeName;
+    }
     // endregion
     // region Indexes
     // --------------------------------------------------------------------------------
@@ -232,17 +224,13 @@ public class DbTable extends DbObject<DbSchema> implements SettingHolder<DbTable
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();
-        // add Settings ... 
-        this.settings.entrySet().stream().forEach( s -> {
-            json.put( s.getKey().label, s.getValue() );
-        });
+
         // add Columns ... 
         var array = new JSONArray();
         for (DbColumn column : this.columns ) {
             array.put(column.toJSON());
         }
         json.put(DbConstants.MODEL_TAG_COLUMN_ARRAY, array);
-        
         // add indexes ... 
         var indexes = new JSONArray();
         for (DbIndex index : this.indexes ) {
@@ -259,6 +247,8 @@ public class DbTable extends DbObject<DbSchema> implements SettingHolder<DbTable
         if( foreignKeys.length() > 0 )
             json.put(DbConstants.MODEL_TAG_FKKEYS_ARRAY, foreignKeys);
 
+        if( twxDataShape != null )
+            json.put(DbConstants.MODEL_TAG_TWX_DATASHAPE, twxDataShape.getName() );
         return json;
     }
     // endregion 

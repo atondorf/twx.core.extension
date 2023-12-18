@@ -10,9 +10,6 @@ import java.util.Objects;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import twx.core.db.model.settings.DbIndexSetting;
-import twx.core.db.model.settings.SettingHolder;
-
 public class DbIndex extends DbObject<DbTable> {
     private final List<DbIndexColumn> indexColumns = new LinkedList<>();
     private Boolean unique = false;
@@ -135,8 +132,8 @@ public class DbIndex extends DbObject<DbTable> {
         }
         json.put(DbConstants.MODEL_TAG_COLUMN_ARRAY, array);
         // add Settings ... 
-        json.put(DbConstants.MODEL_SETTING_UNIQUE, this.unique );
-        json.put(DbConstants.MODEL_SETTING_PRIMARY_KEY, this.pk );
+        json.put(DbConstants.MODEL_TAG_UNIQUE, this.unique );
+        json.put(DbConstants.MODEL_TAG_PRIMARY_KEY, this.pk );
         return json;
     }
     // endregion

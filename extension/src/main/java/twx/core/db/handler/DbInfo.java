@@ -20,7 +20,9 @@ public class DbInfo {
     private String defaultSchema = null;
     private Map<BaseTypes, TypeMapEntry> twx2sqlMap = new HashMap<>();
     private Map<JDBCType, TypeMapEntry>  sql2twxMap = new HashMap<>();
-
+    
+    // region Schema Info ... 
+    // -------------------------------------------------------------------------------- 
     public void addSystemSchema(String schema) {
         systemSchemas.add(schema);
     }
@@ -50,9 +52,10 @@ public class DbInfo {
         String upperTable = table.toUpperCase();
         return this.systemTables.contains(upperTable); 
     }
-
+    // endregion Schema Info
+    // region Type Conversion ... 
+    // --------------------------------------------------------------------------------  
     public class TypeMapEntry {
-
         public BaseTypes twxType;
         public JDBCType jdbcType;
         public String dbType;
@@ -88,5 +91,11 @@ public class DbInfo {
         sql2twxMap.putIfAbsent(entry.jdbcType, entry);
 
     }
+
+    public BaseTypes jdbc2Base(Integer jdbcType) {
+        return BaseTypes.JDBCTypeToBaseType(jdbcType);
+    }
+
+    // endregion Type Conversion ... 
 
 }

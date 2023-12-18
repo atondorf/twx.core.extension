@@ -1,0 +1,197 @@
+2023-12-18 10:23:08.525+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] ========================================
+2023-12-18 10:23:08.525+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] ThingWorx Version Information
+2023-12-18 10:23:08.525+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] ========================================
+2023-12-18 10:23:08.525+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] majorVersion = 9
+2023-12-18 10:23:08.525+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] minorVersion = 4
+2023-12-18 10:23:08.525+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] revision = 2
+2023-12-18 10:23:08.525+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] build = b326
+2023-12-18 10:23:08.525+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] schemaVersion = 1140
+2023-12-18 10:23:08.525+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] ========================================
+2023-12-18 10:23:08.525+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] ========================================
+2023-12-18 10:23:08.525+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] ThingWorx System Environment Settings
+2023-12-18 10:23:08.525+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] ========================================
+2023-12-18 10:23:08.525+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] OS: Linux
+2023-12-18 10:23:08.527+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] OS arch: amd64
+2023-12-18 10:23:08.527+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] OS version: 5.15.133.1-microsoft-standard-WSL2
+2023-12-18 10:23:08.527+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Total Processors: 16
+2023-12-18 10:23:08.527+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Default encoding: UTF-8
+2023-12-18 10:23:08.527+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] JAVA vendor: Amazon.com Inc.
+2023-12-18 10:23:08.527+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] JAVA version: 11.0.21
+2023-12-18 10:23:08.527+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] JAVA install location: /usr/lib/jvm/java-11-amazon-corretto
+2023-12-18 10:23:08.527+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] JVM Max Memory: 5974 (MB)
+2023-12-18 10:23:08.527+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] ========================================
+2023-12-18 10:23:08.527+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] WebApp starting...
+2023-12-18 10:23:09.476+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Datastore database...INITIALIZED
+2023-12-18 10:23:09.476+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Server Mode is STANDALONE
+2023-12-18 10:23:09.484+0000 [L: WARN] [O: c.t.s.s.l.LicenseID] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] License ID is 128f9dfb-aa62-418c-b24b-5aaa82dff460 and Installation Date is 2023-12-12T18:10:50.684Z.
+2023-12-18 10:23:09.495+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] >>>>>>>>>> Start loading model in: 
+2023-12-18 10:23:09.497+0000 [L: INFO] [O: c.t.s.ChangeWatcher] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Model change watcher will not run, not in cluster mode
+2023-12-18 10:23:09.567+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Managers...INITIALIZED
+2023-12-18 10:23:09.571+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Database initialization started...
+2023-12-18 10:23:09.754+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Initial MetricsUser password was not found in the Platform Settings, skipping user creation.
+2023-12-18 10:23:09.764+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Database initialization complete
+2023-12-18 10:23:09.764+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Load model with ContextType: NONE
+2023-12-18 10:23:09.764+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Initialize...
+2023-12-18 10:23:09.776+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subscriptions Store initialized.
+2023-12-18 10:23:09.777+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Initializing Collections...
+2023-12-18 10:23:10.780+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Initializing Scheduler Engine...
+2023-12-18 10:23:10.782+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Initializing Entities...
+2023-12-18 10:23:11.565+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Cleaning up legacy entities...
+2023-12-18 10:23:11.565+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Checking default permissions...
+2023-12-18 10:23:11.618+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Initializing Thing Shapes...
+2023-12-18 10:23:11.629+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Initializing Thing Packages...
+2023-12-18 10:23:11.795+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Initializing Thing Templates...
+2023-12-18 10:23:11.950+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Initializing Things...
+2023-12-18 10:23:12.064+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Initializing shared changelog state...
+2023-12-18 10:23:12.072+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Start...
+2023-12-18 10:23:12.072+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Starting Scheduler Engine...
+2023-12-18 10:23:12.113+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Starting Platform Subsystems
+2023-12-18 10:23:12.114+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem LicensingSubsystem is starting
+2023-12-18 10:23:12.185+0000 [L: WARN] [O: c.t.s.s.l.LicensingStateMachine] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Unable to fetch license file with device id 128f9dfb-aa62-418c-b24b-5aaa82dff460 (It's OK if system is in disconnected mode)
+2023-12-18 10:23:12.218+0000 [L: INFO] [O: c.t.s.s.l.LicensingStateMachine] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Found previously loaded features in trusted storage
+2023-12-18 10:23:12.220+0000 [L: INFO] [O: c.t.s.s.l.LicensingSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Unable to read trial license file. Attempting to load as Paid license
+2023-12-18 10:23:12.296+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem LicensingSubsystem is started
+2023-12-18 10:23:12.296+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem ValueStreamProcessingSubsystem is starting
+2023-12-18 10:23:12.296+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem ValueStreamProcessingSubsystem is started
+2023-12-18 10:23:12.296+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem WSCommunicationsSubsystem is starting
+2023-12-18 10:23:12.299+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem WSCommunicationsSubsystem is started
+2023-12-18 10:23:12.299+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem SCMSubsystem is starting
+2023-12-18 10:23:12.299+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem SCMSubsystem is started
+2023-12-18 10:23:12.299+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem LoggingSubsystem is starting
+2023-12-18 10:23:12.299+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem LoggingSubsystem is started
+2023-12-18 10:23:12.299+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem ClusteringSubsystem is starting
+2023-12-18 10:23:12.299+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem ClusteringSubsystem is started
+2023-12-18 10:23:12.299+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem OrderedEventProcessingSubsystem is starting
+2023-12-18 10:23:12.299+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem OrderedEventProcessingSubsystem is started
+2023-12-18 10:23:12.299+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem AlertProcessingSubsystem is starting
+2023-12-18 10:23:12.299+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem AlertProcessingSubsystem is started
+2023-12-18 10:23:12.299+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem UtilizationSubsystem is starting
+2023-12-18 10:23:12.299+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem UtilizationSubsystem is started
+2023-12-18 10:23:12.299+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem ExportImportSubsystem is starting
+2023-12-18 10:23:12.299+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem ExportImportSubsystem is started
+2023-12-18 10:23:12.300+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem IntegrationSubsystem is starting
+2023-12-18 10:23:12.300+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem IntegrationSubsystem is started
+2023-12-18 10:23:12.300+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem EventProcessingSubsystem is starting
+2023-12-18 10:23:12.301+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem EventProcessingSubsystem is started
+2023-12-18 10:23:12.301+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem StreamProcessingSubsystem is starting
+2023-12-18 10:23:12.301+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem StreamProcessingSubsystem is started
+2023-12-18 10:23:12.301+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem FileTransferSubsystem is starting
+2023-12-18 10:23:12.318+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem FileTransferSubsystem is started
+2023-12-18 10:23:12.318+0000 [L: INFO] [O: c.t.s.s.f.FileTransferSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] FileTransfer Subsystem Settings
+2023-12-18 10:23:12.318+0000 [L: INFO] [O: c.t.s.s.f.FileTransferSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] ----------------------------------------
+2023-12-18 10:23:12.318+0000 [L: INFO] [O: c.t.s.s.f.FileTransferSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Thread Pool Minimum Size = 10
+2023-12-18 10:23:12.319+0000 [L: INFO] [O: c.t.s.s.f.FileTransferSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Thread Pool Maximum Size = 10
+2023-12-18 10:23:12.319+0000 [L: INFO] [O: c.t.s.s.f.FileTransferSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Max Queue Size = 100
+2023-12-18 10:23:12.319+0000 [L: INFO] [O: c.t.s.s.f.FileTransferSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Max Thread Life = 600000
+2023-12-18 10:23:12.319+0000 [L: INFO] [O: c.t.s.s.f.FileTransferSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] File Transfer Idle Timeout = 30000
+2023-12-18 10:23:12.319+0000 [L: INFO] [O: c.t.s.s.f.FileTransferSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Max File Transfer Size = 100000000
+2023-12-18 10:23:12.319+0000 [L: INFO] [O: c.t.s.s.f.FileTransferSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Max File Transfers Allowed in Offline Queue = 50000
+2023-12-18 10:23:12.319+0000 [L: INFO] [O: c.t.s.s.f.FileTransferSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Max File Transfers Allowed Per Thing in Offline Queue = 10
+2023-12-18 10:23:12.319+0000 [L: INFO] [O: c.t.s.s.f.FileTransferSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Time To Live (sec) of File Transfer in Offline Queue = 86400
+2023-12-18 10:23:12.319+0000 [L: INFO] [O: c.t.s.s.f.FileTransferSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] FileTransfer Idle Timeout for Edge Controlled Transfers = 600000
+2023-12-18 10:23:12.319+0000 [L: INFO] [O: c.t.s.s.f.FileTransferSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Max Concurrent Edge Controlled File Transfers Allowed = 500
+2023-12-18 10:23:12.319+0000 [L: INFO] [O: c.t.s.s.f.FileTransferSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Max Concurrent Edge Controlled File Transfers Allowed Per Thing = 2
+2023-12-18 10:23:12.319+0000 [L: INFO] [O: c.t.s.s.f.FileTransferSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] ----------------------------------------
+2023-12-18 10:23:12.319+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem UserManagementSubsystem is starting
+2023-12-18 10:23:12.319+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem UserManagementSubsystem is started
+2023-12-18 10:23:12.319+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem TunnelSubsystem is starting
+2023-12-18 10:23:12.322+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem TunnelSubsystem is started
+2023-12-18 10:23:12.322+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem MessageStoreSubsystem is starting
+2023-12-18 10:23:12.322+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem MessageStoreSubsystem is started
+2023-12-18 10:23:12.322+0000 [L: INFO] [O: c.t.s.s.m.MessageStoreSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] MessageStore Subsystem Settings
+2023-12-18 10:23:12.322+0000 [L: INFO] [O: c.t.s.s.m.MessageStoreSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] ----------------------------------------
+2023-12-18 10:23:12.322+0000 [L: INFO] [O: c.t.s.s.m.MessageStoreSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Thread Pool Minimum Size = 10
+2023-12-18 10:23:12.322+0000 [L: INFO] [O: c.t.s.s.m.MessageStoreSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Thread Pool Maximum Size = 100
+2023-12-18 10:23:12.322+0000 [L: INFO] [O: c.t.s.s.m.MessageStoreSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Max Queue Size = 100
+2023-12-18 10:23:12.322+0000 [L: INFO] [O: c.t.s.s.m.MessageStoreSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Max Thread Life = 600000
+2023-12-18 10:23:12.322+0000 [L: INFO] [O: c.t.s.s.m.MessageStoreSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Max Message Count = 1000
+2023-12-18 10:23:12.322+0000 [L: INFO] [O: c.t.s.s.m.MessageStoreSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] ----------------------------------------
+2023-12-18 10:23:12.322+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem FederationSubsystem is starting
+2023-12-18 10:23:12.323+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem FederationSubsystem is started
+2023-12-18 10:23:12.323+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem DataTableProcessingSubsystem is starting
+2023-12-18 10:23:12.323+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem DataTableProcessingSubsystem is started
+2023-12-18 10:23:12.323+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem SupportSubsystem is starting
+2023-12-18 10:23:12.323+0000 [L: WARN] [O: c.t.s.s.s.SupportSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Attempting to start a new DiagnosticWatchdog thread
+2023-12-18 10:23:12.323+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem SupportSubsystem is started
+2023-12-18 10:23:12.323+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem PlatformSubsystem is starting
+2023-12-18 10:23:12.323+0000 [L: WARN] [O: c.t.s.s.s.u.DiagnosticWatchdog] [I: ] [U: ] [S: ] [P: ] [T: DiagnosticWatchdog-0] Diagnostic Watchdog starting at interval 30/second. Files can be found in SupportRepository.
+2023-12-18 10:23:12.323+0000 [L: WARN] [O: c.t.s.s.s.u.DiagnosticWatchdog] [I: ] [U: ] [S: ] [P: ] [T: DiagnosticWatchdog-0] Disable Watchdog in SupportSubsystem configurations to end Watchdog process.
+2023-12-18 10:23:12.323+0000 [L: WARN] [O: c.t.s.s.s.u.DiagnosticWatchdog] [I: ] [U: ] [S: ] [P: ] [T: DiagnosticWatchdog-0] For Collect stack traces, create /runstacktrace file in SupportRepository if not exist.
+2023-12-18 10:23:12.323+0000 [L: WARN] [O: c.t.s.s.s.u.DiagnosticWatchdog] [I: ] [U: ] [S: ] [P: ] [T: DiagnosticWatchdog-0] For Stop collecting stack traces, delete /runstacktrace file in SupportRepository if exists.
+2023-12-18 10:23:12.335+0000 [L: INFO] [O: c.t.s.s.l.LicensingSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Getting License Feature Info for: twx_telemetry_data_exception
+2023-12-18 10:23:12.344+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem PlatformSubsystem is started
+2023-12-18 10:23:12.344+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem AuditSubsystem is disabled
+2023-12-18 10:23:12.344+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem WSExecutionProcessingSubsystem is starting
+2023-12-18 10:23:12.345+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem WSExecutionProcessingSubsystem is started
+2023-12-18 10:23:12.345+0000 [L: INFO] [O: c.t.s.s.w.WSExecutionProcessingSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] WSExecutionProcessing Subsystem Settings
+2023-12-18 10:23:12.345+0000 [L: INFO] [O: c.t.s.s.w.WSExecutionProcessingSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] ----------------------------------------
+2023-12-18 10:23:12.345+0000 [L: INFO] [O: c.t.s.s.w.WSExecutionProcessingSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Thread Pool Minimum Size = 100
+2023-12-18 10:23:12.345+0000 [L: INFO] [O: c.t.s.s.w.WSExecutionProcessingSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Thread Pool Maximum Size = 1000
+2023-12-18 10:23:12.345+0000 [L: INFO] [O: c.t.s.s.w.WSExecutionProcessingSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Max Queue Size = 100000
+2023-12-18 10:23:12.345+0000 [L: INFO] [O: c.t.s.s.w.WSExecutionProcessingSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Max Thread Life = 600000
+2023-12-18 10:23:12.345+0000 [L: INFO] [O: c.t.s.s.w.WSExecutionProcessingSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] ----------------------------------------
+2023-12-18 10:23:12.345+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem SCIMSubsystem is disabled
+2023-12-18 10:23:12.345+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem RelationshipSubsystem is starting
+2023-12-18 10:23:12.345+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem RelationshipSubsystem is started
+2023-12-18 10:23:12.345+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem WorkflowSubsystem is disabled
+2023-12-18 10:23:12.345+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem SolutionCentralSubsystem is starting
+2023-12-18 10:23:12.345+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Subsystem SolutionCentralSubsystem is started
+2023-12-18 10:23:12.351+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Install extensions from upgrade queue...
+2023-12-18 10:23:12.388+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Starting All Things...
+2023-12-18 10:23:12.403+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Activating Property Bindings...
+2023-12-18 10:23:12.406+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Sending Post Start Notifications...
+2023-12-18 10:23:12.413+0000 [L: INFO] [O: c.t.s.s.f.FileTransferSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Resuming 0 transfer jobs loaded from persistence provider
+2023-12-18 10:23:12.413+0000 [L: INFO] [O: c.t.s.s.f.FileTransferSubsystem] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Finished loading transfer jobs from persistence (took 5 ms)
+2023-12-18 10:23:12.423+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Starting change watcher...
+2023-12-18 10:23:12.425+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Starting entity state change processor...
+2023-12-18 10:23:12.425+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] Thingworx Server Application...ON
+2023-12-18 10:23:12.435+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] WebApp started ...
+2023-12-18 10:23:12.435+0000 [L: INFO] [O: c.t.s.ThingWorxServer] [I: ] [U: SuperUser] [S: ] [P: ] [T: main] >>>>>>>>>> End loading model in: 
+2023-12-18 10:23:45.993+0000 [L: WARN] [O: c.t.p.p.StreamEntryProcessor] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-2] Clearing Stream Queue - 0 Entries Will Be Discarded
+2023-12-18 10:23:45.996+0000 [L: WARN] [O: c.t.p.p.StreamEntryProcessor] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-2] Clearing Stream Queue - 0 Entries Will Be Discarded
+2023-12-18 10:23:45.998+0000 [L: WARN] [O: c.t.p.p.StreamEntryProcessor] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-2] Clearing Stream Queue - 0 Entries Will Be Discarded
+2023-12-18 10:24:29.588+0000 [L: INFO] [O: c.t.w.Importer] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Starting entity import of /ThingworxStorage/extensions/temp/twx.core.extension_0.5.4-13-feature_liquibase_54d6bd26-8ce0-49d5-a5e6-4c619d42b998/twx.core.extension_0.5.4-13-feature_liquibase/metadata.xml
+2023-12-18 10:24:29.624+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Export file missing version information.  No migration will be performed.
+2023-12-18 10:24:29.624+0000 [L: INFO] [O: c.t.w.Importer] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Successfully added for import /ThingworxStorage/extensions/temp/twx.core.extension_0.5.4-13-feature_liquibase_54d6bd26-8ce0-49d5-a5e6-4c619d42b998/twx.core.extension_0.5.4-13-feature_liquibase/metadata.xml
+2023-12-18 10:24:29.627+0000 [L: INFO] [O: c.t.w.Importer] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Starting entity import of /ThingworxStorage/extensions/temp/twx.core.extension_0.5.4-13-feature_liquibase_54d6bd26-8ce0-49d5-a5e6-4c619d42b998/twx.core.extension_0.5.4-13-feature_liquibase/Entities
+2023-12-18 10:24:29.656+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Start migrating from version [9.3.0] to version [9.3.0] ...
+2023-12-18 10:24:29.657+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Finished migrating from version [9.3.0] to version [9.3.0].
+2023-12-18 10:24:29.657+0000 [L: INFO] [O: c.t.w.Importer] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Successfully added for import /ThingworxStorage/extensions/temp/twx.core.extension_0.5.4-13-feature_liquibase_54d6bd26-8ce0-49d5-a5e6-4c619d42b998/twx.core.extension_0.5.4-13-feature_liquibase/Entities/DataShapes/TWX.Core.LiquibaseConfgig_DS.xml
+2023-12-18 10:24:29.691+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Start migrating from version [9.3.0] to version [9.3.0] ...
+2023-12-18 10:24:29.691+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Finished migrating from version [9.3.0] to version [9.3.0].
+2023-12-18 10:24:29.691+0000 [L: INFO] [O: c.t.w.Importer] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Successfully added for import /ThingworxStorage/extensions/temp/twx.core.extension_0.5.4-13-feature_liquibase_54d6bd26-8ce0-49d5-a5e6-4c619d42b998/twx.core.extension_0.5.4-13-feature_liquibase/Entities/Groups/TWX.Core.Default_UG.xml
+2023-12-18 10:24:29.712+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Start migrating from version [9.3.0] to version [9.3.0] ...
+2023-12-18 10:24:29.712+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Finished migrating from version [9.3.0] to version [9.3.0].
+2023-12-18 10:24:29.712+0000 [L: INFO] [O: c.t.w.Importer] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Successfully added for import /ThingworxStorage/extensions/temp/twx.core.extension_0.5.4-13-feature_liquibase_54d6bd26-8ce0-49d5-a5e6-4c619d42b998/twx.core.extension_0.5.4-13-feature_liquibase/Entities/Organizations/TWX.Core.Default_OR.xml
+2023-12-18 10:24:29.737+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Export file missing version information.  No migration will be performed.
+2023-12-18 10:24:29.737+0000 [L: INFO] [O: c.t.w.Importer] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Successfully added for import /ThingworxStorage/extensions/temp/twx.core.extension_0.5.4-13-feature_liquibase_54d6bd26-8ce0-49d5-a5e6-4c619d42b998/twx.core.extension_0.5.4-13-feature_liquibase/Entities/Projects/TWX.Core.PRJ.xml
+2023-12-18 10:24:29.757+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Export file missing version information.  No migration will be performed.
+2023-12-18 10:24:29.757+0000 [L: INFO] [O: c.t.w.Importer] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Successfully added for import /ThingworxStorage/extensions/temp/twx.core.extension_0.5.4-13-feature_liquibase_54d6bd26-8ce0-49d5-a5e6-4c619d42b998/twx.core.extension_0.5.4-13-feature_liquibase/Entities/Resources/TWX.Core.ConcurrencyServices.RES.xml
+2023-12-18 10:24:29.771+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Export file missing version information.  No migration will be performed.
+2023-12-18 10:24:29.771+0000 [L: INFO] [O: c.t.w.Importer] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Successfully added for import /ThingworxStorage/extensions/temp/twx.core.extension_0.5.4-13-feature_liquibase_54d6bd26-8ce0-49d5-a5e6-4c619d42b998/twx.core.extension_0.5.4-13-feature_liquibase/Entities/Resources/TWX.Core.DateServices.RES.xml
+2023-12-18 10:24:29.782+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Export file missing version information.  No migration will be performed.
+2023-12-18 10:24:29.782+0000 [L: INFO] [O: c.t.w.Importer] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Successfully added for import /ThingworxStorage/extensions/temp/twx.core.extension_0.5.4-13-feature_liquibase_54d6bd26-8ce0-49d5-a5e6-4c619d42b998/twx.core.extension_0.5.4-13-feature_liquibase/Entities/Resources/TWX.Core.SysUtilServices.RES.xml
+2023-12-18 10:24:29.805+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Export file missing version information.  No migration will be performed.
+2023-12-18 10:24:29.805+0000 [L: INFO] [O: c.t.w.Importer] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Successfully added for import /ThingworxStorage/extensions/temp/twx.core.extension_0.5.4-13-feature_liquibase_54d6bd26-8ce0-49d5-a5e6-4c619d42b998/twx.core.extension_0.5.4-13-feature_liquibase/Entities/ScriptFunctionLibraries/TWX.Core.ConcurrencyScriptLibrary.xml
+2023-12-18 10:24:29.815+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Export file missing version information.  No migration will be performed.
+2023-12-18 10:24:29.815+0000 [L: INFO] [O: c.t.w.Importer] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Successfully added for import /ThingworxStorage/extensions/temp/twx.core.extension_0.5.4-13-feature_liquibase_54d6bd26-8ce0-49d5-a5e6-4c619d42b998/twx.core.extension_0.5.4-13-feature_liquibase/Entities/ScriptFunctionLibraries/TWX.Core.DateScriptLibrary.xml
+2023-12-18 10:24:29.826+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Export file missing version information.  No migration will be performed.
+2023-12-18 10:24:29.826+0000 [L: INFO] [O: c.t.w.Importer] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Successfully added for import /ThingworxStorage/extensions/temp/twx.core.extension_0.5.4-13-feature_liquibase_54d6bd26-8ce0-49d5-a5e6-4c619d42b998/twx.core.extension_0.5.4-13-feature_liquibase/Entities/ScriptFunctionLibraries/TWX.Core.DBLibrary.xml
+2023-12-18 10:24:29.839+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Export file missing version information.  No migration will be performed.
+2023-12-18 10:24:29.839+0000 [L: INFO] [O: c.t.w.Importer] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Successfully added for import /ThingworxStorage/extensions/temp/twx.core.extension_0.5.4-13-feature_liquibase_54d6bd26-8ce0-49d5-a5e6-4c619d42b998/twx.core.extension_0.5.4-13-feature_liquibase/Entities/ScriptFunctionLibraries/TWX.Core.MathScriptLibrary.xml
+2023-12-18 10:24:29.850+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Export file missing version information.  No migration will be performed.
+2023-12-18 10:24:29.850+0000 [L: INFO] [O: c.t.w.Importer] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Successfully added for import /ThingworxStorage/extensions/temp/twx.core.extension_0.5.4-13-feature_liquibase_54d6bd26-8ce0-49d5-a5e6-4c619d42b998/twx.core.extension_0.5.4-13-feature_liquibase/Entities/ScriptFunctionLibraries/TWX.Core.StringScriptLibrary.xml
+2023-12-18 10:24:29.862+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Export file missing version information.  No migration will be performed.
+2023-12-18 10:24:29.863+0000 [L: INFO] [O: c.t.w.Importer] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Successfully added for import /ThingworxStorage/extensions/temp/twx.core.extension_0.5.4-13-feature_liquibase_54d6bd26-8ce0-49d5-a5e6-4c619d42b998/twx.core.extension_0.5.4-13-feature_liquibase/Entities/ScriptFunctionLibraries/TWX.Core.UtilScriptLibrary.xml
+2023-12-18 10:24:29.938+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Start migrating from version [9.3.0] to version [9.3.0] ...
+2023-12-18 10:24:29.938+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Finished migrating from version [9.3.0] to version [9.3.0].
+2023-12-18 10:24:29.938+0000 [L: INFO] [O: c.t.w.Importer] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Successfully added for import /ThingworxStorage/extensions/temp/twx.core.extension_0.5.4-13-feature_liquibase_54d6bd26-8ce0-49d5-a5e6-4c619d42b998/twx.core.extension_0.5.4-13-feature_liquibase/Entities/Things/TWX.Core.DBExample.xml
+2023-12-18 10:24:29.957+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Start migrating from version [9.3.0] to version [9.3.0] ...
+2023-12-18 10:24:29.957+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Finished migrating from version [9.3.0] to version [9.3.0].
+2023-12-18 10:24:29.957+0000 [L: INFO] [O: c.t.w.Importer] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Successfully added for import /ThingworxStorage/extensions/temp/twx.core.extension_0.5.4-13-feature_liquibase_54d6bd26-8ce0-49d5-a5e6-4c619d42b998/twx.core.extension_0.5.4-13-feature_liquibase/Entities/Things/TWX.Core.Examples.xml
+2023-12-18 10:24:29.982+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Export file missing version information.  No migration will be performed.
+2023-12-18 10:24:29.983+0000 [L: INFO] [O: c.t.w.Importer] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Successfully added for import /ThingworxStorage/extensions/temp/twx.core.extension_0.5.4-13-feature_liquibase_54d6bd26-8ce0-49d5-a5e6-4c619d42b998/twx.core.extension_0.5.4-13-feature_liquibase/Entities/ThingShapes/TWX.Core.Actor_TS.xml
+2023-12-18 10:24:29.998+0000 [L: INFO] [O: c.t.migration] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Export file missing version information.  No migration will be performed.
+2023-12-18 10:24:29.998+0000 [L: INFO] [O: c.t.w.Importer] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-10] Successfully added for import /ThingworxStorage/extensions/temp/twx.core.extension_0.5.4-13-feature_liquibase_54d6bd26-8ce0-49d5-a5e6-4c619d42b998/twx.core.extension_0.5.4-13-feature_liquibase/Entities/ThingShapes/TWX.Core.Database_TS.xml
+2023-12-18 10:31:39.172+0000 [L: ERROR] [O: c.t.w.Things] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-5] Unable to Invoke Service ExecuteUpdate on TWX.Core.DBExample : Incorrect syntax near 'val'.
+2023-12-18 10:31:39.172+0000 [L: WARN] [O: c.t.w.BaseService] [I: ] [U: Administrator] [S: ] [P: ] [T: http-nio-8080-exec-5] Transaction has been marked as a failure for request /Thingworx/Things/TWX.Core.DBExample/Services/ExecuteUpdate

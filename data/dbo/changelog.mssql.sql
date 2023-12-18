@@ -22,4 +22,4 @@ CREATE TABLE dbo.tab_2 (
 
 -- changeset de12650:3 contextFilter:test2 labels:B
 ALTER TABLE twdata.dbo.tab_1 ADD CONSTRAINT tab_1_FK FOREIGN KEY (tab_2_id) REFERENCES twdata.dbo.tab_2(id1);
--- rollback ALTER TABLE twdata.dbo.tab_1 DROP COLUMN tab_2_id
+-- rollback ALTER TABLE twdata.dbo.tab_1 DROP CONSTRAINT tab_1_FK

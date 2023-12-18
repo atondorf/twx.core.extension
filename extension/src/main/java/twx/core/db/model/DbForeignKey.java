@@ -10,12 +10,17 @@ import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import twx.core.db.model.DbConstants;
 
 public class DbForeignKey extends DbObject<DbTable> {
     // Internal Enum for FK-Rules
     // --------------------------------------------------------------------------------
     public enum FkRule {
-        Cascade(0, "cascade"), Restrict(1, "restrict"), SetNull(2, "setNull"), NoAction(3, "noAction"), SetDefault(4, "setDefault");
+        Cascade(0, DbConstants.MODEL_VALUE_FOREIGN_CASCADE), 
+        Restrict(1, DbConstants.MODEL_VALUE_FOREIGN_RESTRICT), 
+        SetNull(2, DbConstants.MODEL_VALUE_FOREIGN_SETNULL), 
+        NoAction(3, DbConstants.MODEL_VALUE_FOREIGN_NOACTION), 
+        SetDefault(4, DbConstants.MODEL_VALUE_FOREIGN_SETDEFAULT);
 
         public Integer key;
         public String label;
@@ -46,12 +51,12 @@ public class DbForeignKey extends DbObject<DbTable> {
 
     // endregion
     // region Get/Set Table Properties
-    // --------------------------------------------------------------------------------    
+    // --------------------------------------------------------------------------------
     private final List<DbForeignKeyColumn> foreignKeyColumns = new LinkedList<>();
-    protected String foreignSchemaName  = "";
-    protected String foreignTableName   = "";
-    protected FkRule onUpdate           = null;
-    protected FkRule onDelete           = null;
+    protected String foreignSchemaName = "";
+    protected String foreignTableName = "";
+    protected FkRule onUpdate = null;
+    protected FkRule onDelete = null;
 
     public DbForeignKey(String name) {
         super(null, name);
@@ -69,14 +74,14 @@ public class DbForeignKey extends DbObject<DbTable> {
     }
 
     public DbTable getTable() {
-        return (DbTable)this.getParent();
+        return (DbTable) this.getParent();
     }
 
     public DbSchema getSchema() {
         return this.getTable().getSchema();
     }
 
-    // endregion 
+    // endregion
     // region Get/Set Table ForeignKeyProperties
     // --------------------------------------------------------------------------------
     public void setOnUpdate(int onUpdate) {
@@ -110,14 +115,15 @@ public class DbForeignKey extends DbObject<DbTable> {
     public String getForeignTableName() {
         return foreignTableName;
     }
-    // endregion    
+
+    // endregion
     // region Get/Set Columns ...
     // --------------------------------------------------------------------------------
-    public Boolean hasForeignKeyColumn(final String name ) {
+    public Boolean hasForeignKeyColumn(final String name) {
         return DbObject.hasObject(this.foreignKeyColumns, name);
     }
 
-    public DbForeignKeyColumn getForeignKeyColumn(final String name ) {
+    public DbForeignKeyColumn getForeignKeyColumn(final String name) {
         return DbObject.findObject(this.foreignKeyColumns, name);
     }
 
@@ -129,9 +135,9 @@ public class DbForeignKey extends DbObject<DbTable> {
         Integer ordinal = foreignKeyColumns.size();
         DbForeignKeyColumn idxColumn = new DbForeignKeyColumn(this, name);
         idxColumn.setOrdinal(ordinal);
-        // search for the column in table ...        
+        // search for the column in table ...
         var column = this.getTable().getColumn(name);
-        if( column == null )
+        if (column == null)
             return null;
         return addForeignKeyColumn(idxColumn);
     }
@@ -143,9 +149,9 @@ public class DbForeignKey extends DbObject<DbTable> {
         return idxColumn;
     }
 
-    public DbForeignKeyColumn removeColumn(final String name ) {
+    public DbForeignKeyColumn removeColumn(final String name) {
         DbForeignKeyColumn idxColumn = this.getForeignKeyColumn(name);
-        if( idxColumn != null )
+        if (idxColumn != null)
             this.foreignKeyColumns.remove(idxColumn);
         return idxColumn;
     }
@@ -163,28 +169,29 @@ public class DbForeignKey extends DbObject<DbTable> {
     }
 
     public void sortForeignKeyColumns() {
-        this.foreignKeyColumns.sort( (c1,c2)->c1.ordinal.compareTo(c2.ordinal));
+        this.foreignKeyColumns.sort((c1, c2) -> c1.ordinal.compareTo(c2.ordinal));
     }
+
     // endregion
-    // region Serialization ... 
+    // region Serialization ...
     // --------------------------------------------------------------------------------
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();
         var colArray = new JSONArray();
-        json.put(DbConstants.MODEL_TAG_INDEX_FOREIGN_SCHEMA, this.foreignSchemaName);
-        json.put(DbConstants.MODEL_TAG_INDEX_FOREIGN_TABLE, this.foreignTableName);
-        if( this.onUpdate != null )
-            json.put(DbConstants.MODEL_TAG_INDEX_ON_UPDATE, this.onUpdate.label);
-        if( this.onDelete != null )
-            json.put(DbConstants.MODEL_TAG_INDEX_ON_DELETE, this.onDelete.label);
-        // add Columns ... 
+        json.put(DbConstants.MODEL_TAG_FOREIGN_SCHEMA, this.foreignSchemaName);
+        json.put(DbConstants.MODEL_TAG_FOREIGN_TABLE, this.foreignTableName);
+        if (this.onUpdate != null)
+            json.put(DbConstants.MODEL_TAG_FOREIGN_ON_UPDATE, this.onUpdate.label);
+        if (this.onDelete != null)
+            json.put(DbConstants.MODEL_TAG_FOREIGN_ON_DELETE, this.onDelete.label);
+        // add Columns ...
         var array = new JSONArray();
-        for (DbForeignKeyColumn col : this.foreignKeyColumns ) {
-            array.put( col.toJSON() );
+        for (DbForeignKeyColumn col : this.foreignKeyColumns) {
+            array.put(col.toJSON());
         }
         json.put(DbConstants.MODEL_TAG_COLUMN_ARRAY, array);
-       
+
         return json;
     }
     // endregion

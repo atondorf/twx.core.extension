@@ -160,15 +160,17 @@ public class LiquibaseRunner {
     }
 
     public void update() throws LiquibaseException {
-        update(new Contexts(""), new LabelExpression());
+        this.update(new Contexts(""), new LabelExpression());
     }
 
     public void update(String contexts, String labelExpression) throws LiquibaseException {
-        update(new Contexts(contexts), new LabelExpression(labelExpression));
+        Contexts ctx = (contexts != null && !contexts.isEmpty()) ? new Contexts(contexts) : new Contexts("");
+        LabelExpression lex = (labelExpression != null && !labelExpression.isEmpty()) ? new LabelExpression(labelExpression) : new LabelExpression();
+        this.update(ctx, lex);
     }
 
     public void update(Contexts contexts, LabelExpression labelExpression) throws LiquibaseException {
-        runInScope(() -> {
+        this.runInScope(() -> {
             CommandScope command = new CommandScope(UpdateCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
             command.addArgumentValue(UpdateCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
@@ -179,16 +181,18 @@ public class LiquibaseRunner {
     }
 
     public String updateSQL() throws LiquibaseException {
-        return updateSQL(new Contexts(""), new LabelExpression());
+        return this.updateSQL(new Contexts(""), new LabelExpression());
     }
 
     public String updateSQL(String contexts, String labelExpression) throws LiquibaseException {
-        return updateSQL(new Contexts(contexts), new LabelExpression(labelExpression));
+        Contexts ctx = (contexts != null && !contexts.isEmpty()) ? new Contexts(contexts) : new Contexts("");
+        LabelExpression lex = (labelExpression != null && !labelExpression.isEmpty()) ? new LabelExpression(labelExpression) : new LabelExpression();
+        return this.updateSQL(ctx, lex);
     }
 
     public String updateSQL(Contexts contexts, LabelExpression labelExpression) throws LiquibaseException {
         StringWriter sw = new StringWriter();
-        runInScope(() -> {
+        this.runInScope(() -> {
             CommandScope command = new CommandScope(UpdateSqlCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
             command.addArgumentValue(UpdateSqlCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
@@ -201,15 +205,17 @@ public class LiquibaseRunner {
     }
 
     public void update(int changesToApply) throws LiquibaseException {
-        update(changesToApply, new Contexts(""), new LabelExpression());
+        this.update(changesToApply, new Contexts(""), new LabelExpression());
     }
 
     public void update(int changesToApply, String contexts, String labelExpression) throws LiquibaseException {
-        update(changesToApply, new Contexts(contexts), new LabelExpression(labelExpression));
+        Contexts ctx = (contexts != null && !contexts.isEmpty()) ? new Contexts(contexts) : new Contexts("");
+        LabelExpression lex = (labelExpression != null && !labelExpression.isEmpty()) ? new LabelExpression(labelExpression) : new LabelExpression();
+        this.update(changesToApply,ctx,lex);
     }
 
     public void update(int changesToApply, Contexts contexts, LabelExpression labelExpression) throws LiquibaseException {
-        runInScope(() -> {
+        this.runInScope(() -> {
             CommandScope command = new CommandScope(UpdateCountCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
             command.addArgumentValue(UpdateCountCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
@@ -221,16 +227,18 @@ public class LiquibaseRunner {
     }
 
     public String updateSQL(int changesToApply) throws LiquibaseException {
-        return updateSQL(changesToApply, new Contexts(""), new LabelExpression());
+        return this.updateSQL(changesToApply, new Contexts(""), new LabelExpression());
     }
 
     public String updateSQL(int changesToApply, String contexts, String labelExpression) throws LiquibaseException {
-        return updateSQL(changesToApply, new Contexts(contexts), new LabelExpression(labelExpression));
+        Contexts ctx = (contexts != null && !contexts.isEmpty()) ? new Contexts(contexts) : new Contexts("");
+        LabelExpression lex = (labelExpression != null && !labelExpression.isEmpty()) ? new LabelExpression(labelExpression) : new LabelExpression();
+        return this.updateSQL(changesToApply,ctx,lex);
     }
 
     public String updateSQL(int changesToApply, Contexts contexts, LabelExpression labelExpression) throws LiquibaseException {
         StringWriter sw = new StringWriter();
-        runInScope(() -> {
+        this.runInScope(() -> {
             CommandScope command = new CommandScope(UpdateCountSqlCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
             command.addArgumentValue(UpdateCountSqlCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
@@ -244,15 +252,17 @@ public class LiquibaseRunner {
     }
 
     public void updateToTag(String tag) throws LiquibaseException {
-        updateToTag(tag, new Contexts(), new LabelExpression());
+        this.updateToTag(tag, new Contexts(""), new LabelExpression());
     }
 
     public void updateToTag(String tag, String contexts, String labelExpression) throws LiquibaseException {
-        updateToTag(tag, new Contexts(contexts), new LabelExpression(labelExpression));
+        Contexts ctx = (contexts != null && !contexts.isEmpty()) ? new Contexts(contexts) : new Contexts("");
+        LabelExpression lex = (labelExpression != null && !labelExpression.isEmpty()) ? new LabelExpression(labelExpression) : new LabelExpression();
+        this.updateToTag(tag,ctx,lex);        
     }
 
     public void updateToTag(String tag, Contexts contexts, LabelExpression labelExpression) throws LiquibaseException {
-        runInScope(() -> {
+        this.runInScope(() -> {
             CommandScope command = new CommandScope(UpdateToTagCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
             command.addArgumentValue(UpdateToTagCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
@@ -264,16 +274,18 @@ public class LiquibaseRunner {
     }
 
     public String updateToTagSQL(String tag) throws LiquibaseException {
-        return updateToTagSQL(tag, new Contexts(), new LabelExpression());
+        return this.updateToTagSQL(tag, new Contexts(""), new LabelExpression());
     }
 
     public String updateToTagSQL(String tag, String contexts, String labelExpression) throws LiquibaseException {
-        return updateToTagSQL(tag, new Contexts(contexts), new LabelExpression(labelExpression));
+        Contexts ctx = (contexts != null && !contexts.isEmpty()) ? new Contexts(contexts) : new Contexts("");
+        LabelExpression lex = (labelExpression != null && !labelExpression.isEmpty()) ? new LabelExpression(labelExpression) : new LabelExpression();
+        return this.updateToTagSQL(tag,ctx,lex); 
     }
 
     public String updateToTagSQL(String tag, Contexts contexts, LabelExpression labelExpression) throws LiquibaseException {
         StringWriter sw = new StringWriter();
-        runInScope(() -> {
+        this.runInScope(() -> {
             CommandScope command = new CommandScope(UpdateToTagSqlCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
             command.addArgumentValue(UpdateToTagSqlCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
@@ -290,15 +302,17 @@ public class LiquibaseRunner {
     // Rollback Commands ...
     // --------------------------------------------------------------------------------
     public void rollback(int changesToRollback) throws LiquibaseException {
-        rollback(changesToRollback, new Contexts(), new LabelExpression());
+        this.rollback(changesToRollback, new Contexts(""), new LabelExpression());
     }
 
     public void rollback(int changesToRollback, String contexts, String labelExpression) throws LiquibaseException {
-        rollback(changesToRollback, new Contexts(contexts), new LabelExpression(labelExpression));
+        Contexts ctx = (contexts != null && !contexts.isEmpty()) ? new Contexts(contexts) : new Contexts("");
+        LabelExpression lex = (labelExpression != null && !labelExpression.isEmpty()) ? new LabelExpression(labelExpression) : new LabelExpression();
+        this.rollback(changesToRollback,ctx,lex);         
     }
 
     public void rollback(int changesToRollback, Contexts contexts, LabelExpression labelExpression) throws LiquibaseException {
-        runInScope(() -> {
+        this.runInScope(() -> {
             CommandScope command = new CommandScope(RollbackCountCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
             command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
@@ -310,16 +324,18 @@ public class LiquibaseRunner {
     }
 
     public String rollbackSQL(int changesToRollback) throws LiquibaseException {
-        return rollbackSQL(changesToRollback, new Contexts(), new LabelExpression());
+        return this.rollbackSQL(changesToRollback, new Contexts(""), new LabelExpression());
     }
 
     public String rollbackSQL(int changesToRollback, String contexts, String labelExpression) throws LiquibaseException {
-        return rollbackSQL(changesToRollback, new Contexts(contexts), new LabelExpression(labelExpression));
+        Contexts ctx = (contexts != null && !contexts.isEmpty()) ? new Contexts(contexts) : new Contexts("");
+        LabelExpression lex = (labelExpression != null && !labelExpression.isEmpty()) ? new LabelExpression(labelExpression) : new LabelExpression();
+        return this.rollbackSQL(changesToRollback,ctx,lex);         
     }
 
     public String rollbackSQL(int changesToRollback, Contexts contexts, LabelExpression labelExpression) throws LiquibaseException {
         StringWriter sw = new StringWriter();
-        runInScope(() -> {
+        this.runInScope(() -> {
             CommandScope command = new CommandScope(RollbackCountSqlCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
             command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
@@ -333,15 +349,17 @@ public class LiquibaseRunner {
     }
 
     public void rollbackToDate(Date dateToRollBackTo) throws LiquibaseException {
-        rollbackToDate(dateToRollBackTo, new Contexts(), new LabelExpression());
+        this.rollbackToDate(dateToRollBackTo, new Contexts(""), new LabelExpression());
     }
 
     public void rollbackToDate(Date dateToRollBackTo, String contexts, String labelExpression) throws LiquibaseException {
-        rollbackToDate(dateToRollBackTo, new Contexts(contexts), new LabelExpression(labelExpression));
+        Contexts ctx = (contexts != null && !contexts.isEmpty()) ? new Contexts(contexts) : new Contexts("");
+        LabelExpression lex = (labelExpression != null && !labelExpression.isEmpty()) ? new LabelExpression(labelExpression) : new LabelExpression();
+        this.rollbackToDate(dateToRollBackTo,ctx,lex);           
     }
 
     public void rollbackToDate(Date dateToRollBackTo, Contexts contexts, LabelExpression labelExpression) throws LiquibaseException {
-        runInScope(() -> {
+        this.runInScope(() -> {
             CommandScope command = new CommandScope(RollbackToDateCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
             command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
@@ -353,16 +371,18 @@ public class LiquibaseRunner {
     }
 
     public String rollbackToDateSQL(Date dateToRollBackTo) throws LiquibaseException {
-        return rollbackToDateSQL(dateToRollBackTo, new Contexts(), new LabelExpression());
+        return this.rollbackToDateSQL(dateToRollBackTo, new Contexts(""), new LabelExpression());
     }
 
     public String rollbackToDateSQL(Date dateToRollBackTo, String contexts, String labelExpression) throws LiquibaseException {
-        return rollbackToDateSQL(dateToRollBackTo, new Contexts(contexts), new LabelExpression(labelExpression));
+        Contexts ctx = (contexts != null && !contexts.isEmpty()) ? new Contexts(contexts) : new Contexts("");
+        LabelExpression lex = (labelExpression != null && !labelExpression.isEmpty()) ? new LabelExpression(labelExpression) : new LabelExpression();
+        return this.rollbackToDateSQL(dateToRollBackTo,ctx,lex);           
     }
 
     public String rollbackToDateSQL(Date dateToRollBackTo, Contexts contexts, LabelExpression labelExpression) throws LiquibaseException {
         StringWriter sw = new StringWriter();
-        runInScope(() -> {
+        this.runInScope(() -> {
             CommandScope command = new CommandScope(RollbackToDateSqlCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
             command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
@@ -376,15 +396,17 @@ public class LiquibaseRunner {
     }
 
     public void rollbackToTag(String tagToRollBackTo) throws LiquibaseException {
-        rollbackToTag(tagToRollBackTo, new Contexts(), new LabelExpression());
+        this.rollbackToTag(tagToRollBackTo, new Contexts(""), new LabelExpression());
     }
 
     public void rollbackToTag(String tagToRollBackTo, String contexts, String labelExpression) throws LiquibaseException {
-        rollbackToTag(tagToRollBackTo, new Contexts(contexts), new LabelExpression(labelExpression));
+        Contexts ctx = (contexts != null && !contexts.isEmpty()) ? new Contexts(contexts) : new Contexts("");
+        LabelExpression lex = (labelExpression != null && !labelExpression.isEmpty()) ? new LabelExpression(labelExpression) : new LabelExpression();
+        this.rollbackToTag(tagToRollBackTo,ctx,lex);           
     }
 
     public void rollbackToTag(String tagToRollBackTo, Contexts contexts, LabelExpression labelExpression) throws LiquibaseException {
-        runInScope(() -> {
+        this.runInScope(() -> {
             CommandScope command = new CommandScope(RollbackCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
             command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
@@ -396,16 +418,18 @@ public class LiquibaseRunner {
     }
 
     public String rollbackToTagSQL(String tagToRollBackTo) throws LiquibaseException {
-        return rollbackToTagSQL(tagToRollBackTo, new Contexts(), new LabelExpression());
+        return this.rollbackToTagSQL(tagToRollBackTo, new Contexts(""), new LabelExpression());
     }
 
     public String rollbackToTagSQL(String tagToRollBackTo, String contexts, String labelExpression) throws LiquibaseException {
-        return rollbackToTagSQL(tagToRollBackTo, new Contexts(contexts), new LabelExpression(labelExpression));
+        Contexts ctx = (contexts != null && !contexts.isEmpty()) ? new Contexts(contexts) : new Contexts("");
+        LabelExpression lex = (labelExpression != null && !labelExpression.isEmpty()) ? new LabelExpression(labelExpression) : new LabelExpression();
+        return this.rollbackToTagSQL(tagToRollBackTo,ctx,lex);          
     }
 
     public String rollbackToTagSQL(String tagToRollBackTo, Contexts contexts, LabelExpression labelExpression) throws LiquibaseException {
         StringWriter sw = new StringWriter();
-        runInScope(() -> {
+        this.runInScope(() -> {
             CommandScope command = new CommandScope(RollbackSqlCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
             command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
@@ -422,7 +446,7 @@ public class LiquibaseRunner {
     // Tracking Commands ...
     // --------------------------------------------------------------------------------
     public void tag(String tag) throws LiquibaseException {
-        runInScope(() -> {
+        this.runInScope(() -> {
             CommandScope command = new CommandScope("tag");
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
             command.addArgumentValue(TagCommandStep.TAG_ARG, tag);
@@ -431,7 +455,7 @@ public class LiquibaseRunner {
     }
 
     public boolean tagExists(String tag) throws LiquibaseException {
-        Object obj = runInScopeWithReturn(() -> {
+        Object obj = this.runInScopeWithReturn(() -> {
             CommandScope command = new CommandScope("tagExists");
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
             command.addArgumentValue(TagExistsCommandStep.TAG_ARG, tag);
@@ -442,16 +466,18 @@ public class LiquibaseRunner {
     }
 
     public String status() throws LiquibaseException {
-        return status(new Contexts(""), new LabelExpression());
+        return this.status(new Contexts(""), new LabelExpression());
     }
 
     public String status(String contexts, String labelExpression) throws LiquibaseException {
-        return status(new Contexts(contexts), new LabelExpression(labelExpression));
+        Contexts ctx = (contexts != null && !contexts.isEmpty()) ? new Contexts(contexts) : new Contexts("");
+        LabelExpression lex = (labelExpression != null && !labelExpression.isEmpty()) ? new LabelExpression(labelExpression) : new LabelExpression();
+        return this.status(ctx,lex);          
     }
 
     public String status(Contexts contexts, LabelExpression labelExpression) throws LiquibaseException {
         StringWriter sw = new StringWriter();
-        runInScope(() -> {
+        this.runInScope(() -> {
             CommandScope command = new CommandScope(StatusCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
             command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
@@ -465,7 +491,7 @@ public class LiquibaseRunner {
 
     public String history() throws LiquibaseException {
         StringWriter sw = new StringWriter();
-        runInScope(() -> {
+        this.runInScope(() -> {
             CommandScope command = new CommandScope(InternalHistoryCommandStep.COMMAND_NAME);
             command.addArgumentValue(InternalHistoryCommandStep.DATABASE_ARG, this.getDatabase());
             command.setOutput(new WriterOutputStream(sw, Charset.forName("UTF-8")));
@@ -475,15 +501,17 @@ public class LiquibaseRunner {
     }
 
     public void changeLogSync() throws LiquibaseException {
-        changeLogSync(new Contexts(), new LabelExpression());
+        this.changeLogSync(new Contexts(""), new LabelExpression());
     }
 
     public void changeLogSync(String contexts, String labelExpression) throws LiquibaseException {
-        changeLogSync(new Contexts(contexts), new LabelExpression(labelExpression));
+        Contexts ctx = (contexts != null && !contexts.isEmpty()) ? new Contexts(contexts) : new Contexts("");
+        LabelExpression lex = (labelExpression != null && !labelExpression.isEmpty()) ? new LabelExpression(labelExpression) : new LabelExpression();
+        this.changeLogSync(ctx,lex);
     }
 
     public void changeLogSync(Contexts contexts, LabelExpression labelExpression) throws LiquibaseException {
-        runInScope(() -> {
+        this.runInScope(() -> {
             CommandScope command = new CommandScope(ChangelogSyncCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
             command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
@@ -494,16 +522,18 @@ public class LiquibaseRunner {
     }
 
     public String changeLogSyncSQL() throws LiquibaseException {
-        return changeLogSyncSQL(new Contexts(), new LabelExpression());
+        return this.changeLogSyncSQL(new Contexts(""), new LabelExpression());
     }
 
     public String changeLogSyncSQL(String contexts, String labelExpression) throws LiquibaseException {
-        return changeLogSyncSQL(new Contexts(contexts), new LabelExpression(labelExpression));
+        Contexts ctx = (contexts != null && !contexts.isEmpty()) ? new Contexts(contexts) : new Contexts("");
+        LabelExpression lex = (labelExpression != null && !labelExpression.isEmpty()) ? new LabelExpression(labelExpression) : new LabelExpression();
+        return this.changeLogSyncSQL(ctx,lex);        
     }
 
     public String changeLogSyncSQL(Contexts contexts, LabelExpression labelExpression) throws LiquibaseException {
         StringWriter sw = new StringWriter();
-        runInScope(() -> {
+        this.runInScope(() -> {
             CommandScope command = new CommandScope(ChangelogSyncSqlCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
             command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
@@ -516,15 +546,17 @@ public class LiquibaseRunner {
     }
 
     public void changeLogSyncToTag(String tag) throws LiquibaseException {
-        changeLogSyncToTag(tag, new Contexts(), new LabelExpression());
+        this.changeLogSyncToTag(tag, new Contexts(""), new LabelExpression());
     }
 
     public void changeLogSyncToTag(String tag, String contexts, String labelExpression) throws LiquibaseException {
-        changeLogSyncToTag(tag, new Contexts(contexts), new LabelExpression(labelExpression));
+        Contexts ctx = (contexts != null && !contexts.isEmpty()) ? new Contexts(contexts) : new Contexts("");
+        LabelExpression lex = (labelExpression != null && !labelExpression.isEmpty()) ? new LabelExpression(labelExpression) : new LabelExpression();
+        this.changeLogSyncToTag(tag, ctx,lex);         
     }
 
     public void changeLogSyncToTag(String tag, Contexts contexts, LabelExpression labelExpression) throws LiquibaseException {
-        runInScope(() -> {
+        this.runInScope(() -> {
             CommandScope command = new CommandScope(ChangelogSyncToTagCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
             command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
@@ -536,16 +568,18 @@ public class LiquibaseRunner {
     }
 
     public String changeLogSyncToTagSQL(String tag) throws LiquibaseException {
-        return changeLogSyncToTagSQL(tag, new Contexts(), new LabelExpression());
+        return this.changeLogSyncToTagSQL(tag, new Contexts(""), new LabelExpression());
     }
 
     public String changeLogSyncToTagSQL(String tag, String contexts, String labelExpression) throws LiquibaseException {
-        return changeLogSyncToTagSQL(tag, new Contexts(contexts), new LabelExpression(labelExpression));
+        Contexts ctx = (contexts != null && !contexts.isEmpty()) ? new Contexts(contexts) : new Contexts("");
+        LabelExpression lex = (labelExpression != null && !labelExpression.isEmpty()) ? new LabelExpression(labelExpression) : new LabelExpression();
+        return this.changeLogSyncToTagSQL(tag, ctx,lex);         
     }
 
     public String changeLogSyncToTagSQL(String tag, Contexts contexts, LabelExpression labelExpression) throws LiquibaseException {
         StringWriter sw = new StringWriter();
-        runInScope(() -> {
+        this.runInScope(() -> {
             CommandScope command = new CommandScope(ChangelogSyncToTagSqlCommandStep.COMMAND_NAME);
             command.addArgumentValue(DbUrlConnectionCommandStep.DATABASE_ARG, this.getDatabase());
             command.addArgumentValue(DatabaseChangelogCommandStep.CHANGELOG_FILE_ARG, this.changeLogFile);
