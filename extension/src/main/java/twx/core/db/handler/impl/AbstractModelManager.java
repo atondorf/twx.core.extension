@@ -4,9 +4,12 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import com.thingworx.types.BaseTypes;
 
-import twx.core.db.handler.DDLReader;
+import twx.core.db.handler.ModelManager;
 import twx.core.db.handler.DbHandler;
 import twx.core.db.handler.DbInfo;
 import twx.core.db.model.DbColumn;
@@ -18,27 +21,62 @@ import twx.core.db.model.DbModel;
 import twx.core.db.model.DbSchema;
 import twx.core.db.model.DbTable;
 
-public class AbstractDDLReader implements DDLReader {
-    private DbHandler dbHandler = null;
-    private DbInfo dbInfo = null;
-
-    public AbstractDDLReader(DbHandler dbHandler) {
+public class AbstractModelManager implements ModelManager {
+    private DbHandler   dbHandler = null;
+    private DbInfo      dbInfo = null;
+    private DbModel     dbModel = null;
+    
+    public AbstractModelManager(DbHandler dbHandler) {
         this.dbHandler = dbHandler;
         this.dbInfo = dbHandler.getDbInfo();
     }
 
     // region DDLReader Interface ...
     // --------------------------------------------------------------------------------
+    @Override
+    public DbModel getModel() {
+       return this.dbModel;
+    }
+    
+    @Override
+    public void clearModel() {
+        this.dbModel = null;
+    };
+
+    @Override
+    public DbModel updateModel() throws SQLException {
+        this.dbModel = dbHandler.execute(connection -> {
+            return queryModel(connection);
+        });
+        return this.dbModel;
+    }
+
+    @Override
     public DbModel queryModel() throws SQLException {
         return dbHandler.execute(connection -> {
             return queryModel(connection);
         });
     }
 
+    @Override
+    public JSONArray getModelTables() {
+        JSONArray resArray = new JSONArray();
+        for (var dbSchema : dbModel.getSchemas()) {
+            for (var dbTable : dbSchema.getTables()) {
+                JSONObject tableDesc = new JSONObject();
+                tableDesc.put("schema", dbSchema.getName());
+                tableDesc.put("table", dbTable.getName());
+                tableDesc.put("dataShape", dbTable.getDataShapeName());
+                resArray.put(tableDesc);
+            }
+        }
+        return resArray;
+    }
+
     // endregion
     // region DDLReader Helpers ...
     // --------------------------------------------------------------------------------
-    public DbModel queryModel(Connection con) throws SQLException {
+    protected DbModel queryModel(Connection con) throws SQLException {
         String catalog = con.getCatalog();
         DbModel dbModel = new DbModel(catalog);
         // 1. Iteration, get schemas, tables, columns, indexes ...
@@ -170,5 +208,4 @@ public class AbstractDDLReader implements DDLReader {
         }
         return dbTable;
     }
-
 }

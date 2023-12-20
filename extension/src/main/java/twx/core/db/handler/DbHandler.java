@@ -46,27 +46,19 @@ public interface DbHandler {
 
     // region Model Handling ...
     // --------------------------------------------------------------------------------
+    public ModelManager getModelManager();
+
     public DbModel getDbModel();
 
-    public void setDbModel(DbModel model);
-    
-    public void updateDbModel();
+    public DbModel queryDbModel() throws SQLException;
+
+    public DbModel updateDbModel() throws SQLException;
 
     // endregion
     // region DSL Handler ...
     // --------------------------------------------------------------------------------
     public SQLBuilder getSqlBuilder();
 
-    public DDLBuilder getDDLBuilder();
-
-    public DDLReader getDDLReader();
-
-    // endregion
-    // region Exception & Logging Handler ...
-    // --------------------------------------------------------------------------------
-    public void logException(String message, Exception exception );
-
-    public  void logSQLException(String message, SQLException exception );
     // endregion
     // region Transactions Handlers ...
     // --------------------------------------------------------------------------------
@@ -78,5 +70,11 @@ public interface DbHandler {
 
     public InfoTable executeQuery(String sql) throws SQLException;
     // endregion 
+    // region Exception & Logging Handler ...
+    // --------------------------------------------------------------------------------
+    public void logException(String message, Exception exception );
+
+    public void logSQLException(String message, SQLException exception );
+    // endregion
 
 }

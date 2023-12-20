@@ -9,6 +9,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import org.antlr.v4.codegen.model.ExceptionClause;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 import com.thingworx.logging.LogUtilities;
+import com.thingworx.types.InfoTable;
 
 import twx.core.db.handler.DbHandler;
 import twx.core.db.handler.DbHandlerFactory;
@@ -47,9 +49,8 @@ public class App {
         Connection con = null;
         try {
             app.openDBConnection();
-            app.liquiTest();
-
-            // app.queryModel();
+            app.handlerTest();
+            app.queryModel();
 
         } catch (SQLException e) {
             printSQLException(e);
@@ -61,46 +62,23 @@ public class App {
         logger.info("---------- Exit-App ----------");
     }
 
-    private void liquiTest() throws Exception {
-        lb.rollback(10);
-        // lb.update("","");
-        lb.updateToTag("v1.0");
-        logger.info( lb.history() );
+    private void handlerTest() throws Exception {
+        var test = new DbHandlerTest(this.handler);
+        test.runTests();
+    }
+
+    private void modelTest()  throws Exception {
+        var test = new DbModelTests(this.handler);
+        test.runTests();
     }
 
     private void queryModel() throws SQLException {
         logger.info("---------- queryModel ----------");
-        var model = handler.getDDLReader().queryModel();
-
+        var model = handler.getModelManager().updateModel();
         model.setNote("This is a note at the model");
-/*
-        model.getDefaultSchema().setNote("This is a note at the default schema");
-        model.getDefaultSchema().getTable("tab_1").addSetting(DbTableSetting.HEADERCOLOR, "0xffffff");
-        model.getDefaultSchema().getTable("tab_1").addSetting(DbTableSetting.THINGWORXTYPE, "test_DS");
-/*
-        model.setDescription("This is a test");
-        model.addTable("test_1");
-        model.addTable("test_2");
-*/        
-        logger.info(model.toJSON().toString(2));
+        
+        // logger.info( handler.getModelManager().getModelTables().toString() );
     }
-
-    public void loadModelFromJSON() throws Exception {
-        logger.info("---------- loadModelFromFile ----------");
-        InputStream is = App.class.getResourceAsStream("/db1.json");
-        if (is == null) {
-            throw new NullPointerException("Cannot find resource file " + "db1.json");
-        }
-        JSONTokener tokener = new JSONTokener(is);
-        JSONObject dbInfo = new JSONObject(tokener);
-        /*
-         * var model = new DbModel(appName);
-         * model.fromJSON(dbInfo);
-         * 
-         * logger.info(model.toJSON().toString(2));
-         */
-    }
-
     protected void openDBConnection() throws Exception {
         logger.info("---------- openDBConnection ----------");
         DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
@@ -120,6 +98,9 @@ public class App {
 
         this.lb = new LiquibaseRunner( this.handler );
         lb.setChangelog(PATH, FILE);
+        lb.rollback(10);
+        lb.update("","");
+        logger.info( lb.history() );
     }
 
     private void closeDBConnection() {

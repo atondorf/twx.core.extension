@@ -39,6 +39,7 @@ allprojects {
         mavenCentral()
         maven {
             url "https://plugins.gradle.org/m2/"
+            allowInsecureProtocol = true
         }
         flatDir {
             dirs rootProject.ext.commonJarDir

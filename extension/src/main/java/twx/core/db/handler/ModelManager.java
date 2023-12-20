@@ -7,13 +7,23 @@ import java.util.Set;
 
 import javax.swing.text.TableView.TableRow;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import twx.core.db.model.DbForeignKey;
 import twx.core.db.model.DbModel;
 import twx.core.db.model.DbTable;
 
-public interface DDLReader {
+public interface ModelManager {
+
+    public DbModel getModel();
     
+    public void clearModel();
+
     public DbModel queryModel() throws SQLException;
- 
+
+    public DbModel updateModel() throws SQLException;
+
+    public JSONArray getModelTables();
 
 }

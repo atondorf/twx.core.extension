@@ -10,7 +10,7 @@
     <changeSet  author="atondorf"  id="empty">  
         <tagDatabase  tag="empty"/>  
     </changeSet>
-    <include file="dbo/changelog.mssql.sql"/>
+    <include file="dbo_2/changelog.mssql.sql"/>
     <changeSet  author="atondorf"  id="tagDatabase-example">  
         <tagDatabase  tag="v1.0"/>  
     </changeSet>

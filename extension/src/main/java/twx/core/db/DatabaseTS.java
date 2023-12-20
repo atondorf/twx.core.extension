@@ -61,7 +61,7 @@ public class DatabaseTS {
     @ThingworxServiceDefinition(name = "QueryDBModel", description = "Queries the Model from Database, does not store it to the Model Tree", category = "Metadata Database", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "JSON", aspects = {})
     public JSONObject QueryDBModel() throws Exception {
-        return DatabaseUtil.getHandler().getDDLReader().queryModel().toJSON();
+        return DatabaseUtil.getHandler().getModelManager().queryModel().toJSON();
     }
 
     @ThingworxServiceDefinition(name = "GetDBModel", description = "Get's the Model from the internal Model Cache ...", category = "DB Model", isAllowOverride = false, aspects = { "isAsync:false" })
@@ -81,7 +81,7 @@ public class DatabaseTS {
     @ThingworxServiceResult(name = "Result", description = "", baseType = "JSON", aspects = {})
     public JSONObject UpdateDBModel() throws Exception {
         // TODO: Move Datashapes Info from old => new ...
-        DatabaseUtil.getHandler().updateDbModel();
+        DatabaseUtil.getHandler().getModelManager().updateModel();
         return DatabaseUtil.getHandler().getDbModel().toJSON();
     }
 
@@ -135,7 +135,7 @@ public class DatabaseTS {
     @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
     public InfoTable GetDBTableColumns(             
             @ThingworxServiceParameter(name = "schemaName", description = "", baseType = "STRING") String schemaName,
-            @ThingworxServiceParameter(name = "tableName", description = "", baseType = "STRING") String tableName,) throws Exception {
+            @ThingworxServiceParameter(name = "tableName", description = "", baseType = "STRING") String tableName ) throws Exception {
         var dbModel = DatabaseUtil.getHandler().getDbModel();
         InfoTable table = new InfoTable();
         table.addField(new FieldDefinition("schema", BaseTypes.STRING));

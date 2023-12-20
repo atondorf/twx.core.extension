@@ -7,8 +7,7 @@ import java.sql.SQLException;
 import com.thingworx.types.BaseTypes;
 
 import twx.core.db.handler.ConnectionManager;
-import twx.core.db.handler.DDLBuilder;
-import twx.core.db.handler.DDLReader;
+import twx.core.db.handler.ModelManager;
 import twx.core.db.handler.DbInfo;
 import twx.core.db.handler.SQLBuilder;
 import twx.core.db.handler.TransactionManager;
@@ -116,16 +115,6 @@ public class MsSqlHandler extends AbstractHandler {
 
     // region DDL Handler ...
     // --------------------------------------------------------------------------------
-    @Override
-    public DDLBuilder getDDLBuilder() {
-        return new MsSqlDDLBuilder(this);
-    }
-
-    @Override
-    public DDLReader getDDLReader() {
-        return new MsSqlDDLReader(this);
-    }
-
     @Override
     public SQLBuilder getSqlBuilder() {
         return new MsSqlSQLBuilder(this);
