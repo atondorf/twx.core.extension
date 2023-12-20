@@ -133,9 +133,9 @@ public class DatabaseTS {
 
     @ThingworxServiceDefinition(name = "GetDBTables", description = "", category = "DB Model", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
-    public InfoTable GetDBTableColumns(             
+    public InfoTable GetDBTableColumns(
             @ThingworxServiceParameter(name = "schemaName", description = "", baseType = "STRING") String schemaName,
-            @ThingworxServiceParameter(name = "tableName", description = "", baseType = "STRING") String tableName ) throws Exception {
+            @ThingworxServiceParameter(name = "tableName", description = "", baseType = "STRING") String tableName) throws Exception {
         var dbModel = DatabaseUtil.getHandler().getDbModel();
         InfoTable table = new InfoTable();
         table.addField(new FieldDefinition("schema", BaseTypes.STRING));
@@ -157,26 +157,45 @@ public class DatabaseTS {
     // endregion
     // region TWX-Services Basic DB Operations ...
     // --------------------------------------------------------------------------------
-    @ThingworxServiceDefinition(name = "ExecuteUpdate", description = "", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
-    @ThingworxServiceResult(name = "Result", description = "", baseType = "INTEGER", aspects = { "isEntityDataShape:true" })
-    public Integer ExecuteCmd(
+    @ThingworxServiceDefinition(name = "ExecuteUpdate", description = "Calls raw sql command and returns integer", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "INTEGER", aspects = {})
+    public Integer ExecuteUpdate(
             @ThingworxServiceParameter(name = "sql", description = "SQL to execute", baseType = "STRING", aspects = { "isRequired:false" }) String sql) throws Exception {
         return DatabaseUtil.getHandler().executeUpdate(sql);
     }
 
-    @ThingworxServiceDefinition(name = "ExecuteBatchUpdate", description = "", category = "", isAllowOverride = false, aspects = {"isAsync:false" })
-    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
-    public InfoTable ExecuteBatchCmd(
-            @ThingworxServiceParameter(name = "sqlQueries", description = "", baseType = "INFOTABLE", aspects = {"isEntityDataShape:true" }) InfoTable sqlQueries) throws Exception {
-        return DatabaseUtil.getHandler().executeBatchUpdate(sqlQueries);
+    @ThingworxServiceDefinition(name = "ExecuteBatch", description = "Calls multiple raw sql commands and returns them in same infotable", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true", "dataShape:TWX.Core.DBBatch_DS" })
+    public InfoTable ExecuteBatch(
+            @ThingworxServiceParameter(name = "sqlQueries", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true", "dataShape:TWX.Core.DBBatch_DS" }) InfoTable sqlQueries) throws Exception {
+        return DatabaseUtil.getHandler().executeBatch(sqlQueries);
     }
 
-    @ThingworxServiceDefinition(name = "ExecuteQuery", description = "", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "ExecuteQuery", description = "Calls a single query and returns the result as infotable", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
     public InfoTable ExecuteQuery(
             @ThingworxServiceParameter(name = "sql", description = "SQL to execute", baseType = "STRING", aspects = { "isRequired:false" }) String sql) throws Exception {
         return DatabaseUtil.getHandler().executeQuery(sql);
     }
+
+    @ThingworxServiceDefinition(name = "ExecutePreparedCommand", description = "", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
+    public InfoTable ExecutePreparedUpdate(
+            @ThingworxServiceParameter(name = "sql", description = "SQL to execute", baseType = "STRING", aspects = { "isRequired:false" }) String sql,
+            @ThingworxServiceParameter(name = "sqlQueries", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" }) InfoTable values 
+            ) throws Exception {
+        return null;
+    }
+
+    @ThingworxServiceDefinition(name = "ExecutePreparedQuery", description = "", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
+    public InfoTable ExecutePreparedQuery(
+            @ThingworxServiceParameter(name = "sql", description = "SQL to execute", baseType = "STRING", aspects = { "isRequired:false" }) String sql,
+            @ThingworxServiceParameter(name = "sqlQueries", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" }) InfoTable values 
+            ) throws Exception {
+        return null;
+    }
+
 
     // endregion
     // region TWX-Services Basic DB Operations ...

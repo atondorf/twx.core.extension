@@ -16,7 +16,7 @@ public class InfoTableUtil {
     
     public static InfoTable createInfoTableFromIntArray(int[] array) {
         InfoTable table = new InfoTable();
-        table.addField(new FieldDefinition("rows", BaseTypes.INTEGER ));
+        table.addField(new FieldDefinition("result", BaseTypes.INTEGER ));
         for( int i : array ) {
             ValueCollection values = new ValueCollection();
             values.put("result", new IntegerPrimitive(i) );

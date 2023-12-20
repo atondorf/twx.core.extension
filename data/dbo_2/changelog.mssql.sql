@@ -21,6 +21,7 @@ CREATE TABLE dbo.tab_1 (
 -- rollback DROP TABLE dbo.tab_1
 
 -- changeset de12650:2 
-INSERT INTO dbo.tab_1 (valBool,valTinyInt) VALUES (0,1)
+INSERT INTO dbo.tab_1 (valBool,valTinyInt,vaDateTime) VALUES (0,1,'2023-12-20T18:00:00Z')
 INSERT INTO dbo.tab_1 (valBool,valTinyInt) VALUES (1,2)
 -- rollback TRUNCATE TABLE dbo.tab_1
+
