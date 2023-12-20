@@ -1,6 +1,7 @@
 package twx.core.concurrency.scriptable;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.annotations.JSConstructor;
 import org.mozilla.javascript.annotations.JSFunction;

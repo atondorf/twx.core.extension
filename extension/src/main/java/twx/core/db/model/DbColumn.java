@@ -1,90 +1,127 @@
 package twx.core.db.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
+import java.util.EnumMap;
 import java.util.Map;
-import java.util.LinkedHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class DbColumn extends DbObject<DbTable> {
+import com.thingworx.datashape.DataShape;
 
-    protected   String  typeName;
-    protected   int     typeId;
-    protected   int     size = -1;
-    protected   Boolean nullable = false;
-    protected   Boolean autoIncrement = false;
-    protected   int     primaryKeySeq = -1;
+import com.thingworx.types.BaseTypes;
+
+public class DbColumn extends DbObject<DbTable> {
+    private Integer ordinal;
+    private String typeName;
+    private Integer type;
+    private Integer size;
+    private Boolean nullable = true;
+    private Boolean autoIncrement = false;
+    private String defaultValue = null;
+    private BaseTypes twxType = BaseTypes.NOTHING;
 
     protected DbColumn(DbTable table, String name) {
         super(table, name);
     };
 
-    // region Get/Set Table Properties 
+    @Override
+    public void clear() {
+        super.clear();
+    }
+
+    public DbTable getTable() {
+        return (DbTable) this.getParent();
+    }
+
+    public DbSchema getSchema() {
+        return this.getTable().getSchema();
+    }
+
+    // region Get/Set Table Properties
     // --------------------------------------------------------------------------------
-    public String getTypeName() {
-        return typeName;
+    public void setOrdinal(Integer ordinal) {
+        this.ordinal = ordinal;
+    }
+
+    public int getOrdinal() {
+        return this.ordinal;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public Integer getType() {
+        return this.type;
     }
 
     public void setTypeName(String typeName) {
         this.typeName = typeName;
     }
 
-    public int getTypeId() {
-        return typeId;
+    public String getTypeName() {
+        return this.typeName;
     }
 
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
+    public void setSize(Integer size) {
+        this.size = size;
     }
 
-    public int getSize() {
+    public Integer getSize() {
         return this.size;
     }
 
-    public void setSize(int lenght) {
-        this.size = lenght;
+    public void setNullable(Boolean notNull) {
+        this.nullable = notNull;
     }
 
     public Boolean getNullable() {
-        return nullable;
-    }
-
-    public void setNullable(Boolean nullable) {
-        this.nullable = nullable;
-    }
-
-    public Boolean getAutoIncrement() {
-        return autoIncrement;
+        return this.nullable;
     }
 
     public void setAutoIncrement(Boolean autoIncrement) {
         this.autoIncrement = autoIncrement;
     }
 
-    public Boolean isPrimaryKey() {
-        return primaryKeySeq > 0;
+    public Boolean getAutoIncrement() {
+        return autoIncrement;
     }
 
-    public void setPrimaryKeySeq(int keySeq) {
-        this.primaryKeySeq = keySeq;
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
     }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setTwxType(BaseTypes twxType) {
+        this.twxType = twxType;
+    }
+
+    public BaseTypes getTwxType() {
+        return twxType;
+    }
+
     // endregion
-
+    // region Serialization ...
+    // --------------------------------------------------------------------------------
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();
-        json.put("typeName", this.typeName );
-        json.put("typeId",this.typeId);
-        if( this.size > 0 ) 
-            json.put("lenght", this.size);
-        json.put("nullable", this.nullable);
+        json.put(DbConstants.MODEL_TAG_ORDINAL, this.ordinal);
+        json.put(DbConstants.MODEL_TAG_SQL_TYPE, this.type);
+        json.put(DbConstants.MODEL_TAG_TYPE_NAME, this.typeName);
+        json.put(DbConstants.MODEL_TAG_TYPE_SIZE, this.size);
+        if( this.nullable )
+            json.put(DbConstants.MODEL_TAG_NULLABLE, this.nullable);
         if( this.autoIncrement )
-            json.put("autoIncrement", this.autoIncrement);
-        if( this.primaryKeySeq > 0 )
-            json.put("primaryKeySeq", this.primaryKeySeq);
+            json.put(DbConstants.MODEL_TAG_AUTOINCREMENT, this.autoIncrement);
+        if( this.defaultValue != null )
+            json.put(DbConstants.MODEL_TAG_DEFAULT_VALUE, this.defaultValue);
+        if( this.twxType != BaseTypes.NOTHING )
+            json.put(DbConstants.MODEL_TAG_TWX_BASETYPE, this.twxType.friendlyName() );
         return json;
     }
+    // endregion
 }

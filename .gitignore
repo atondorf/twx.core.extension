@@ -1,3 +1,6 @@
+### ThingWorx Data ###
+.ThingworxStorage
+
 ### Repos ###
 .repos
 
@@ -17,5 +20,4 @@ lib/common/*.jar
 
 ### VS Code ###
 .vscode/
-
 .fake

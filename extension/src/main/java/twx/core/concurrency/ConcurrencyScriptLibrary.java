@@ -5,7 +5,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeFunction;

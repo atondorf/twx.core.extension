@@ -3,6 +3,7 @@ package twx.core.date;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
+
 import com.thingworx.data.util.InfoTableInstanceFactory;
 import com.thingworx.logging.LogUtilities;
 import com.thingworx.metadata.annotations.ThingworxServiceDefinition;
@@ -93,8 +94,8 @@ public class DateServices extends Resource {
     public Boolean getTimeZoneIsStdTransition(
             @ThingworxServiceParameter(name = "dt", description = "", baseType = "DATETIME") DateTime dt,
             @ThingworxServiceParameter(name = "tzId", description = "", baseType = "STRING") String tzId) {
-        long            current = System.currentTimeMillis();
-        DateTimeZone    tz = _defaultTimeZone;
+        long current = System.currentTimeMillis();
+        DateTimeZone tz = _defaultTimeZone;
         if (dt != null)
             current = dt.getMillis();
         if (tzId != null && tzId != "")
@@ -152,5 +153,4 @@ public class DateServices extends Resource {
             tz = DateTimeZone.forID(tzId);
         return dt.withZone(tz).toString(fmt);
     }
-
 }

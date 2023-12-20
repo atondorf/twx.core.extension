@@ -1,5 +1,8 @@
 package twx.core.db.scriptable;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -15,41 +18,42 @@ import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.annotations.JSConstructor;
 import org.mozilla.javascript.annotations.JSFunction;
 
-import com.thingworx.common.exceptions.ThingworxRuntimeException;
-import com.thingworx.things.database.AbstractDatabase;
+import com.thingworx.datashape.DataShape;
+import com.thingworx.dsl.engine.adapters.ThingworxInfoTableAdapter;
+import com.thingworx.logging.LogUtilities;
+import com.thingworx.metadata.FieldDefinition;
+import com.thingworx.types.InfoTable;
+import com.thingworx.types.BaseTypes;
 
-import twx.core.db.imp.DBUtil;
+import ch.qos.logback.classic.Logger;
+import twx.core.db.handler.DbHandler;
+import twx.core.db.handler.TransactionManager;
+import twx.core.db.model.DbColumn;
+import twx.core.db.util.DatabaseUtil;
 
 public class DBConnection extends ScriptableObject {
+    private static Logger _logger = LogUtilities.getInstance().getApplicationLogger(DBConnection.class);
+
+    DbHandler    dbHandler = null;
+    Connection   connection = null;
+
+    // region ScriptableObject basics
+    // --------------------------------------------------------------------------------
     private static final long serialVersionUID = 1L;
 
     public DBConnection() {}
 
-    @JSConstructor
-    public static Scriptable jsConstructor(Context cx, Object[] args, Function ctorObj, boolean inNewExpr) {
-        DBConnection result = new DBConnection();
-        if (args.length < 1 || args[0] == Context.getUndefinedValue())
-            throw new IllegalArgumentException("DBConnection - First Param must be Name of an DBThing");
-
-        String thingName = Context.toString(args[0]);
-        result.databaseThing = DBUtil.getAbstractDatabaseDirect(thingName);
-
-        if (result.databaseThing == null)
-            throw new ThingworxRuntimeException("DBConnection - " + thingName + " is not a database");
-
-        if (args.length >= 2 && args[1] != Context.getUndefinedValue())
-            result.autoCommit = Context.toBoolean(args[1]);
-
-        return result;
+    public DBConnection(String thingName) throws Exception {
+        this.dbHandler = DatabaseUtil.getHandler(thingName);
+        this.connection = this.dbHandler.getConnection();
     }
 
     @JSConstructor
-    public DBConnection(String dbThingName, Boolean autoCommit) throws Exception {
-        this.databaseThing = DBUtil.getAbstractDatabaseDirect(dbThingName);
-        if (this.databaseThing == null)
-            throw new ThingworxRuntimeException("Thing:" + dbThingName + " is not a database");
-        connection = databaseThing.getConnection();
-        connection.setAutoCommit(autoCommit);
+    public static Scriptable jsConstructor(Context cx, Object[] args, Function ctorObj, boolean inNewExpr) throws Exception {
+        if (args.length < 1 || args[0] == Context.getUndefinedValue())
+            throw new IllegalArgumentException("DBConnection - First Param must be Name of an DBThing");
+        String thingName = Context.toString(args[0]);
+        return new DBConnection(thingName);
     }
 
     @Override
@@ -59,37 +63,12 @@ public class DBConnection extends ScriptableObject {
 
     @Override
     protected void finalize() throws Throwable {
-        if (connection != null)
-            connection.close();
-        connection = null;
+        this.close();
     }
 
-    protected AbstractDatabase getAbstractDatabase() throws Exception {
-        return this.databaseThing;
-    }
-
-    protected Connection getConnection() throws Exception {
-        if (this.connection == null)
-            this.connection = this.getAbstractDatabase().getConnection();
-        return this.connection;
-    }
-
-    protected DatabaseMetaData getMetaData() throws Exception {
-        return getConnection().getMetaData();
-    }
-
-    @JSFunction
-    public Boolean isAutoCommit() {
-        return this.autoCommit;
-    }
-
-    @JSFunction
-    public String getThingName() throws Exception {
-        if (databaseThing == null)
-            return "UNDEFINED";
-        return databaseThing.getName();
-    }
-
+    // endregion
+    // region Thing and DB - Information
+    // --------------------------------------------------------------------------------
     @JSFunction
     public String getCatalog() throws Exception {
         return getConnection().getCatalog();
@@ -137,23 +116,41 @@ public class DBConnection extends ScriptableObject {
         return arr;
     }
 
+    // endregion
+    // region Connection & Transaction Handling
+    // --------------------------------------------------------------------------------
     @JSFunction
-    public void commit() throws Exception {
-        getAbstractDatabase().commit(connection);
-    }
-
-    @JSFunction
-    public void rollback() throws Exception {
-        getAbstractDatabase().rollback(connection);
+    public Boolean isClosed() throws SQLException {
+        if (this.connection == null)
+            return true;
+        return this.connection.isClosed();
     }
 
     @JSFunction
     public void close() throws Exception {
-        if (connection != null)
-            connection.close();
-        connection = null;
+        if ( this.isClosed() )
+            return;
+        this.dbHandler.close(connection);
+        this.connection = null;
     }
 
+    @JSFunction
+    public void commit() throws Exception {
+        if ( this.isClosed() )
+            return;
+        this.dbHandler.commit(connection);
+    }
+
+    @JSFunction
+    public void rollback() throws Exception {
+        if ( this.isClosed() )
+            return;
+        this.dbHandler.rollback(connection);
+    }
+
+    // endregion
+    // region Statements
+    // --------------------------------------------------------------------------------
     @JSFunction
     public static Object createStatement(Context cx, Scriptable me, Object[] args, Function funObj) throws SQLException {
         DBConnection con = (DBConnection) me;
@@ -170,35 +167,92 @@ public class DBConnection extends ScriptableObject {
         return cx.newObject(me, "DBPreparedStatement", args_new);
     }
 
+    // endregion
+    // region Private Members ...
+    // --------------------------------------------------------------------------------
+    protected Connection getConnection() {
+        return this.connection;
+    }
+
+    protected DatabaseMetaData getMetaData() throws Exception {
+        return getConnection().getMetaData();
+    }
+
+    protected void logException(String message, Exception exception ) {
+        if( this.dbHandler != null ) {
+            if( exception instanceof SQLException )
+                this.dbHandler.logSQLException(message, (SQLException)exception);
+            else 
+                this.dbHandler.logException(message, exception);
+        }
+    }
+
+    // endregion
+    // region Test Services for Development only ...
+    // --------------------------------------------------------------------------------
     @JSFunction
     public static Object argTest(Context cx, Scriptable me, Object[] args, Function funObj) throws SQLException {
         if (args.length < 1)
             throw new IllegalArgumentException("Invalid Number of Arguments in argTest");
-        JSONObject json = new JSONObject();
-        json.put("Greet", "Hello Thingworx!");
 
-        var obj = args[0];
-        json.put("ClassName", obj.getClass().getName());
-        json.put("ClassSimpleName", obj.getClass().getSimpleName());
-        json.put("ClassCanonicalName", obj.getClass().getCanonicalName());
+        JSONObject jsonResult = new JSONObject();
+        jsonResult.put("ClassName", args[0].getClass().getName());
+        jsonResult.put("ClassSimpleName", args[0].getClass().getSimpleName());
+        jsonResult.put("ClassCanonicalName", args[0].getClass().getCanonicalName());
 
-        if (obj instanceof NativeObject) {
-            NativeObject nativeObject = (NativeObject) obj;
-            Object[] propertyID = nativeObject.getIds();
-            JSONObject sub_json = new JSONObject();
-            for (Object property : propertyID) {
-                if (property instanceof String) {
-                    Object oRawValue = nativeObject.get((String) property, null);
-                    sub_json.put((String) property, oRawValue.toString());
+        if( args[0] instanceof ThingworxInfoTableAdapter ) {
+            InfoTable table = ((ThingworxInfoTableAdapter) args[0]).getInfoTable();
+            var ds = table.getDataShape();
+            // sort all arguments to an Array ...
+            JSONArray argArray = new JSONArray();
+            for (FieldDefinition fieldDefinition : ds.getFields().getOrderedFieldsByOrdinal() ) {
+                JSONObject jsonField = new JSONObject();
+                jsonField.put("Name",  fieldDefinition.getName() );
+                jsonField.put("Basetype", fieldDefinition.getBaseType() );
+                jsonField.put("Ordinal", fieldDefinition.getOrdinal() );
+
+                var valCol = table.getFirstRow();
+                if( valCol != null ) {
+                    Object value = null;
+                    if (valCol.has(fieldDefinition.getName()))
+                      value = valCol.getValue(fieldDefinition.getName()); 
+
+                    var obj = valCol.getValue(fieldDefinition.getName());
+                    jsonField.put("ValueClass", obj.getClass().getName() );
+                    jsonField.put("Value", obj.toString() );
+                }
+                argArray.put(jsonField);
+            }
+
+            jsonResult.put("ARGs", argArray);
+        }
+
+        if (args[0] instanceof NativeObject) {
+            NativeObject nativeObject = (NativeObject) args[0];
+            Object[] propertyKeys = nativeObject.getIds();
+            // sort all arguments to an Array ...
+            JSONArray argArray = new JSONArray();
+            for (Object key : propertyKeys) {
+                if (key instanceof String) {
+                    Object propObject = nativeObject.get((String) key, null);
+                    JSONObject argJSON = new JSONObject();
+                    argJSON.put("Name", (String) key);
+                    argJSON.put("StringVal", propObject.toString());
+                    argJSON.put("ClassName", propObject.getClass().getName());
+                    argArray.put(argJSON);
+                    /*
+                     * 
+                     * sub_json.put((String) property, oRawValue.toString());
+                     */
                 }
             }
-            json.put("ARG", sub_json);
+            jsonResult.put("ARGs", argArray);
         }
-        return json;
+        return jsonResult;
     }
 
-    /** Some private data for this class. */
-    AbstractDatabase databaseThing = null;
-    Connection connection = null;
-    Boolean autoCommit = false;
+    protected static JSONObject getInfotableParams( InfoTable table ) {
+        return null;
+    }
+    // endregion
 }

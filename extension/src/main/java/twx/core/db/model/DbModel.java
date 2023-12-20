@@ -1,69 +1,137 @@
 package twx.core.db.model;
 
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.LinkedHashMap;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-
 public class DbModel extends DbObject<DbObject<?>> {
-    
-    public static final String DEFAULT_SCHEMA_NAME = "dbo";
+    private final Set<DbSchema> schemas = new LinkedHashSet<>();
 
-    private final LinkedHashMap<String,DbSchema> schemas = new LinkedHashMap<String,DbSchema>();
+    public DbModel() {
+        super(null, "");
+        this.createSchema(DbSchema.DEFAULT_SCHEMA_NAME);
+    }
 
     public DbModel(String name) {
         super(null, name);
+        this.createSchema(DbSchema.DEFAULT_SCHEMA_NAME);
     };
-
-    public List<DbSchema> getSchemas() {
-        return new ArrayList<DbSchema>( this.schemas.values() );
+    
+    @Override
+    public void clear() {
+        super.clear();
+        this.schemas.stream().forEach(c -> c.clear());
+        this.schemas.clear();
+        schemas.clear();
+        this.createSchema(DbSchema.DEFAULT_SCHEMA_NAME);
+    }
+    // region Get/Set Tables
+    // --------------------------------------------------------------------------------
+    public Set<DbTable> getTables() {
+        Set<DbTable> tableSet = new LinkedHashSet<>(); 
+        for( DbSchema schema : this.schemas ) {
+          tableSet.addAll(schema.getTables() );
+        }
+        return Collections.unmodifiableSet(tableSet);
     }
 
-    public DbSchema getDefaultSchema() {
-        return getSchema(DEFAULT_SCHEMA_NAME);
+    public DbTable getTable(String tableName) {
+
+        return null;
+    }
+
+    public DbTable getTable(String schemaName, String tableName ) {
+        return getSchema(schemaName).getTable(tableName);
+    }
+
+
+    // endretion
+    // region Get/Set Schemas
+    // --------------------------------------------------------------------------------
+    public Set<DbSchema> getSchemas() {
+        return Collections.unmodifiableSet(schemas);
+    }
+
+    public Boolean hasSchema(String name) {
+        return DbObject.hasObject(this.schemas, name);
     }
 
     public DbSchema getSchema(String name) {
-        return this.schemas.get(name);
-    }
-
-    public DbSchema addSchema(String name) {
-        DbSchema schema = createSchema(name);
-        return addSchema(schema);
-    }
-
-    public DbSchema addDefaultSchema() {
-        return addSchema(DEFAULT_SCHEMA_NAME);
+        return DbObject.findObject(this.schemas, name);
     }
 
     public DbSchema createSchema(String name) {
-        return new DbSchema(this, name);
+        DbSchema schema = new DbSchema(this, name);
+        return addSchema(schema);
     }
 
-    protected <T extends DbSchema> T addSchema(T schema) {
-        this.schemas.put(schema.getName(), schema);
+    public DbSchema getDefaultSchema() {
+        return getSchema(DbSchema.DEFAULT_SCHEMA_NAME);
+    }
+
+    public DbSchema getOrCreateSchema(String name) {
+        var schema = getSchema(name);
+        if (schema == null)
+            schema = createSchema(name);
         return schema;
     }
 
+    public DbSchema removeSchema(String name) {
+        var schema = getSchema(name);
+        return removeSchema(schema);
+    }
+
+    public DbSchema addSchema(DbSchema schema) {
+        schema.takeOwnerShip(this);
+        this.schemas.add(schema);
+        return schema;
+    }
+
+    public DbSchema removeSchema(DbSchema schema) {
+        this.schemas.remove(schema);
+        schema.parent = null;
+        return schema;
+    }
+    // endregion
+    // region Model Join & Compare
+    // --------------------------------------------------------------------------------
+    public DbModel mergeWith(DbModel other) throws DbModelException {
+        return this;
+    }
+
+    public Boolean initialize() throws DbModelException {
+        return true;
+    }
+
+    public Boolean validate() throws DbModelException {
+        return true;
+    }
+    // endregion
+    // region Compare and Hash ... used to keep Objects in Set<> ...
+    // --------------------------------------------------------------------------------
+    
+    // Nothing to do here ... use DbObject implementation by getName only ...
+    
+    // endregion
+    // region Serialization ...
+    // --------------------------------------------------------------------------------
     @Override
     public JSONObject toJSON() {
         var json = super.toJSON();
         var array = new JSONArray();
-        for ( DbSchema schema : this.schemas.values() ) {
+        for (DbSchema schema : this.schemas) {
             array.put(schema.toJSON());
         }
-        json.put("schemas",array);
-        return json;        
+        json.put(DbConstants.MODEL_TAG_SCHEMA_ARRAY, array);
+        return json;
     }
 
     @Override
     public String toString() {
         return this.toJSON().toString(2);
     }
+    // endregion
 }
