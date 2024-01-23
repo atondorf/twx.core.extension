@@ -1,6 +1,7 @@
 package twx.core.db.scriptable;
 
 import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -16,9 +17,17 @@ import com.thingworx.things.database.SQLToInfoTableConversion;
 import com.thingworx.types.InfoTable;
 
 public class DBCallableStatement extends DBStatement {
-    // region ScriptableObject basics
+    // region Private Members ...
     // --------------------------------------------------------------------------------
-    private static final long serialVersionUID = 1L;
+    protected DBConnection          dbCon   = null;
+    protected CallableStatement     cstmt   = null;
+
+    protected static CallableStatement getStatement(Scriptable me) {
+        DBCallableStatement dbStatement = (DBCallableStatement)me;
+        return dbStatement.cstmt;
+    }
+
+    // endregion
 
     public DBCallableStatement() { }
 
@@ -124,15 +133,4 @@ public class DBCallableStatement extends DBStatement {
     }
 
     // endregion 
-    // region Private Members ...
-    // --------------------------------------------------------------------------------
-    protected DBConnection          dbCon   = null;
-    protected CallableStatement     cstmt   = null;
-
-    protected static CallableStatement getStatement(Scriptable me) {
-        DBCallableStatement dbStatement = (DBCallableStatement)me;
-        return dbStatement.cstmt;
-    }
-
-    // endregion
 }

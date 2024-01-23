@@ -160,6 +160,14 @@ public abstract class AbstractHandler implements DbHandler {
         });
     }
 
+    public InfoTable executePreparedUpdate(String sql, InfoTable values) throws SQLException {
+        return null;
+    }
+
+    public InfoTable executePreparedQuery(String sql, InfoTable values) throws SQLException {
+        return null;
+    }
+
     public <T> T execute(ConnectionCallback<T> callback) throws SQLException {
         Connection connection = null;
         try {
