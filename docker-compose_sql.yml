@@ -3,13 +3,13 @@ services:
   db:
     # build: ./IMG_MS_SQL
     # image: twx9_db
-    image: twx94_db
+    image: twx95_db
     ports:
       - "1433:1433"
   twx:
     # build: ./IMG_TWX_9_SQL
     # image: twx9_twx
-    image: twx94_app
+    image: twx95_app
     links:
       - db
     ports:

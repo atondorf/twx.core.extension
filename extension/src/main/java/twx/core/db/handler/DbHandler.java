@@ -66,9 +66,13 @@ public interface DbHandler {
 
     public int executeUpdate(String sql) throws SQLException;
 
-    public InfoTable executeBatchUpdate(InfoTable sqlTable) throws SQLException;
+    public InfoTable executeBatch(InfoTable sqlTable) throws SQLException;
 
     public InfoTable executeQuery(String sql) throws SQLException;
+
+    public InfoTable executePreparedUpdate(String sql, InfoTable values) throws SQLException;
+
+    public InfoTable executePreparedQuery(String sql, InfoTable values) throws SQLException;
     // endregion 
     // region Exception & Logging Handler ...
     // --------------------------------------------------------------------------------

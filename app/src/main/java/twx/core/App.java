@@ -100,7 +100,7 @@ public class App {
         lb.setChangelog(PATH, FILE);
         lb.rollback(10);
         lb.update("","");
-        logger.info( lb.history() );
+        // logger.info( lb.history() );
     }
 
     private void closeDBConnection() {

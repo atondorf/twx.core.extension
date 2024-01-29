@@ -6,10 +6,10 @@
     <DataShapes>
         <DataShape
             baseDataShape=""
-            description="Datashape to store liquibase changelog information"
+            description="Datashape to store a list of sql commands handled in batch"
             documentationContent=""
             homeMashup=""
-            name="TWX.Core.LiquibaseConfgig_DS"
+            name="TWX.Core.DBBatch_DS"
             projectName="TWX.Core"
             tags="">
             <avatar></avatar>
@@ -28,33 +28,17 @@
             <ConfigurationTables></ConfigurationTables>
             <FieldDefinitions>
                 <FieldDefinition
-                    aspect.defaultValue="changelog.master.xml"
-                    aspect.friendlyName=""
                     aspect.isPrimaryKey="false"
                     baseType="STRING"
                     description=""
-                    name="ChangelogFile"
-                    ordinal="3"></FieldDefinition>
-                <FieldDefinition
-                    aspect.isPrimaryKey="false"
-                    baseType="STRING"
-                    description=""
-                    name="ChangelogPath"
+                    name="result"
                     ordinal="2"></FieldDefinition>
                 <FieldDefinition
-                    aspect.defaultValue="SystemRepository"
-                    aspect.isPrimaryKey="true"
-                    aspect.thingTemplate="FileRepository"
-                    baseType="THINGNAME"
-                    description=""
-                    name="ChangelogRepository"
-                    ordinal="1"></FieldDefinition>
-                <FieldDefinition
                     aspect.isPrimaryKey="false"
                     baseType="STRING"
                     description=""
-                    name="DefaultContexts"
-                    ordinal="4"></FieldDefinition>
+                    name="sql"
+                    ordinal="1"></FieldDefinition>
             </FieldDefinitions>
         </DataShape>
     </DataShapes>

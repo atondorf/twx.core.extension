@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import com.thingworx.logging.LogUtilities;
 import com.thingworx.types.InfoTable;
 import com.thingworx.types.collections.ValueCollection;
+import com.thingworx.types.primitives.IntegerPrimitive;
 
 import ch.qos.logback.classic.Logger;
 import twx.core.db.handler.ConnectionCallback;
@@ -122,7 +123,7 @@ public abstract class AbstractHandler implements DbHandler {
         });
     }
 
-    public InfoTable executeBatchUpdate(InfoTable sqlTable) throws SQLException {
+    public InfoTable executeBatch(InfoTable sqlTable) throws SQLException {
         return this.execute((Connection con ) -> { 
             try( var stm = con.createStatement() ) {
                 for( ValueCollection val : sqlTable.getRows() ) {
@@ -130,10 +131,17 @@ public abstract class AbstractHandler implements DbHandler {
                     stm.addBatch(sql);
                 }
                 int[] result = stm.executeBatch();
-                return InfoTableUtil.createInfoTableFromIntArray(result);
+                for( int i = 0; i < result.length; i++ ) {
+                    var row = sqlTable.getRow(i);
+                    row.SetIntegerValue("result", new IntegerPrimitive(result[i]) );
+                }
+                return sqlTable;
             }
             catch(SQLException ex) {
                 throw ex;
+            }
+            catch(Exception ex) {
+               throw new SQLException(ex);
             }
         });
     }
@@ -150,6 +158,14 @@ public abstract class AbstractHandler implements DbHandler {
                 throw ex;
             }
         });
+    }
+
+    public InfoTable executePreparedUpdate(String sql, InfoTable values) throws SQLException {
+        return null;
+    }
+
+    public InfoTable executePreparedQuery(String sql, InfoTable values) throws SQLException {
+        return null;
     }
 
     public <T> T execute(ConnectionCallback<T> callback) throws SQLException {
