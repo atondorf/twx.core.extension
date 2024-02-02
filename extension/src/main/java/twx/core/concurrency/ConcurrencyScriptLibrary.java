@@ -55,6 +55,8 @@ public class ConcurrencyScriptLibrary {
         throw new Exception("Invalid arg is not an Number: Type is: " + arg.getClass().getName() );
     }
 
+    
+
     // region atomic Services Thingworx
     // --------------------------------------------------------------------------------
     public static Object core_getAtomic(Context cx, Scriptable me, Object[] args, Function funObj) throws Exception {

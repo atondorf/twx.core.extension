@@ -51,17 +51,32 @@
 				<FunctionDefinition name="core_argTest" description="">
 					<ResultType baseType="JSON" name="result" ordinal="0" />
 					<ParameterDefinitions>
-						<FieldDefinition baseType="DATETIME" name="value" ordinal="0" />
+						<FieldDefinition baseType="JSON" name="value" ordinal="0" />
 					</ParameterDefinitions>
-				</FunctionDefinition>
-				<FunctionDefinition name="core_Test" description="">
-					<ResultType baseType="JSON" name="result" ordinal="0" />
 				</FunctionDefinition>
 				<FunctionDefinition name="core_hasProperty" description="">
 					<ResultType baseType="BOOLEAN" name="result" ordinal="0" />
 					<ParameterDefinitions>
 						<FieldDefinition baseType="STRING" name="name" ordinal="0" />
 					</ParameterDefinitions>
+				</FunctionDefinition>
+				<FunctionDefinition name="core_Test" description="">
+					<ResultType baseType="JSON" name="result" ordinal="0" />
+				</FunctionDefinition>
+				<FunctionDefinition name="core_callFunc" description="">
+					<ResultType baseType="NOTHING" name="result" ordinal="0" />
+					<ParameterDefinitions>
+						<FieldDefinition baseType="STRING" description="Function body to execute" name="function" ordinal="0"/>
+					</ParameterDefinitions>
+				</FunctionDefinition>
+				<FunctionDefinition name="core_getScriptableInfo" description="">
+					<ResultType baseType="JSON" name="result" ordinal="0" />
+				</FunctionDefinition>
+				<FunctionDefinition name="core_getThingInfo" description="">
+					<ResultType baseType="JSON" name="result" ordinal="0" />
+				</FunctionDefinition>
+				<FunctionDefinition name="core_getContextInfo" description="">
+					<ResultType baseType="JSON" name="result" ordinal="0" />
 				</FunctionDefinition>
 			</FunctionDefinitions>
 			<RunTimePermissions>
