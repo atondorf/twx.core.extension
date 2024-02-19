@@ -7,7 +7,12 @@ import java.sql.SQLException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.thingworx.metadata.FieldDefinition;
 import com.thingworx.types.BaseTypes;
+import com.thingworx.types.InfoTable;
+import com.thingworx.types.collections.ValueCollection;
+import com.thingworx.types.primitives.IntegerPrimitive;
+import com.thingworx.types.primitives.StringPrimitive;
 
 import twx.core.db.handler.ModelManager;
 import twx.core.db.handler.DbHandler;
@@ -20,6 +25,7 @@ import twx.core.db.model.DbIndexColumn;
 import twx.core.db.model.DbModel;
 import twx.core.db.model.DbSchema;
 import twx.core.db.model.DbTable;
+import twx.core.db.util.DatabaseUtil;
 
 public class AbstractModelManager implements ModelManager {
     private DbHandler   dbHandler = null;
@@ -59,18 +65,52 @@ public class AbstractModelManager implements ModelManager {
     }
 
     @Override
-    public JSONArray getModelTables() {
-        JSONArray resArray = new JSONArray();
+    public InfoTable getTables() {
+        var dbModel = dbHandler.getDbModel();
+
+        InfoTable table = new InfoTable();
+        table.addField(new FieldDefinition("schema", BaseTypes.STRING));
+        table.addField(new FieldDefinition("table", BaseTypes.STRING));
+        table.addField(new FieldDefinition("dataShape", BaseTypes.STRING));
+
         for (var dbSchema : dbModel.getSchemas()) {
             for (var dbTable : dbSchema.getTables()) {
-                JSONObject tableDesc = new JSONObject();
-                tableDesc.put("schema", dbSchema.getName());
-                tableDesc.put("table", dbTable.getName());
-                tableDesc.put("dataShape", dbTable.getDataShapeName());
-                resArray.put(tableDesc);
+                ValueCollection values = new ValueCollection();
+                values.put("schema", new StringPrimitive(dbSchema.getName()));
+                values.put("table", new StringPrimitive(dbTable.getName()));
+                values.put("dataShape", new StringPrimitive(dbTable.getDataShapeName()));
+                table.addRow(values);
             }
         }
-        return resArray;
+        return table;
+    }
+
+    @Override
+    public InfoTable getTableColumns(String schemaName, String tableName) {
+        var dbModel = dbHandler.getDbModel();
+
+        InfoTable table = new InfoTable();
+        table.addField(new FieldDefinition("schema", BaseTypes.STRING));
+        table.addField(new FieldDefinition("table", BaseTypes.STRING));
+        table.addField(new FieldDefinition("column", BaseTypes.STRING));
+        table.addField(new FieldDefinition("sqlType", BaseTypes.STRING));
+        table.addField(new FieldDefinition("sqlSize", BaseTypes.INTEGER));
+        table.addField(new FieldDefinition("twxType", BaseTypes.STRING));
+
+        var dbSchema = dbModel.getSchema(schemaName);
+        var dbTable = dbSchema.getTable(tableName);
+        for( var dbColumn : dbTable.getColumns() ) {
+            ValueCollection values = new ValueCollection();
+            values.put("schema", new StringPrimitive(dbSchema.getName()));
+            values.put("table", new StringPrimitive(dbTable.getName()));
+            values.put("column", new StringPrimitive(dbColumn.getName()));
+            values.put("sqlType", new StringPrimitive(dbColumn.getTypeName()));
+            values.put("sqlSize", new IntegerPrimitive(dbColumn.getSize()));
+            values.put("twxType", new StringPrimitive(dbColumn.getTwxType().toString() ));
+            
+            table.addRow(values);
+        }
+        return table;
     }
 
     // endregion
@@ -126,16 +166,22 @@ public class AbstractModelManager implements ModelManager {
             DbColumn col = dbTable.createColumn(rs.getString("COLUMN_NAME"));
             // type Name ...
             String typename = rs.getString("TYPE_NAME");
+/*
             if (typename.equals("varchar") || typename.equals("varbinary")) {
                 typename += "(" + rs.getString("CHAR_OCTET_LENGTH") + ")";
             }
+*/            
             col.setTypeName(typename);
             // integer jdbcType and Thingworx Basetype ... 
             Integer jdbcType = rs.getInt("DATA_TYPE");
             col.setType(jdbcType);
             col.setTwxType(this.dbInfo.jdbc2Base(jdbcType));
 
-            col.setSize(rs.getInt("COLUMN_SIZE"));
+            Integer colSize = rs.getInt("COLUMN_SIZE");
+            if( colSize == 2147483647 )
+                colSize = -1;
+            col.setSize(colSize);
+            
             col.setOrdinal(rs.getInt("ORDINAL_POSITION"));            
             col.setNullable( rs.getString("IS_NULLABLE").equals("YES") );
             col.setAutoIncrement( rs.getString("IS_AUTOINCREMENT").equals("YES") );

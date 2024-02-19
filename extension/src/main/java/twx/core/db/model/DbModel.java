@@ -39,14 +39,18 @@ public class DbModel extends DbObject<DbObject<?>> {
     }
 
     public DbTable getTable(String tableName) {
-
-        return null;
+        DbTable dbTable = null;
+        for( var schema : this.getSchemas() ) {
+            if( schema.hasTable(tableName) ) {
+                dbTable = schema.getTable(tableName);
+            }
+        }
+        return dbTable;
     }
 
     public DbTable getTable(String schemaName, String tableName ) {
         return getSchema(schemaName).getTable(tableName);
     }
-
 
     // endretion
     // region Get/Set Schemas

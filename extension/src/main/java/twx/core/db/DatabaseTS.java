@@ -14,7 +14,12 @@ import com.thingworx.metadata.FieldDefinition;
 import com.thingworx.metadata.annotations.ThingworxServiceDefinition;
 import com.thingworx.metadata.annotations.ThingworxServiceParameter;
 import com.thingworx.metadata.annotations.ThingworxServiceResult;
+import com.thingworx.system.ContextType;
+import com.thingworx.things.Thing;
 import com.thingworx.things.database.SQLToInfoTableConversion;
+import com.thingworx.things.handlers.IThingDisposeHandler;
+import com.thingworx.things.handlers.IThingInitializeHandler;
+import com.thingworx.things.handlers.IThingUpdateHandler;
 import com.thingworx.types.BaseTypes;
 import com.thingworx.types.InfoTable;
 import com.thingworx.types.collections.ValueCollection;
@@ -26,11 +31,38 @@ import twx.core.db.model.DbModel;
 import twx.core.db.util.DatabaseUtil;
 import twx.core.imp.DataShapeUtils;
 
-public class DatabaseTS {
+public class DatabaseTS implements IThingInitializeHandler, IThingUpdateHandler, IThingDisposeHandler {
     private static Logger logger = LogUtilities.getInstance().getDatabaseLogger(DatabaseTS.class);
+
+    @Override
+    public void handleInitializeThing(Thing arg0) throws Exception {
+
+    }
+
+    @Override
+    public void handleInitializeThing(Thing arg0, ContextType arg1) throws Exception {
+        
+    }
+
+    @Override
+    public void handleUpdateThing(Thing arg0, Thing arg1) throws Exception {
+        
+    }
+
+    @Override
+    public void handleDisposeThing(Thing arg0) throws Exception {
+
+    }
+
 
     // region TWX-Services Metadata Configuration ...
     // --------------------------------------------------------------------------------
+    @ThingworxServiceDefinition(name = "GetDBThingName", description = "get the root Thing of the database", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "STRING", aspects = {})
+    public String GetDBThingName() throws Exception {
+        return DatabaseUtil.getDatabaseThingName();
+    }
+
     @ThingworxServiceDefinition(name = "GetDBName", description = "get the type name of the database", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "STRING", aspects = {})
     public String GetDBName() throws Exception {
@@ -131,7 +163,7 @@ public class DatabaseTS {
         return table;
     }
 
-    @ThingworxServiceDefinition(name = "GetDBTables", description = "", category = "DB Model", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "GetDBTableColumns", description = "", category = "DB Model", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
     public InfoTable GetDBTableColumns(
             @ThingworxServiceParameter(name = "schemaName", description = "", baseType = "STRING") String schemaName,
@@ -140,16 +172,21 @@ public class DatabaseTS {
         InfoTable table = new InfoTable();
         table.addField(new FieldDefinition("schema", BaseTypes.STRING));
         table.addField(new FieldDefinition("table", BaseTypes.STRING));
-        table.addField(new FieldDefinition("dataShape", BaseTypes.STRING));
+        table.addField(new FieldDefinition("column", BaseTypes.STRING));
+        table.addField(new FieldDefinition("sqlType", BaseTypes.STRING));
+        table.addField(new FieldDefinition("twxType", BaseTypes.STRING));
 
-        for (var dbSchema : dbModel.getSchemas()) {
-            for (var dbTable : dbSchema.getTables()) {
-                ValueCollection values = new ValueCollection();
-                values.put("schema", new StringPrimitive(dbSchema.getName()));
-                values.put("table", new StringPrimitive(dbTable.getName()));
-                values.put("dataShape", new StringPrimitive(dbTable.getDataShapeName()));
-                table.addRow(values);
-            }
+        var dbSchema  = dbModel.getSchema(schemaName);
+        var dbTable   = dbModel.getTable(tableName);
+        for( var dbColumn : dbTable.getColumns() ) {
+            ValueCollection values = new ValueCollection();
+            values.put("schema", new StringPrimitive(dbSchema.getName()));
+            values.put("table", new StringPrimitive(dbTable.getName()));
+            values.put("column", new StringPrimitive(dbColumn.getName()));
+            values.put("sqlType", new StringPrimitive(dbColumn.getTypeName()));
+            values.put("twxType", new StringPrimitive(dbColumn.getTwxType().toString() ));
+            
+            table.addRow(values);
         }
         return table;
     }

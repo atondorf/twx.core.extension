@@ -19,9 +19,14 @@ public class DbModelTests {
     public void runTests() throws Exception {
         logger.info("---------- queryModel ----------");
         var model = db.getModelManager().updateModel();
+        var table = db.getModelManager().getTables();
+/*
         model.setNote("This is a note at the model"); 
-
-        logger.info( model.toJSON().toString() );
+*/
+        logger.info( InfotableIOUtil.formatInfotable( db.getModelManager().getTables() ) );
+        logger.info( InfotableIOUtil.formatInfotable( db.getModelManager().getTableColumns("","tab_1") ) );
+        
+       
     }
 
 }

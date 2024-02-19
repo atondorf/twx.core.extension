@@ -49,8 +49,9 @@ public class App {
         Connection con = null;
         try {
             app.openDBConnection();
-            app.handlerTest();
-            app.queryModel();
+            // app.handlerTest();
+            // app.queryModel();
+            app.modelTest();
 
         } catch (SQLException e) {
             printSQLException(e);
@@ -96,10 +97,10 @@ public class App {
         logger.info("Handler Key    : {}", this.handler.getKey()  );
         logger.info("Handler Catalog: {}", this.handler.getDefaultCatalog());
 
-        this.lb = new LiquibaseRunner( this.handler );
-        lb.setChangelog(PATH, FILE);
-        lb.rollback(10);
-        lb.update("","");
+        // this.lb = new LiquibaseRunner( this.handler );
+        // lb.setChangelog(PATH, FILE);
+        // lb.rollback(10);
+        // lb.update("","");
         // logger.info( lb.history() );
     }
 
