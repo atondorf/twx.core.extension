@@ -38,18 +38,28 @@ public class DbModel extends DbObject<DbObject<?>> {
         return Collections.unmodifiableSet(tableSet);
     }
 
-    public DbTable getTable(String tableName) {
+    public DbTable getTable(String fullTableName) {
         DbTable dbTable = null;
-        for( var schema : this.getSchemas() ) {
-            if( schema.hasTable(tableName) ) {
-                dbTable = schema.getTable(tableName);
-            }
+        String[] strArray = fullTableName.split("\\.");
+        if( strArray.length >= 1 && strArray.length <= 2 ) {
+            String schemaName = strArray[0];
+            String tableName = strArray[0];
+            // no schema given, use default 
+            if( strArray.length == 1 ) 
+                schemaName = DbSchema.DEFAULT_SCHEMA_NAME;
+            if( strArray.length == 2) 
+                tableName = strArray[1];
+
+            dbTable = getTable(schemaName,tableName);    
         }
         return dbTable;
     }
 
     public DbTable getTable(String schemaName, String tableName ) {
-        return getSchema(schemaName).getTable(tableName);
+        DbSchema dbSchema = getSchema(schemaName);
+        if( dbSchema != null )
+            return dbSchema.getTable(tableName);
+        return null;
     }
 
     // endretion

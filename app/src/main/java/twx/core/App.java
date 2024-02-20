@@ -75,7 +75,7 @@ public class App {
 
     private void queryModel() throws SQLException {
         logger.info("---------- queryModel ----------");
-        var model = handler.getModelManager().updateModel();
+        var model = handler.getModelManager().updateModel(null);
         model.setNote("This is a note at the model");
         
         // logger.info( handler.getModelManager().getModelTables().toString() );

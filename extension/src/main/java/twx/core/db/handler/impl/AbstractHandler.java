@@ -106,7 +106,7 @@ public abstract class AbstractHandler implements DbHandler {
     }
 
     public DbModel updateDbModel() throws SQLException {
-        return this.getModelManager().updateModel();    
+        return this.getModelManager().updateModel(null);    
     }
 
     // endregion

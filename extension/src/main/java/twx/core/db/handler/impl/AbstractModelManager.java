@@ -50,10 +50,13 @@ public class AbstractModelManager implements ModelManager {
     };
 
     @Override
-    public DbModel updateModel() throws SQLException {
+    public DbModel updateModel(InfoTable tableDesc) throws SQLException {
         this.dbModel = dbHandler.execute(connection -> {
             return queryModel(connection);
         });
+        if( tableDesc != null ) {
+
+        }
         return this.dbModel;
     }
 
@@ -65,7 +68,7 @@ public class AbstractModelManager implements ModelManager {
     }
 
     @Override
-    public InfoTable getTables() {
+    public InfoTable getTablesDesc() {
         var dbModel = dbHandler.getDbModel();
 
         InfoTable table = new InfoTable();
@@ -85,8 +88,22 @@ public class AbstractModelManager implements ModelManager {
         return table;
     }
 
+    public InfoTable getTableColumnsDesc(String fullTableName) {
+        var dbModel = dbHandler.getDbModel();
+       
+        InfoTable table = new InfoTable();
+        table.addField(new FieldDefinition("schema", BaseTypes.STRING));
+        table.addField(new FieldDefinition("table", BaseTypes.STRING));
+        table.addField(new FieldDefinition("column", BaseTypes.STRING));
+        table.addField(new FieldDefinition("sqlType", BaseTypes.STRING));
+        table.addField(new FieldDefinition("sqlSize", BaseTypes.INTEGER));
+        table.addField(new FieldDefinition("twxType", BaseTypes.STRING));
+
+        return table;
+    }
+
     @Override
-    public InfoTable getTableColumns(String schemaName, String tableName) {
+    public InfoTable getTableColumnsDesc(String schemaName, String tableName) {
         var dbModel = dbHandler.getDbModel();
 
         InfoTable table = new InfoTable();
@@ -166,11 +183,6 @@ public class AbstractModelManager implements ModelManager {
             DbColumn col = dbTable.createColumn(rs.getString("COLUMN_NAME"));
             // type Name ...
             String typename = rs.getString("TYPE_NAME");
-/*
-            if (typename.equals("varchar") || typename.equals("varbinary")) {
-                typename += "(" + rs.getString("CHAR_OCTET_LENGTH") + ")";
-            }
-*/            
             col.setTypeName(typename);
             // integer jdbcType and Thingworx Basetype ... 
             Integer jdbcType = rs.getInt("DATA_TYPE");

@@ -24,10 +24,11 @@ public interface ModelManager {
 
     public DbModel queryModel() throws SQLException;
 
-    public DbModel updateModel() throws SQLException;
+    public DbModel updateModel(InfoTable tableDesc) throws SQLException;
 
-    public InfoTable getTables();
+    public InfoTable getTablesDesc();
 
-    public InfoTable getTableColumns(String schemaName, String tableName);
+    public InfoTable getTableColumnsDesc(String fullTableName);
 
+    public InfoTable getTableColumnsDesc(String schemaName, String tableName);
 }
