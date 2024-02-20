@@ -51,7 +51,8 @@ public class App {
             app.openDBConnection();
             // app.handlerTest();
             // app.queryModel();
-            app.modelTest();
+            // app.modelTest();
+            app.statementTest();
 
         } catch (SQLException e) {
             printSQLException(e);
@@ -61,6 +62,11 @@ public class App {
             app.closeDBConnection();
         }
         logger.info("---------- Exit-App ----------");
+    }
+
+    private void statementTest() {
+        var test = new StatementTest(handler);
+        test.runTests();
     }
 
     private void handlerTest() throws Exception {
