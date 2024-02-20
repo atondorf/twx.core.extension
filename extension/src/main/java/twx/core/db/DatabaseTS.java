@@ -57,7 +57,7 @@ public class DatabaseTS implements IThingInitializeHandler, IThingUpdateHandler,
 
     // region TWX-Services Metadata Configuration ...
     // --------------------------------------------------------------------------------
-    @ThingworxServiceDefinition(name = "GetDBThingName", description = "get the root Thing of the database", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "GetDBThingName", description = "get the root Thing of the database SQLThing or Persistance Provider", category = "Metadata Database Config", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "STRING", aspects = {})
     public String GetDBThingName() throws Exception {
         return DatabaseUtil.getDatabaseThingName();
@@ -90,7 +90,7 @@ public class DatabaseTS implements IThingInitializeHandler, IThingUpdateHandler,
     // endregion
     // region TWX-Services Metadata Database ...
     // --------------------------------------------------------------------------------
-    @ThingworxServiceDefinition(name = "QueryDBModel", description = "Queries the Model from Database, does not store it to the Model Tree", category = "Metadata Database", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "QueryDBModel", description = "Queries the Model from Database, does not store it to the Model Tree", category = "DB Model", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "JSON", aspects = {})
     public JSONObject QueryDBModel() throws Exception {
         return DatabaseUtil.getHandler().getModelManager().queryModel().toJSON();
@@ -104,20 +104,13 @@ public class DatabaseTS implements IThingInitializeHandler, IThingUpdateHandler,
         if (model != null) {
             result = model.toJSON();
         } else {
-            result = new JSONObject();
+            DatabaseUtil.getHandler().getModelManager().updateModel(null);
+            result = DatabaseUtil.getHandler().getDbModel().toJSON();
         }
         return result;
     }
 
-    @ThingworxServiceDefinition(name = "UpdateDBModel", description = "Updates the Model in the internal Model Cache ...", category = "DB Model", isAllowOverride = false, aspects = { "isAsync:false" })
-    @ThingworxServiceResult(name = "Result", description = "", baseType = "JSON", aspects = {})
-    public JSONObject UpdateDBModel() throws Exception {
-        // TODO: Move Datashapes Info from old => new ...
-        DatabaseUtil.getHandler().getModelManager().updateModel(null);
-        return DatabaseUtil.getHandler().getDbModel().toJSON();
-    }
-
-    @ThingworxServiceDefinition(name = "RegisterDBDataShape", description = "", category = "DB Model", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "RegisterDBDataShape", description = "Register a Datashape for a table", category = "DB Model", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "NOTHING", aspects = {})
     public void RegisterDBDataShape(
             @ThingworxServiceParameter(name = "schemaName", description = "", baseType = "STRING") String schemaName,
@@ -127,29 +120,14 @@ public class DatabaseTS implements IThingInitializeHandler, IThingUpdateHandler,
         dbModel.getSchema(schemaName).getTable(tableName).setDataShapeName(dataShapeName);
     }
 
-    @ThingworxServiceDefinition(name = "ValidateDBDataShape", description = "", category = "DB Model", isAllowOverride = false, aspects = { "isAsync:false" })
-    @ThingworxServiceResult(name = "Result", description = "", baseType = "JSON", aspects = {})
-    public JSONObject ValidateDBDataShape(
-            @ThingworxServiceParameter(name = "schemaName", description = "", baseType = "STRING") String schemaName,
-            @ThingworxServiceParameter(name = "tableName", description = "", baseType = "STRING") String tableName,
-            @ThingworxServiceParameter(name = "dataShapeName", description = "", baseType = "DATASHAPENAME") String dataShapeName) throws Exception {
-
-        JSONObject obj = new JSONObject();
-        DataShape ds = DataShapeUtils.getDatashapeDirect(dataShapeName);
-
-        obj.put("Datashape", ds.getName());
-
-        return obj;
-    }
-
-    @ThingworxServiceDefinition(name = "GetDBTables", description = "", category = "DB Model", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "GetDBTables", description = "Get a list of known tables and datashapes", category = "DB Model", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
     public InfoTable GetDBTables() throws Exception {
         var dbModelManager = DatabaseUtil.getHandler().getModelManager();
         return dbModelManager.getTablesDesc();
     }
 
-    @ThingworxServiceDefinition(name = "GetDBTableColumns", description = "", category = "DB Model", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "GetDBTableColumns", description = "get list of known table columsn and thingworx type mapping", category = "DB Model", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
     public InfoTable GetDBTableColumns(
             @ThingworxServiceParameter(name = "schemaName", description = "", baseType = "STRING") String schemaName,
@@ -168,40 +146,83 @@ public class DatabaseTS implements IThingInitializeHandler, IThingUpdateHandler,
         return DatabaseUtil.getHandler().executeUpdate(sql);
     }
 
-    @ThingworxServiceDefinition(name = "ExecuteBatch", description = "Calls multiple raw sql commands and returns them in same infotable", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
-    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true", "dataShape:TWX.Core.DBBatch_DS" })
-    public InfoTable ExecuteBatch(
-            @ThingworxServiceParameter(name = "sqlQueries", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true", "dataShape:TWX.Core.DBBatch_DS" }) InfoTable sqlQueries) throws Exception {
-        return DatabaseUtil.getHandler().executeBatch(sqlQueries);
-    }
-
     @ThingworxServiceDefinition(name = "ExecuteQuery", description = "Calls a single query and returns the result as infotable", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
-    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { })
     public InfoTable ExecuteQuery(
             @ThingworxServiceParameter(name = "sql", description = "SQL to execute", baseType = "STRING", aspects = { "isRequired:false" }) String sql) throws Exception {
         return DatabaseUtil.getHandler().executeQuery(sql);
     }
 
-    @ThingworxServiceDefinition(name = "ExecutePreparedCommand", description = "", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "ExecuteUpdateBatch", description = "Calls multiple raw sql commands and returns - Send as Batch to SQL", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { })
+    public InfoTable ExecuteUpdateBatch(
+            @ThingworxServiceParameter(name = "sqlQueries", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true", "dataShape:TWX.Core.SQLBatch_DS" }) InfoTable sqlQueries) throws Exception {
+        return DatabaseUtil.getHandler().executeUpdateBatch(sqlQueries);
+    }
+    
+    @ThingworxServiceDefinition(name = "ExecuteQueryBatch", description = "Calls multiple raw sql queries and returns the results as infotable - No Batch, as this is not possible for query", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { })
+    public InfoTable ExecuteQueryBatch(
+            @ThingworxServiceParameter(name = "sqlQueries", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true", "dataShape:TWX.Core.SQLBatch_DS" }) InfoTable sqlQueries) throws Exception {
+        return DatabaseUtil.getHandler().executeQueryBatch(sqlQueries);
+    }
+/*
+    @ThingworxServiceDefinition(name = "ExecuteUpdatePrepared", description = "", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
-    public InfoTable ExecutePreparedUpdate(
+    public InfoTable ExecuteUpdatePrepared(
             @ThingworxServiceParameter(name = "sql", description = "SQL to execute", baseType = "STRING", aspects = { "isRequired:false" }) String sql,
             @ThingworxServiceParameter(name = "sqlQueries", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" }) InfoTable values 
             ) throws Exception {
-        return DatabaseUtil.getHandler().executePreparedQuery(sql, values);
+        return DatabaseUtil.getHandler().executeUpdatePrepared(sql, values);
     }
 
-    @ThingworxServiceDefinition(name = "ExecutePreparedQuery", description = "", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceDefinition(name = "ExecuteQueryPrepared", description = "", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
     @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
-    public InfoTable ExecutePreparedQuery(
+    public InfoTable ExecuteQueryPrepared(
             @ThingworxServiceParameter(name = "sql", description = "SQL to execute", baseType = "STRING", aspects = { "isRequired:false" }) String sql,
             @ThingworxServiceParameter(name = "sqlQueries", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" }) InfoTable values 
             ) throws Exception {
-        return DatabaseUtil.getHandler().executePreparedUpdate(sql, values);
+        return DatabaseUtil.getHandler().executeQueryPrepared(sql, values);
     }
     // endregion
-    // region TWX-Services Basic DB Operations ...
+    // region TWX-Services Basic DB Operations With Tables and Datashapes ...
     // --------------------------------------------------------------------------------
+    @ThingworxServiceDefinition(name = "Insert", description = "", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
+    public InfoTable Insert(
+            @ThingworxServiceParameter(name = "tableName", description = "SQL to execute", baseType = "STRING", aspects = { "isRequired:true" }) String tableName,
+            @ThingworxServiceParameter(name = "values", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" }) InfoTable values 
+            ) throws Exception {
+        throw new Exception("Unimplemented!");
+    }
 
+    @ThingworxServiceDefinition(name = "Update", description = "", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
+    public InfoTable Update(
+            @ThingworxServiceParameter(name = "tableName", description = "SQL to execute", baseType = "STRING", aspects = { "isRequired:false" }) String tableName,
+            @ThingworxServiceParameter(name = "values", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" }) InfoTable values 
+            ) throws Exception {
+        throw new Exception("Unimplemented!");
+    }
+
+    @ThingworxServiceDefinition(name = "UpdateColumns", description = "", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
+    public InfoTable UpdateColumns(
+            @ThingworxServiceParameter(name = "tableName", description = "SQL to execute", baseType = "STRING", aspects = { "isRequired:true" }) String tableName,
+            @ThingworxServiceParameter(name = "values", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" }) InfoTable values,
+            @ThingworxServiceParameter(name = "columnNames", description = "", baseType = "STRING", aspects = { "isRequired:false" }) String columnNames
+            ) throws Exception {
+        throw new Exception("Unimplemented!");
+    }
+
+    @ThingworxServiceDefinition(name = "Query", description = "", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
+    public InfoTable Query(
+            @ThingworxServiceParameter(name = "tableName", description = "SQL to execute", baseType = "STRING", aspects = { "isRequired:false" }) String tableName,
+            @ThingworxServiceParameter(name = "filter", description = "", baseType = "JSON", aspects = { "isEntityDataShape:true" }) JSONObject filter 
+            ) throws Exception {
+        throw new Exception("Unimplemented!");
+    }
+ */    
     // endregion
 }

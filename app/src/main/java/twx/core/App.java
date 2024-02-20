@@ -73,7 +73,7 @@ public class App {
         test.runTests();
     }
 
-    private void queryModel() throws SQLException {
+    private void queryModel() throws Exception {
         logger.info("---------- queryModel ----------");
         var model = handler.getModelManager().updateModel(null);
         model.setNote("This is a note at the model");
@@ -97,10 +97,10 @@ public class App {
         logger.info("Handler Key    : {}", this.handler.getKey()  );
         logger.info("Handler Catalog: {}", this.handler.getDefaultCatalog());
 
-        // this.lb = new LiquibaseRunner( this.handler );
-        // lb.setChangelog(PATH, FILE);
+        this.lb = new LiquibaseRunner( this.handler );
+        lb.setChangelog(PATH, FILE);
         // lb.rollback(10);
-        // lb.update("","");
+        lb.update("","");
         // logger.info( lb.history() );
     }
 

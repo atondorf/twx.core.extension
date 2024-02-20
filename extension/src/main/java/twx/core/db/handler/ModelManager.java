@@ -22,9 +22,9 @@ public interface ModelManager {
     
     public void clearModel();
 
-    public DbModel queryModel() throws SQLException;
+    public DbModel queryModel() throws Exception;
 
-    public DbModel updateModel(InfoTable tableDesc) throws SQLException;
+    public DbModel updateModel(InfoTable tableDesc) throws Exception;
 
     public InfoTable getTablesDesc();
 

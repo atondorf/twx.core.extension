@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Entities
     majorVersion="9"
-    minorVersion="3"
+    minorVersion="5"
     universal="password">
     <DataShapes>
         <DataShape
@@ -9,7 +9,7 @@
             description="Datashape to store a list of sql commands handled in batch"
             documentationContent=""
             homeMashup=""
-            name="TWX.Core.DBBatch_DS"
+            name="TWX.Core.SQLBatch_DS"
             projectName="TWX.Core"
             tags="">
             <avatar></avatar>
@@ -30,13 +30,7 @@
                 <FieldDefinition
                     aspect.isPrimaryKey="false"
                     baseType="STRING"
-                    description=""
-                    name="result"
-                    ordinal="2"></FieldDefinition>
-                <FieldDefinition
-                    aspect.isPrimaryKey="false"
-                    baseType="STRING"
-                    description=""
+                    description="sql to call "
                     name="sql"
                     ordinal="1"></FieldDefinition>
             </FieldDefinitions>

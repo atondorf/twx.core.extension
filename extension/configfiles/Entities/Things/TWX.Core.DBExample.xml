@@ -110,7 +110,7 @@
                             <isTransactional>false</isTransactional>
                             <persistenceProviderName>
                             <![CDATA[
-                            DataPersistenceProvider
+                            DataPersistanceProvider
                             ]]>
                             </persistenceProviderName>
                         </Row>
@@ -321,6 +321,22 @@
                      name="Test_AutoCommit">
                         <ResultType
                          baseType="JSON"
+                         description=""
+                         name="result"
+                         ordinal="0"></ResultType>
+                        <ParameterDefinitions></ParameterDefinitions>
+                    </ServiceDefinition>
+                    <ServiceDefinition
+                     aspect.isAsync="false"
+                     category=""
+                     description=""
+                     isAllowOverride="false"
+                     isLocalOnly="false"
+                     isOpen="false"
+                     isPrivate="false"
+                     name="Test_Batch">
+                        <ResultType
+                         baseType="INFOTABLE"
                          description=""
                          name="result"
                          ordinal="0"></ResultType>
@@ -639,6 +655,57 @@
                     <ServiceImplementation
                         description=""
                         handlerName="Script"
+                     name="Test_Batch">
+                        <ConfigurationTables>
+                            <ConfigurationTable
+                             dataShapeName=""
+                             description=""
+                             isMultiRow="false"
+                             name="Script"
+                             ordinal="0">
+                                <DataShape>
+                                    <FieldDefinitions>
+                                        <FieldDefinition
+                                         baseType="STRING"
+                                         description="code"
+                                         name="code"
+                                         ordinal="0"></FieldDefinition>
+                                    </FieldDefinitions>
+                                </DataShape>
+                                <Rows>
+                                    <Row>
+                                        <code>
+                                        <![CDATA[
+                                        let table = DataShapes["TWX.Core.SQLBatch_DS"].CreateValues();
+                                        
+                                        table.AddRow({ sql: "INSERT INTO tab_1 (valTinyInt) OUTPUT INSERTED.id AS 'NEW_PK' VALUES(3)" });
+                                        table.AddRow({ sql: "INSERT INTO tab_1 (valTinyInt) OUTPUT INSERTED.id AS 'NEW_PK' VALUES(4)" });
+                                        table.AddRow({ sql: "INSERT INTO tab_1 (valTinyInt) OUTPUT INSERTED.id AS 'NEW_PK' VALUES(5)" });
+                                        table.AddRow({ sql: "INSERT INTO tab_1 (valTinyInt) OUTPUT INSERTED.id AS 'NEW_PK' VALUES(6)" });
+                                        
+                                        /*
+                                        table.AddRow({ sql: "INSERT INTO tab_1 (valTinyInt) VALUES(3)" });
+                                        table.AddRow({ sql: "INSERT INTO tab_1 (valTinyInt) VALUES(4)" });
+                                        */
+                                        let sql = "select * from tab_1";
+                                        
+                                        table.AddRow({ sql: sql });
+                                        result = me.ExecuteQueryBatch({ sqlQueries: table });
+                                        result = me.ExecuteQuery({ sql: sql });
+                                        /*
+                                        result = me.ExecuteQuery({
+                                        	sql: "INSERT INTO tab_1 (valTinyInt) OUTPUT INSERTED.id AS 'PK' VALUES(3)" 
+                                        }); */
+                                        ]]>
+                                        </code>
+                                    </Row>
+                                </Rows>
+                            </ConfigurationTable>
+                        </ConfigurationTables>
+                    </ServiceImplementation>
+                    <ServiceImplementation
+                     description=""
+                     handlerName="Script"
                         name="Test_DBConnection">
                         <ConfigurationTables>
                             <ConfigurationTable
@@ -948,6 +1015,43 @@
                     type="ThingShape"></ImplementedShape>
             </ImplementedShapes>
             <ThingProperties>
+                <RegisteredTables>
+                    <Value>
+                        <infoTable>
+                            <DataShape>
+                                <FieldDefinitions>
+                                    <FieldDefinition
+                                     aspect.isPrimaryKey="false"
+                                     baseType="DATASHAPENAME"
+                                     description=""
+                                     name="DatashapeName"
+                                     ordinal="4"></FieldDefinition>
+                                    <FieldDefinition
+                                     aspect.isPrimaryKey="false"
+                                     baseType="STRING"
+                                     description=""
+                                     name="SchemaName"
+                                     ordinal="2"></FieldDefinition>
+                                    <FieldDefinition
+                                     aspect.isPrimaryKey="false"
+                                     baseType="STRING"
+                                     description=""
+                                     name="TableName"
+                                     ordinal="3"></FieldDefinition>
+                                    <FieldDefinition
+                                     aspect.isPrimaryKey="true"
+                                     baseType="INTEGER"
+                                     description=""
+                                     name="UID"
+                                     ordinal="1"></FieldDefinition>
+                                </FieldDefinitions>
+                            </DataShape>
+                            <Rows></Rows>
+                        </infoTable>
+                    </Value>
+                    <Timestamp>2024-02-20T12:43:05.713Z</Timestamp>
+                    <Quality>GOOD</Quality>
+                </RegisteredTables>
                 <xml>
                     <Value>
                         <value>100</value>

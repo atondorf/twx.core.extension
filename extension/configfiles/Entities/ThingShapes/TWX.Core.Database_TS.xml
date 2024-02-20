@@ -9,7 +9,7 @@
 			<PropertyDefinitions>
 				<PropertyDefinition
 					aspect.dataChangeType="VALUE"
-					aspect.dataShape="TWX.Core.TableRegistry_DS"
+					aspect.dataShape="TWX.Core.SQLTableRegistry_DS"
 					aspect.isIndexed="false"
 					aspect.isPersistent="true"
 					baseType="INFOTABLE"

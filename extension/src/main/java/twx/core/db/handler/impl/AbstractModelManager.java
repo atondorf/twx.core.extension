@@ -50,7 +50,7 @@ public class AbstractModelManager implements ModelManager {
     };
 
     @Override
-    public DbModel updateModel(InfoTable tableDesc) throws SQLException {
+    public DbModel updateModel(InfoTable tableDesc) throws Exception {
         this.dbModel = dbHandler.execute(connection -> {
             return queryModel(connection);
         });
@@ -61,7 +61,7 @@ public class AbstractModelManager implements ModelManager {
     }
 
     @Override
-    public DbModel queryModel() throws SQLException {
+    public DbModel queryModel() throws Exception {
         return dbHandler.execute(connection -> {
             return queryModel(connection);
         });
@@ -98,7 +98,7 @@ public class AbstractModelManager implements ModelManager {
         table.addField(new FieldDefinition("sqlType", BaseTypes.STRING));
         table.addField(new FieldDefinition("sqlSize", BaseTypes.INTEGER));
         table.addField(new FieldDefinition("twxType", BaseTypes.STRING));
-
+        
         return table;
     }
 
@@ -133,7 +133,7 @@ public class AbstractModelManager implements ModelManager {
     // endregion
     // region DDLReader Helpers ...
     // --------------------------------------------------------------------------------
-    protected DbModel queryModel(Connection con) throws SQLException {
+    protected DbModel queryModel(Connection con) throws Exception {
         String catalog = con.getCatalog();
         DbModel dbModel = new DbModel(catalog);
         // 1. Iteration, get schemas, tables, columns, indexes ...
@@ -143,7 +143,7 @@ public class AbstractModelManager implements ModelManager {
         return dbModel;
     }
 
-    protected DbModel queryModelSchemas(DbModel dbModel, Connection con) throws SQLException {
+    protected DbModel queryModelSchemas(DbModel dbModel, Connection con) throws Exception {
         ResultSet rs = con.getMetaData().getSchemas();
         while (rs.next()) {
             String schemaName = rs.getString("TABLE_SCHEM");

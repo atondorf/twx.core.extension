@@ -28,7 +28,7 @@ public class DbHandlerTest {
 
     public void insert() throws Exception {
         var sqlBatch = InfotableIOUtil.getBatchSQLTable();
-        sqlBatch = db.executeBatch(sqlBatch);
+        sqlBatch = db.executeUpdateBatch(sqlBatch);
         logger.info( InfotableIOUtil.formatInfotable(sqlBatch) );
         // db.executeUpdate( "INSERT INTO dbo.tab_1 (valBool,valTinyInt,vaDateTime) VALUES (0,11,'2023-12-20T18:00:00Z')" );
     }

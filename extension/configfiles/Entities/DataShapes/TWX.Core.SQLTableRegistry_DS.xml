@@ -9,7 +9,7 @@
             description=""
             documentationContent=""
             homeMashup=""
-            name="TWX.Core.TableRegistry_DS"
+            name="TWX.Core.SQLTableRegistry_DS"
             projectName="TWX.Core"
             tags="">
             <avatar></avatar>
