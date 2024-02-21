@@ -49,10 +49,12 @@ public class App {
         Connection con = null;
         try {
             app.openDBConnection();
+            logger.info("---------- Running Tests ----------");
             // app.handlerTest();
             // app.queryModel();
             // app.modelTest();
-            app.statementTest();
+            // app.statementTest();
+            app.datashapeTest();
 
         } catch (SQLException e) {
             printSQLException(e);
@@ -65,17 +67,26 @@ public class App {
     }
 
     private void statementTest() {
+        logger.info("---------- statementTest ----------");
         var test = new StatementTest(handler);
         test.runTests();
     }
 
     private void handlerTest() throws Exception {
+        logger.info("---------- handlerTest ----------");        
         var test = new DbHandlerTest(this.handler);
         test.runTests();
     }
 
     private void modelTest()  throws Exception {
+        logger.info("---------- handlerTest ----------");                
         var test = new DbModelTests(this.handler);
+        test.runTests();
+    }
+
+    private void datashapeTest()  throws Exception {
+        logger.info("---------- datashapeTest ----------");                
+        var test = new DatashapeTests(this.handler);
         test.runTests();
     }
 
@@ -86,6 +97,7 @@ public class App {
         
         // logger.info( handler.getModelManager().getModelTables().toString() );
     }
+
     protected void openDBConnection() throws Exception {
         logger.info("---------- openDBConnection ----------");
         DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
@@ -107,7 +119,6 @@ public class App {
         lb.setChangelog(PATH, FILE);
         // lb.rollback(10);
         lb.update("","");
-        // logger.info( lb.history() );
     }
 
     private void closeDBConnection() {

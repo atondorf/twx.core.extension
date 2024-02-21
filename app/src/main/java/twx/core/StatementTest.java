@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import twx.core.db.handler.DbHandler;
+import twx.core.db.handler.NamedPreparedStatementHandler;
 import twx.core.db.util.StatementUtil;
 
 import java.util.regex.Matcher;
@@ -20,23 +21,16 @@ public class StatementTest {
 
     public void runTests() {
         String sql = "select @val1, @val2 from tab_1";
-        var util = new StatementUtil(sql);
+        try ( var stmt = new NamedPreparedStatementHandler(db.getConnection(), sql); ) {
 
-        logger.info( util.toJSON().toString(3) );
-
-
-        final String regex = "(@\\w*)";
-        final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
-        final Matcher matcher = pattern.matcher(sql);
-
-        String result1 = matcher.replaceAll("?");
-        
-
-        String result2 = sql.replace(regex,"?");
-
-        logger.info( "Parsed String: {}", result1);
-        logger.info( "Parsed String: {}", result2);
-
+            logger.info( stmt.toJSON().toString(3) );
+            logger.info( "index 1: {}, {}", stmt.hasField("val1"), stmt.getFieldIdx("val1") );
+            logger.info( "index 2: {}, {}", stmt.hasField("val2"), stmt.getFieldIdx("val2") );
+            logger.info( "index 3: {}, {}", stmt.hasField("val3"), stmt.getFieldIdx("val3") );
+        } 
+        catch( Exception ex ) {
+            logger.error( "Caught Exception: {}", ex.getMessage() );
+        }
 
     }
 }

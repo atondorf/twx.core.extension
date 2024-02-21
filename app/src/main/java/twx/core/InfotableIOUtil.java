@@ -7,6 +7,7 @@ import com.thingworx.types.InfoTable;
 import com.thingworx.types.collections.ValueCollection;
 import com.thingworx.types.primitives.DatetimePrimitive;
 import com.thingworx.types.primitives.IntegerPrimitive;
+import com.thingworx.types.primitives.NumberPrimitive;
 import com.thingworx.types.primitives.StringPrimitive;
 
 import liquibase.util.StringUtil;
@@ -21,6 +22,8 @@ import javax.sound.midi.MidiDevice.Info;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 
+import org.joda.time.DateTime;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,9 +44,7 @@ public class InfotableIOUtil {
         values = new ValueCollection();
         values.put("sql", new StringPrimitive("UPDATE dbo.tab_1 SET valStr='Hallo'") );
         table.addRow(values);
-
         return table;
-
     }
 
     public static InfoTable getTestTable() {
@@ -51,6 +52,7 @@ public class InfotableIOUtil {
         table.addField(new FieldDefinition("id", BaseTypes.INTEGER ));
         table.addField(new FieldDefinition("string", BaseTypes.STRING));
         table.addField(new FieldDefinition("ts", BaseTypes.DATETIME));
+        table.addField(new FieldDefinition("null", BaseTypes.STRING));
 
         ValueCollection values = new ValueCollection();
         values.put("id", new IntegerPrimitive(1) );
@@ -58,6 +60,35 @@ public class InfotableIOUtil {
         values.put("ts", new DatetimePrimitive() );
         table.addRow(values);
         return table;
+    }
+
+
+    public static ValueCollection getTestCollection_1() throws Exception {
+        ValueCollection val = new ValueCollection();
+
+        val.SetBooleanValue("valBool", true);
+        val.SetDateTimeValue("valDateTime", new DateTime() );
+        val.SetIntegerValue("valInt", 100 );
+        val.SetLongValue("valBigInt", (long)100);
+        val.SetNumberValue("valFloat", 3.141 );
+        val.SetStringValue("valStr", "Hallo Welt!");
+        val.SetStringValue("valNAN", "Not included!");
+        
+        return val;
+    }
+
+    public static ValueCollection getTestCollection_2() throws Exception {
+        ValueCollection val = new ValueCollection();
+
+        val.SetBooleanValue("valBool", true);
+        val.SetDateTimeValue("valDateTime", new DateTime() );
+        val.SetIntegerValue("valInt", new IntegerPrimitive() );
+        val.SetLongValue("valBigInt", (long)100);
+        val.SetNumberValue("valFloat", new NumberPrimitive() );
+        val.SetStringValue("valStr", new StringPrimitive() );
+        val.SetStringValue("valNAN", "Not included!");
+        
+        return val;
     }
 
 

@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 public class StatementUtil {
     private static String   REGEX = "(@\\w*)";
     private static Pattern  PATTERN = Pattern.compile(REGEX, Pattern.MULTILINE);
-
+    
     private final List<String> fields = new ArrayList<>();
     private String originalSQL = "";
     private String parsedSQL = "";
