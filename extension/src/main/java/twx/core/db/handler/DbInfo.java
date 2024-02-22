@@ -89,12 +89,15 @@ public class DbInfo {
 
     public void registerJdbcType(TypeMapEntry entry) {
         sql2twxMap.putIfAbsent(entry.jdbcType, entry);
-
     }
 
-    public BaseTypes jdbc2Base(Integer jdbcType) {
-        return BaseTypes.JDBCTypeToBaseType(jdbcType);
+    public BaseTypes jdbc2Base(JDBCType jdbcType) {
+        BaseTypes type = BaseTypes.NOTHING;
+        if( sql2twxMap.containsKey(jdbcType) )
+            type = sql2twxMap.get(jdbcType).twxType;
+        return type;
     }
+
 
     // endregion Type Conversion ... 
 

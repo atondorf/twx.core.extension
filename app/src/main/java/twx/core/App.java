@@ -51,7 +51,7 @@ public class App {
             app.openDBConnection();
             logger.info("---------- Running Tests ----------");
             // app.handlerTest();
-            // app.queryModel();
+            app.queryModel();
             // app.modelTest();
             // app.statementTest();
             app.datashapeTest();
@@ -95,7 +95,7 @@ public class App {
         var model = handler.getModelManager().updateModel(null);
         model.setNote("This is a note at the model");
         
-        // logger.info( handler.getModelManager().getModelTables().toString() );
+        logger.info( handler.getModelManager().getModel().toString() );
     }
 
     protected void openDBConnection() throws Exception {

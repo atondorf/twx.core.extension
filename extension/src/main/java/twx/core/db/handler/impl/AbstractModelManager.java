@@ -3,6 +3,7 @@ package twx.core.db.handler.impl;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.JDBCType;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,10 +29,10 @@ import twx.core.db.model.DbTable;
 import twx.core.db.util.DatabaseUtil;
 
 public class AbstractModelManager implements ModelManager {
-    private DbHandler   dbHandler = null;
-    private DbInfo      dbInfo = null;
-    private DbModel     dbModel = null;
-    
+    private DbHandler dbHandler = null;
+    private DbInfo dbInfo = null;
+    private DbModel dbModel = null;
+
     public AbstractModelManager(DbHandler dbHandler) {
         this.dbHandler = dbHandler;
         this.dbInfo = dbHandler.getDbInfo();
@@ -41,9 +42,9 @@ public class AbstractModelManager implements ModelManager {
     // --------------------------------------------------------------------------------
     @Override
     public DbModel getModel() {
-       return this.dbModel;
+        return this.dbModel;
     }
-    
+
     @Override
     public void clearModel() {
         this.dbModel = null;
@@ -54,7 +55,7 @@ public class AbstractModelManager implements ModelManager {
         this.dbModel = dbHandler.execute(connection -> {
             return queryModel(connection);
         });
-        if( tableDesc != null ) {
+        if (tableDesc != null) {
 
         }
         return this.dbModel;
@@ -90,7 +91,7 @@ public class AbstractModelManager implements ModelManager {
 
     public InfoTable getTableColumnsDesc(String fullTableName) {
         var dbModel = dbHandler.getDbModel();
-       
+
         InfoTable table = new InfoTable();
         table.addField(new FieldDefinition("schema", BaseTypes.STRING));
         table.addField(new FieldDefinition("table", BaseTypes.STRING));
@@ -98,7 +99,7 @@ public class AbstractModelManager implements ModelManager {
         table.addField(new FieldDefinition("sqlType", BaseTypes.STRING));
         table.addField(new FieldDefinition("sqlSize", BaseTypes.INTEGER));
         table.addField(new FieldDefinition("twxType", BaseTypes.STRING));
-        
+
         return table;
     }
 
@@ -116,15 +117,15 @@ public class AbstractModelManager implements ModelManager {
 
         var dbSchema = dbModel.getSchema(schemaName);
         var dbTable = dbSchema.getTable(tableName);
-        for( var dbColumn : dbTable.getColumns() ) {
+        for (var dbColumn : dbTable.getColumns()) {
             ValueCollection values = new ValueCollection();
             values.put("schema", new StringPrimitive(dbSchema.getName()));
             values.put("table", new StringPrimitive(dbTable.getName()));
             values.put("column", new StringPrimitive(dbColumn.getName()));
             values.put("sqlType", new StringPrimitive(dbColumn.getTypeName()));
             values.put("sqlSize", new IntegerPrimitive(dbColumn.getSize()));
-            values.put("twxType", new StringPrimitive(dbColumn.getTwxType().toString() ));
-            
+            values.put("twxType", new StringPrimitive(dbColumn.getTwxType().toString()));
+
             table.addRow(values);
         }
         return table;
@@ -184,20 +185,22 @@ public class AbstractModelManager implements ModelManager {
             // type Name ...
             String typename = rs.getString("TYPE_NAME");
             col.setTypeName(typename);
-            // integer jdbcType and Thingworx Basetype ... 
-            Integer jdbcType = rs.getInt("DATA_TYPE");
+            // integer jdbcType and Thingworx Basetype ...
+            int type = rs.getInt("DATA_TYPE");
+            JDBCType jdbcType = JDBCType.valueOf(type);
             col.setType(jdbcType);
-            col.setTwxType(this.dbInfo.jdbc2Base(jdbcType));
+            BaseTypes twxType = this.dbInfo.jdbc2Base(jdbcType);
+            col.setTwxType(twxType);
 
             Integer colSize = rs.getInt("COLUMN_SIZE");
-            if( colSize == 2147483647 )
+            if (colSize == 2147483647)
                 colSize = -1;
             col.setSize(colSize);
-            
-            col.setOrdinal(rs.getInt("ORDINAL_POSITION"));            
-            col.setNullable( rs.getString("IS_NULLABLE").equals("YES") );
-            col.setAutoIncrement( rs.getString("IS_AUTOINCREMENT").equals("YES") );
-            col.setDefaultValue( rs.getString("COLUMN_DEF") );
+
+            col.setOrdinal(rs.getInt("ORDINAL_POSITION"));
+            col.setNullable(rs.getString("IS_NULLABLE").equals("YES"));
+            col.setAutoIncrement(rs.getString("IS_AUTOINCREMENT").equals("YES"));
+            col.setDefaultValue(rs.getString("COLUMN_DEF"));
         }
         return dbTable;
     }
@@ -240,10 +243,10 @@ public class AbstractModelManager implements ModelManager {
 
     protected DbModel queryModelForeignKeys(DbModel dbModel, Connection con) throws SQLException {
         var schemas = dbModel.getSchemas();
-        for( var schema : schemas ) {
-            var tables = schema.getTables();  
-            for( var table : tables ) {
-                queryTableForeignKeys(table, con);    
+        for (var schema : schemas) {
+            var tables = schema.getTables();
+            for (var table : tables) {
+                queryTableForeignKeys(table, con);
             }
         }
         return dbModel;

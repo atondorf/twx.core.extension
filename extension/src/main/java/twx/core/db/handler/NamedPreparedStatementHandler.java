@@ -19,6 +19,7 @@ import com.microsoft.sqlserver.jdbc.SQLServerException;
 import com.thingworx.datashape.DataShape;
 import com.thingworx.types.BaseTypes;
 import com.thingworx.types.collections.ValueCollection;
+import com.thingworx.types.primitives.BlobPrimitive;
 import com.thingworx.types.primitives.BooleanPrimitive;
 import com.thingworx.types.primitives.IPrimitiveType;
 import com.thingworx.types.primitives.StringPrimitive;
@@ -31,6 +32,11 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
+
 public class NamedPreparedStatementHandler implements AutoCloseable {
     // shared by all instances ...
     final static Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -38,14 +44,28 @@ public class NamedPreparedStatementHandler implements AutoCloseable {
     final static String REGEX = "(@\\w*)";
     final static Pattern PATTERN = Pattern.compile(REGEX, Pattern.MULTILINE);
     //
+
+    protected class keyType {
+        int idx = 0;
+        int sqlType = java.sql.Types.NULL;
+        BaseTypes twxType = BaseTypes.NOTHING;
+        String fieldName = "";
+    }
+    
     protected final PreparedStatement prepStmt;
     protected final List<String> fields = new ArrayList<>();
+    protected final Map<String,keyType> keyMap = new HashMap();
     protected final String parsedSQL;
 
     // region Construction & Close
     // --------------------------------------------------------------------------------
+    public NamedPreparedStatementHandler(Connection conn, String sql, DataShape ds) throws SQLException {
+        this.parsedSQL = this.parseSQL(sql,ds);
+        this.prepStmt = conn.prepareStatement(this.parsedSQL);
+    }
+
     public NamedPreparedStatementHandler(Connection conn, String sql) throws SQLException {
-        this.parsedSQL = this.parseSQL(sql);
+        this.parsedSQL = this.parseSQL(sql,null);
         this.prepStmt = conn.prepareStatement(this.parsedSQL);
     }
 
@@ -90,7 +110,7 @@ public class NamedPreparedStatementHandler implements AutoCloseable {
             var val = collection.getPrimitive(key);
             if (val == null) {
                 logger.info("Key: {}, Idx: {}, Not present in ValueCollection setting to NULL!", key, idx);
-                prepStmt.setNull(idx, 0);
+                prepStmt.setNull(idx, 1);
             } else {
                 // set using the primitive type ...
                 this.setFrom(idx, val);
@@ -110,7 +130,7 @@ public class NamedPreparedStatementHandler implements AutoCloseable {
         // first check IPrimitive for null or contained null 
         if( value == null || value.getValue() == null ) {
             logger.info("Idx: {}, value is null", idx);
-            prepStmt.setNull(idx, 0);
+            prepStmt.setNull(idx, java.sql.Types.CHAR); // char seems generic for all types ... 
             return;   
         }
 
@@ -142,10 +162,15 @@ public class NamedPreparedStatementHandler implements AutoCloseable {
                 DateTime dt = (DateTime)value.getValue();
                 LocalDateTime locDT = LocalDateTime.now();
                 var ts = new Timestamp( ((DateTime)value.getValue()).getMillis() );
-
                 logger.info("Idx: {}, Type: {} Is a Timestamp: {} ISO: {}", idx, twxType.name(), value.getStringValue(), ts.toString() );
                 prepStmt.setTimestamp(idx, ts, calendar );
-                // prepStmt.setObject(idx, locDT, java.sql.Types.TIMESTAMP );
+                break;
+            case BLOB:
+                BlobPrimitive blob = (BlobPrimitive)value;
+                if( blob.getValue() == null || blob.getValue().length  == 0 )
+                    prepStmt.setNull(idx, java.sql.Types.VARBINARY); 
+                else 
+                    prepStmt.setObject(idx, value.getValue(), java.sql.Types.VARBINARY);
                 break;
             case INFOTABLE: 
             case XML:
@@ -163,7 +188,7 @@ public class NamedPreparedStatementHandler implements AutoCloseable {
             case THINGCODE:
             default:
                 logger.info("Idx: {}, Type: {} Is not supported", idx, twxType);
-                prepStmt.setNull(idx, 0);
+                prepStmt.setNull(idx, java.sql.Types.CHAR); // char seems generic for all types ... 
         }
     }
 
@@ -178,11 +203,14 @@ public class NamedPreparedStatementHandler implements AutoCloseable {
         return fields.indexOf(name) + 1;
     }
 
-    protected String parseSQL(String sql) {
+    protected String parseSQL(String sql, DataShape ds ) {
         final Matcher m = PATTERN.matcher(sql);
+        int idx = 1;
         while (m.find()) {
             String grp = m.group();
             fields.add(grp.substring(1));
+            keyMap.putIfAbsent(grp.substring(1), new keyType() );
+            idx++;
         }
         return m.replaceAll("?");
     }

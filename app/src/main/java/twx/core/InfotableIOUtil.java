@@ -1,6 +1,7 @@
 package twx.core;
 
 import com.thingworx.connectors.ParameterDefinition.In;
+import com.thingworx.datashape.DataShape;
 import com.thingworx.metadata.FieldDefinition;
 import com.thingworx.types.BaseTypes;
 import com.thingworx.types.InfoTable;
@@ -62,6 +63,26 @@ public class InfotableIOUtil {
         return table;
     }
 
+
+    public static DataShape getTestShape() throws Exception {
+        DataShape ds = new DataShape();
+
+        ds.addFieldDefinition( new FieldDefinition("valBool", BaseTypes.BOOLEAN ));
+        ds.addFieldDefinition( new FieldDefinition("valTinyInt", BaseTypes.INTEGER ));
+        ds.addFieldDefinition( new FieldDefinition("valSmallInt", BaseTypes.INTEGER ));
+        ds.addFieldDefinition( new FieldDefinition("valInt", BaseTypes.INTEGER ));
+        ds.addFieldDefinition( new FieldDefinition("valBigInt", BaseTypes.LONG ));
+        ds.addFieldDefinition( new FieldDefinition("valFloat", BaseTypes.NUMBER ));
+        ds.addFieldDefinition( new FieldDefinition("valDateTime", BaseTypes.DATETIME ));
+        ds.addFieldDefinition( new FieldDefinition("valTimeOff", BaseTypes.DATETIME ));
+        ds.addFieldDefinition( new FieldDefinition("valFixStr", BaseTypes.STRING ));
+        ds.addFieldDefinition( new FieldDefinition("valStr", BaseTypes.STRING ));
+        ds.addFieldDefinition( new FieldDefinition("valBinary", BaseTypes.BLOB ));
+        ds.addFieldDefinition( new FieldDefinition("valJSON", BaseTypes.JSON ));
+        ds.addFieldDefinition( new FieldDefinition("valXML", BaseTypes.XML ));
+
+        return ds;
+    }
 
     public static ValueCollection getTestCollection_1() throws Exception {
         ValueCollection val = new ValueCollection();
