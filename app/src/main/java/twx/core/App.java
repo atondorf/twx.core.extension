@@ -51,10 +51,10 @@ public class App {
             app.openDBConnection();
             logger.info("---------- Running Tests ----------");
             // app.handlerTest();
-            app.queryModel();
+            // app.queryModel();
             // app.modelTest();
-            // app.statementTest();
-            app.datashapeTest();
+            app.statementTest();
+            // app.datashapeTest();
 
         } catch (SQLException e) {
             printSQLException(e);
@@ -66,7 +66,7 @@ public class App {
         logger.info("---------- Exit-App ----------");
     }
 
-    private void statementTest() {
+    private void statementTest() throws Exception {
         logger.info("---------- statementTest ----------");
         var test = new StatementTest(handler);
         test.runTests();

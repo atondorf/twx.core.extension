@@ -189,7 +189,7 @@ public class AbstractModelManager implements ModelManager {
             int type = rs.getInt("DATA_TYPE");
             JDBCType jdbcType = JDBCType.valueOf(type);
             col.setType(jdbcType);
-            BaseTypes twxType = this.dbInfo.jdbc2Base(jdbcType);
+            BaseTypes twxType = this.dbInfo.jdbc2baseDefault(jdbcType);
             col.setTwxType(twxType);
 
             Integer colSize = rs.getInt("COLUMN_SIZE");

@@ -2,10 +2,12 @@ package twx.core;
 
 import com.thingworx.connectors.ParameterDefinition.In;
 import com.thingworx.datashape.DataShape;
+import com.thingworx.metadata.DataShapeDefinition;
 import com.thingworx.metadata.FieldDefinition;
 import com.thingworx.types.BaseTypes;
 import com.thingworx.types.InfoTable;
 import com.thingworx.types.collections.ValueCollection;
+import com.thingworx.types.primitives.BooleanPrimitive;
 import com.thingworx.types.primitives.DatetimePrimitive;
 import com.thingworx.types.primitives.IntegerPrimitive;
 import com.thingworx.types.primitives.NumberPrimitive;
@@ -48,70 +50,78 @@ public class InfotableIOUtil {
         return table;
     }
 
-    public static InfoTable getTestTable() {
-        InfoTable table = new InfoTable();
-        table.addField(new FieldDefinition("id", BaseTypes.INTEGER ));
-        table.addField(new FieldDefinition("string", BaseTypes.STRING));
-        table.addField(new FieldDefinition("ts", BaseTypes.DATETIME));
-        table.addField(new FieldDefinition("null", BaseTypes.STRING));
+    public static InfoTable getTestTable() throws Exception {
 
-        ValueCollection values = new ValueCollection();
-        values.put("id", new IntegerPrimitive(1) );
-        values.put("string", new StringPrimitive("Hallo Test"));
-        values.put("ts", new DatetimePrimitive() );
-        table.addRow(values);
+        InfoTable table = new InfoTable();
+        table.addField(new FieldDefinition("id", BaseTypes.LONG ));
+        table.addField(new FieldDefinition("valBool", BaseTypes.BOOLEAN ));
+        table.addField(new FieldDefinition("valTinyInt", BaseTypes.INTEGER ));
+        table.addField(new FieldDefinition("valSmallInt", BaseTypes.INTEGER ));
+        table.addField(new FieldDefinition("valInt", BaseTypes.INTEGER ));
+        table.addField(new FieldDefinition("valBigInt", BaseTypes.LONG ));
+        table.addField(new FieldDefinition("valReal", BaseTypes.NUMBER ));
+        table.addField(new FieldDefinition("valFloat", BaseTypes.NUMBER ));
+        table.addField(new FieldDefinition("valDecimal", BaseTypes.NUMBER ));
+        table.addField(new FieldDefinition("vaDateTime", BaseTypes.DATETIME ));
+        table.addField(new FieldDefinition("valFixStr", BaseTypes.STRING ));
+        table.addField(new FieldDefinition("valStr", BaseTypes.STRING ));
+        table.addField(new FieldDefinition("valFixBinary", BaseTypes.BLOB));
+        table.addField(new FieldDefinition("valBinary", BaseTypes.BLOB));
+        table.addField(new FieldDefinition("valImage", BaseTypes.IMAGE));
+        table.addField(new FieldDefinition("valJSON", BaseTypes.JSON));
+        table.addField(new FieldDefinition("valXML", BaseTypes.XML));
+
+
+        table.addRow(getTestCollection_1());
         return table;
     }
 
 
-    public static DataShape getTestShape() throws Exception {
-        DataShape ds = new DataShape();
-
-        ds.addFieldDefinition( new FieldDefinition("valBool", BaseTypes.BOOLEAN ));
-        ds.addFieldDefinition( new FieldDefinition("valTinyInt", BaseTypes.INTEGER ));
-        ds.addFieldDefinition( new FieldDefinition("valSmallInt", BaseTypes.INTEGER ));
-        ds.addFieldDefinition( new FieldDefinition("valInt", BaseTypes.INTEGER ));
-        ds.addFieldDefinition( new FieldDefinition("valBigInt", BaseTypes.LONG ));
-        ds.addFieldDefinition( new FieldDefinition("valFloat", BaseTypes.NUMBER ));
-        ds.addFieldDefinition( new FieldDefinition("valDateTime", BaseTypes.DATETIME ));
-        ds.addFieldDefinition( new FieldDefinition("valTimeOff", BaseTypes.DATETIME ));
-        ds.addFieldDefinition( new FieldDefinition("valFixStr", BaseTypes.STRING ));
-        ds.addFieldDefinition( new FieldDefinition("valStr", BaseTypes.STRING ));
-        ds.addFieldDefinition( new FieldDefinition("valBinary", BaseTypes.BLOB ));
-        ds.addFieldDefinition( new FieldDefinition("valJSON", BaseTypes.JSON ));
-        ds.addFieldDefinition( new FieldDefinition("valXML", BaseTypes.XML ));
-
-        return ds;
+    public static DataShapeDefinition getTestShape() throws Exception {
+        DataShapeDefinition dsDef = new DataShapeDefinition();
+        dsDef.addFieldDefinition(new FieldDefinition("id", BaseTypes.LONG ));
+        dsDef.addFieldDefinition(new FieldDefinition("valBool", BaseTypes.BOOLEAN ));
+        dsDef.addFieldDefinition(new FieldDefinition("valTinyInt", BaseTypes.INTEGER ));
+        dsDef.addFieldDefinition(new FieldDefinition("valSmallInt", BaseTypes.INTEGER ));
+        dsDef.addFieldDefinition(new FieldDefinition("valInt", BaseTypes.INTEGER ));
+        dsDef.addFieldDefinition(new FieldDefinition("valBigInt", BaseTypes.LONG ));
+        dsDef.addFieldDefinition(new FieldDefinition("valReal", BaseTypes.NUMBER ));
+        dsDef.addFieldDefinition(new FieldDefinition("valFloat", BaseTypes.NUMBER ));
+        dsDef.addFieldDefinition(new FieldDefinition("valDecimal", BaseTypes.NUMBER ));
+        dsDef.addFieldDefinition(new FieldDefinition("valDateTime", BaseTypes.DATETIME ));
+        dsDef.addFieldDefinition(new FieldDefinition("valFixStr", BaseTypes.STRING ));
+        dsDef.addFieldDefinition(new FieldDefinition("valStr", BaseTypes.STRING ));
+        dsDef.addFieldDefinition(new FieldDefinition("valFixBinary", BaseTypes.BLOB));
+        dsDef.addFieldDefinition(new FieldDefinition("valBinary", BaseTypes.BLOB));
+        dsDef.addFieldDefinition(new FieldDefinition("valImage", BaseTypes.IMAGE));
+        dsDef.addFieldDefinition(new FieldDefinition("valJSON", BaseTypes.JSON));
+        dsDef.addFieldDefinition(new FieldDefinition("valXML", BaseTypes.XML));
+        return dsDef;
     }
 
     public static ValueCollection getTestCollection_1() throws Exception {
-        ValueCollection val = new ValueCollection();
 
-        val.SetBooleanValue("valBool", true);
-        val.SetDateTimeValue("valDateTime", new DateTime() );
-        val.SetIntegerValue("valInt", 100 );
-        val.SetLongValue("valBigInt", (long)100);
-        val.SetNumberValue("valFloat", 3.141 );
-        val.SetStringValue("valStr", "Hallo Welt!");
-        val.SetStringValue("valNAN", "Not included!");
-        
-        return val;
+        ValueCollection values = new ValueCollection();
+        values.SetBooleanValue("valBool", true);
+        values.SetIntegerValue("valTinyInt", 1);
+        values.SetIntegerValue("valSmallInt", 2);
+        values.SetIntegerValue("valInt", 3);
+        values.SetLongValue("valBigInt", 4);
+        values.SetNumberValue("valReal", Math.PI );
+        values.SetNumberValue("valFloat", Math.E );
+        values.SetNumberValue("valDecimal", Math.PI);
+        values.SetDateTimeValue("valDateTime", new DateTime() );
+        values.SetStringValue("valFixStr", "FIX: Hallo Welt!");
+        values.SetStringValue("valStr", "VAR: Hallo Welt");
+/*
+        values.SetBlo("valFixBinary", 1);
+        values.SetIntegerValue("valBinary", 1);
+        values.SetIntegerValue("valImage", 1);
+        values.SetIntegerValue("valJSON", 1);
+        values.SetIntegerValue("valXML", 1);
+*/      
+        return values;
     }
-
-    public static ValueCollection getTestCollection_2() throws Exception {
-        ValueCollection val = new ValueCollection();
-
-        val.SetBooleanValue("valBool", true);
-        val.SetDateTimeValue("valDateTime", new DateTime() );
-        val.SetIntegerValue("valInt", new IntegerPrimitive() );
-        val.SetLongValue("valBigInt", (long)100);
-        val.SetNumberValue("valFloat", new NumberPrimitive() );
-        val.SetStringValue("valStr", new StringPrimitive() );
-        val.SetStringValue("valNAN", "Not included!");
-        
-        return val;
-    }
-
 
     public static String formatInfotable(InfoTable table) {
         // get the information of the table ... 

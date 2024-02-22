@@ -10,8 +10,8 @@ CREATE TABLE dbo.tab_1 (
 	valBigInt bigint NULL,
 	valReal real NULL,
 	valFloat float NULL,
-	valDev decimal NULL,
-	vaDateTime datetime2 NULL,
+	valDecimal decimal NULL,
+	valDateTime datetime2 NULL,
 	valFixStr nchar(255) NULL,
 	valStr nvarchar(MAX) NULL,
 	valFixBinary binary(255) NULL,
@@ -24,7 +24,6 @@ CREATE TABLE dbo.tab_1 (
 -- rollback DROP TABLE dbo.tab_1
 
 -- changeset de12650:2 
-INSERT INTO dbo.tab_1 (valBool,valTinyInt,vaDateTime) VALUES (0,1,'2023-12-20T18:00:00Z')
 INSERT INTO dbo.tab_1 (valBool,valTinyInt) VALUES (1,2)
 -- rollback TRUNCATE TABLE dbo.tab_1
 

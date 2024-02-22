@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.thingworx.datashape.DataShape;
 import com.thingworx.logging.LogUtilities;
 import com.thingworx.metadata.FieldDefinition;
 import com.thingworx.types.BaseTypes;
@@ -173,6 +174,8 @@ public abstract class AbstractHandler implements DbHandler {
     }
 
     public InfoTable executeQueryPrepared(String sql, InfoTable values) throws Exception {
+
+        var dsdef = values.getDataShape();
 
         InfoTable resTable = new InfoTable();
         resTable.addField(new FieldDefinition("sql", BaseTypes.STRING));

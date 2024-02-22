@@ -17,7 +17,7 @@ import twx.core.db.handler.DbHandlerFactory;
 import twx.core.db.liquibase.LiquibaseRunner;
 
 public class DatabaseUtil {
-    private static Logger _logger = LogUtilities.getInstance().getDatabaseLogger(DatabaseUtil.class);
+    private static Logger logger = LogUtilities.getInstance().getDatabaseLogger(DatabaseUtil.class);
     
     // region Database Handler ... 
     // --------------------------------------------------------------------------------  

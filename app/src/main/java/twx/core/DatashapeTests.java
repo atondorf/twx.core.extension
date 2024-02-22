@@ -7,6 +7,7 @@ import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.thingworx.metadata.DataShapeDefinition;
 import com.thingworx.types.primitives.BlobPrimitive;
 import com.thingworx.types.primitives.BooleanPrimitive;
 import com.thingworx.types.primitives.DatetimePrimitive;
@@ -17,15 +18,17 @@ import com.thingworx.types.primitives.StringPrimitive;
 import com.thingworx.types.primitives.TimespanPrimitive;
 
 import twx.core.db.handler.DbHandler;
-import twx.core.db.handler.NamedPreparedStatementHandler;
+import twx.core.db.handler.PreparedStatementHandler;
 
 public class DatashapeTests {
     final static Logger logger = LoggerFactory.getLogger(DbModelTests.class);
 
     private DbHandler db = null;
+    private DataShapeDefinition dsDef = null;
 
-    public DatashapeTests(DbHandler dbHandler) {
+    public DatashapeTests(DbHandler dbHandler) throws Exception {
         this.db = dbHandler;
+        this.dsDef = InfotableIOUtil.getTestShape();
     }
 
     public void runTests() throws Exception {
@@ -63,7 +66,7 @@ public class DatashapeTests {
 
         try ( 
             var conn = db.getConnection();
-            var stmt = new NamedPreparedStatementHandler( conn, sql ); 
+            var stmt = new PreparedStatementHandler( conn, sql, null ); 
             var purgeStmt = conn.createStatement();
         ) {
             purgeStmt.executeUpdate("TRUNCATE TABLE dbo.tab_1");
@@ -71,6 +74,7 @@ public class DatashapeTests {
             // var vc = InfotableIOUtil.getTestCollection_1();
             // stmt.setFrom(vc);
             // stmt.executUpdate();
+/*
             stmt.setFrom(1, new BooleanPrimitive(true) );   //  valBool
             stmt.setFrom(2, new IntegerPrimitive(2) );      //  valTinyInt
             stmt.setFrom(3, new IntegerPrimitive(3) );      //  valSmallInt
@@ -108,7 +112,7 @@ public class DatashapeTests {
             stmt.setFrom(10, null );  //  valStr            
             
             stmt.executUpdate();
-
+*/
             conn.commit();
         }
         catch( Exception ex ) {
@@ -126,11 +130,11 @@ public class DatashapeTests {
         
                 try ( 
                     var conn = db.getConnection();
-                    var stmt = new NamedPreparedStatementHandler( conn, sql ); 
+                    var stmt = new PreparedStatementHandler( conn, sql, this.dsDef ); 
                     var purgeStmt = conn.createStatement();
                 ) {
                     purgeStmt.executeUpdate("TRUNCATE TABLE dbo.tab_1");
-                    stmt.setFrom(1, new BlobPrimitive(  ) );      
+//                    stmt.setFrom(1, new BlobPrimitive(  ) );      
                     stmt.executUpdate();
                     conn.commit();
                 }
