@@ -136,7 +136,7 @@ public abstract class AbstractHandler implements DbHandler {
         // Execute SQL Callable
         return this.execute((Connection con) -> {
             try ( var stm = con.createStatement(); ) {
-                for (ValueCollection val : resultTable.getRows()) {
+                for (ValueCollection val : sqlTable.getRows()) {
                     String sql = val.getStringValue("sql");
                     stm.addBatch(sql);
                 }
