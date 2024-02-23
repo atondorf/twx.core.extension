@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entities
+    majorVersion="9"
+    minorVersion="5"
+    universal="password">
+    <DataShapes>
+        <DataShape
+            baseDataShape=""
+            description="Datashape to store a list of sql commands handled in batch"
+            documentationContent=""
+            homeMashup=""
+            name="TWX.Core.SQLBatch_DS"
+            projectName="TWX.Core"
+            tags="">
+            <avatar></avatar>
+            <DesignTimePermissions>
+                <Create></Create>
+                <Read></Read>
+                <Update></Update>
+                <Delete></Delete>
+                <Metadata></Metadata>
+            </DesignTimePermissions>
+            <RunTimePermissions></RunTimePermissions>
+            <VisibilityPermissions>
+                <Visibility></Visibility>
+            </VisibilityPermissions>
+            <ConfigurationTableDefinitions></ConfigurationTableDefinitions>
+            <ConfigurationTables></ConfigurationTables>
+            <FieldDefinitions>
+                <FieldDefinition
+                    aspect.isPrimaryKey="false"
+                    baseType="STRING"
+                    description="sql to call "
+                    name="sql"
+                    ordinal="1"></FieldDefinition>
+            </FieldDefinitions>
+        </DataShape>
+    </DataShapes>
+</Entities>

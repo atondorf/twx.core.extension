@@ -1,28 +1,30 @@
 package twx.core.db.handler;
 
 import java.sql.JDBCType;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
+import com.thingworx.metadata.annotations.ThingworxExtensionApiMethod;
 import com.thingworx.types.BaseTypes;
 
 import twx.core.db.model.DbTypeCategory;
 
 public class DbInfo {
-    public  static final Integer DEFAULT_STRING_LENGTH = 255;
-    public  static final Integer MAX_STRING_LENGHT = -1;
+    public static final Integer DEFAULT_STRING_LENGTH = 255;
+    public static final Integer MAX_STRING_LENGHT = -1;
 
     private final Set<String> systemSchemas = new HashSet<>();
     private final Set<String> systemTables = new HashSet<>();
     private String defaultSchema = null;
     private Map<BaseTypes, TypeMapEntry> twx2sqlMap = new HashMap<>();
-    private Map<JDBCType, TypeMapEntry>  sql2twxMap = new HashMap<>();
-    
-    // region Schema Info ... 
-    // -------------------------------------------------------------------------------- 
+    private Map<JDBCType, TypeMapEntry> sql2twxMap = new HashMap<>();
+
+    // region Schema Info ...
+    // --------------------------------------------------------------------------------
     public void addSystemSchema(String schema) {
         systemSchemas.add(schema);
     }
@@ -50,11 +52,12 @@ public class DbInfo {
 
     public Boolean isSystemTable(String table) {
         String upperTable = table.toUpperCase();
-        return this.systemTables.contains(upperTable); 
+        return this.systemTables.contains(upperTable);
     }
+
     // endregion Schema Info
-    // region Type Conversion ... 
-    // --------------------------------------------------------------------------------  
+    // region Type Conversion ...
+    // --------------------------------------------------------------------------------
     public class TypeMapEntry {
         public BaseTypes twxType;
         public JDBCType jdbcType;
@@ -89,13 +92,110 @@ public class DbInfo {
 
     public void registerJdbcType(TypeMapEntry entry) {
         sql2twxMap.putIfAbsent(entry.jdbcType, entry);
-
     }
 
-    public BaseTypes jdbc2Base(Integer jdbcType) {
-        return BaseTypes.JDBCTypeToBaseType(jdbcType);
+    public BaseTypes typeJdbc2Base(JDBCType jdbcType) {
+        BaseTypes type = BaseTypes.NOTHING;
+        if (sql2twxMap.containsKey(jdbcType))
+            type = sql2twxMap.get(jdbcType).twxType;
+        return type;
     }
 
-    // endregion Type Conversion ... 
+    public JDBCType typeBase2Jdbc(BaseTypes baseType) {
+        JDBCType type = JDBCType.NULL;
+        if (this.twx2sqlMap.containsKey(baseType))
+            type = this.twx2sqlMap.get(baseType).jdbcType;
+        return type;
+    }
 
+    static public JDBCType base2JdbcDefault(BaseTypes baseType) {
+        switch (baseType) {
+            case BOOLEAN:
+                return JDBCType.BIT;
+            case INTEGER:
+                return JDBCType.INTEGER;
+            case LONG:
+                return JDBCType.BIGINT;
+            case NUMBER:
+                return JDBCType.DOUBLE;
+            case DATETIME:
+                return JDBCType.TIMESTAMP;
+            case GUID:
+                return JDBCType.CHAR;
+            case XML:
+                return JDBCType.LONGNVARCHAR;
+            case IMAGE:
+            case BLOB:
+                return JDBCType.BINARY;
+            case STRING:
+            case TEXT:
+            case JSON:
+            case HYPERLINK:
+            case IMAGELINK:
+            case HTML:
+            case PROPERTYNAME:
+            case SERVICENAME:
+            case EVENTNAME:
+            case THINGGROUPNAME:
+            case THINGNAME:
+            case THINGSHAPENAME:
+            case THINGTEMPLATENAME:
+            case DATASHAPENAME:
+            case MASHUPNAME:
+            case MENUNAME:
+            case BASETYPENAME:
+            case USERNAME:
+            case GROUPNAME:
+            case CATEGORYNAME:
+            case STATEDEFINITIONNAME:
+            case STYLEDEFINITIONNAME:
+            case MODELTAGVOCABULARYNAME:
+            case DATATAGVOCABULARYNAME:
+            case NETWORKNAME:
+            case MEDIAENTITYNAME:
+            case APPLICATIONKEYNAME:
+            case LOCALIZATIONTABLENAME:
+            case ORGANIZATIONNAME:
+            case DASHBOARDNAME:
+            case PERSISTENCEPROVIDERPACKAGENAME:
+            case PERSISTENCEPROVIDERNAME:
+            case PROJECTNAME:
+            case NOTIFICATIONCONTENTNAME:
+            case NOTIFICATIONDEFINITIONNAME:
+            case STYLETHEMENAME:
+                return JDBCType.NVARCHAR;
+            default:
+                return JDBCType.NULL;
+        }
+    }
+
+    static public BaseTypes jdbc2baseDefault(JDBCType jdbcType) {
+        switch (jdbcType) {
+            case BIT:
+                return BaseTypes.BOOLEAN;
+            case TINYINT:
+            case SMALLINT:
+            case INTEGER:
+                return BaseTypes.INTEGER;
+            case BIGINT:
+                return BaseTypes.LONG;
+            case NUMERIC:
+            case DECIMAL:
+            case FLOAT:
+            case REAL:
+            case DOUBLE:
+                return BaseTypes.NUMBER;
+            case TIMESTAMP:
+                return BaseTypes.DATETIME;
+            case NCHAR :
+            case NVARCHAR :
+            case LONGNVARCHAR :
+                return BaseTypes.STRING;
+            case BINARY :
+            case VARBINARY :
+               return BaseTypes.BLOB;
+        }
+        return BaseTypes.NOTHING;
+    }
+    // endregion Type Conversion ...
 }

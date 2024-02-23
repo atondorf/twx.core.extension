@@ -10,6 +10,8 @@ import javax.swing.text.TableView.TableRow;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.thingworx.types.InfoTable;
+
 import twx.core.db.model.DbForeignKey;
 import twx.core.db.model.DbModel;
 import twx.core.db.model.DbTable;
@@ -20,10 +22,13 @@ public interface ModelManager {
     
     public void clearModel();
 
-    public DbModel queryModel() throws SQLException;
+    public DbModel queryModel() throws Exception;
 
-    public DbModel updateModel() throws SQLException;
+    public DbModel updateModel(InfoTable tableDesc) throws Exception;
 
-    public JSONArray getModelTables();
+    public InfoTable getTablesDesc();
 
+    public InfoTable getTableColumnsDesc(String fullTableName);
+
+    public InfoTable getTableColumnsDesc(String schemaName, String tableName);
 }

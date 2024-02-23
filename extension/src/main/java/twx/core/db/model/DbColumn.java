@@ -3,6 +3,7 @@ package twx.core.db.model;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
+import java.sql.JDBCType;
 
 import org.json.JSONObject;
 
@@ -13,7 +14,7 @@ import com.thingworx.types.BaseTypes;
 public class DbColumn extends DbObject<DbTable> {
     private Integer ordinal;
     private String typeName;
-    private Integer type;
+    private JDBCType type;
     private Integer size;
     private Boolean nullable = true;
     private Boolean autoIncrement = false;
@@ -47,12 +48,20 @@ public class DbColumn extends DbObject<DbTable> {
         return this.ordinal;
     }
 
-    public void setType(Integer type) {
+    public void setType(JDBCType type) {
         this.type = type;
     }
 
-    public Integer getType() {
+    public void setTypeInt(int type) {
+        this.type = JDBCType.valueOf(type);
+    }
+
+    public JDBCType getType() {
         return this.type;
+    }
+    
+    public int getTypeInt() {
+        return this.type.getVendorTypeNumber();
     }
 
     public void setTypeName(String typeName) {

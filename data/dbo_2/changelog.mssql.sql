@@ -8,12 +8,15 @@ CREATE TABLE dbo.tab_1 (
 	valSmallInt smallint NULL,
 	valInt int NULL,
 	valBigInt bigint NULL,
+	valReal real NULL,
 	valFloat float NULL,
-	vaDateTime datetime2 NULL,
-	valTimeOff datetimeoffset  NULL,
+	valDecimal decimal NULL,
+	valDateTime datetime2 NULL,
 	valFixStr nchar(255) NULL,
 	valStr nvarchar(MAX) NULL,
+	valFixBinary binary(255) NULL,
 	valBinary varbinary(MAX) NULL,
+	valImage varbinary(MAX) NULL,
 	valJSON nvarchar(MAX) NULL,
 	valXML xml NULL,
 	CONSTRAINT tab_1_PK PRIMARY KEY (id)
@@ -21,6 +24,6 @@ CREATE TABLE dbo.tab_1 (
 -- rollback DROP TABLE dbo.tab_1
 
 -- changeset de12650:2 
-INSERT INTO dbo.tab_1 (valBool,valTinyInt) VALUES (0,1)
 INSERT INTO dbo.tab_1 (valBool,valTinyInt) VALUES (1,2)
 -- rollback TRUNCATE TABLE dbo.tab_1
+

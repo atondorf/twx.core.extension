@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entities>
+	<ThingShapes>
+		<ThingShape aspect.isEditableExtensionObject="true"
+			className="twx.core.db.LiquibaseTS"
+			description=""
+			name="TWX.Core.Liquibase_TS"
+			projectName="TWX.Core">
+			<PropertyDefinitions>
+			</PropertyDefinitions>
+			<RunTimePermissions>
+				<Permissions resourceName="*">
+					<PropertyRead>
+						<Principal isPermitted="true"
+							name="TWX.Core.Default_UG"
+							type="Group" />
+					</PropertyRead>
+					<PropertyWrite>
+						<Principal isPermitted="true"
+							name="TWX.Core.Default_UG"
+							type="Group" />
+					</PropertyWrite>
+					<ServiceInvoke>
+						<Principal isPermitted="true"
+							name="TWX.Core.Default_UG"
+							type="Group" />
+					</ServiceInvoke>
+					<EventInvoke>
+						<Principal isPermitted="true"
+							name="TWX.Core.Default_UG"
+							type="Group" />
+					</EventInvoke>
+					<EventSubscribe>
+						<Principal isPermitted="true"
+							name="TWX.Core.Default_UG"
+							type="Group" />
+					</EventSubscribe>
+				</Permissions>
+			</RunTimePermissions>
+			<VisibilityPermissions>
+				<Visibility>
+					<Principal isPermitted="true"
+						name="TWX.Core.Default_OR"
+						type="Organization" />
+				</Visibility>
+			</VisibilityPermissions>
+			<ConfigurationTableDefinitions>
+				<ConfigurationTableDefinition category="Liquibase"
+					dataShapeName="TWX.Core.LiquibaseConfgig_DS"
+					description="Configuration of Liquibase parameters"
+					isHidden="false"
+					isMultiRow="false"
+					name="LiquibaseChangelog"
+					ordinal="0"
+					source="IMPORT" />
+			</ConfigurationTableDefinitions>
+			<ConfigurationTables>
+				<ConfigurationTable dataShapeName=""
+					description="Configuration of Liquibase parameters"
+					isMultiRow="false"
+					name="LiquibaseChangelog"
+					ordinal="0">
+					<DataShape>
+						<FieldDefinitions>
+							<FieldDefinition aspect.defaultValue="changelog.master.xml"
+								aspect.friendlyName=""
+								aspect.isPrimaryKey="false"
+								baseType="STRING"
+								description=""
+								name="ChangelogFile"
+								ordinal="3" />
+							<FieldDefinition aspect.isPrimaryKey="false"
+								baseType="STRING"
+								description=""
+								name="ChangelogPath"
+								ordinal="2" />
+							<FieldDefinition aspect.defaultValue="SystemRepository"
+								aspect.isPrimaryKey="true"
+								aspect.thingTemplate="FileRepository"
+								baseType="THINGNAME"
+								description=""
+								name="ChangelogRepository"
+								ordinal="1" />
+							<FieldDefinition aspect.isPrimaryKey="false"
+								baseType="STRING"
+								description=""
+								name="DefaultContexts"
+								ordinal="4" />
+						</FieldDefinitions>
+					</DataShape>
+					<Rows>
+						<Row>
+							<ChangelogFile>
+                            <![CDATA[
+                            changelog.master.xml
+                            ]]></ChangelogFile>
+							<ChangelogPath />
+							<ChangelogRepository>
+                            <![CDATA[
+                            SystemRepository
+                            ]]></ChangelogRepository>
+							<DefaultContexts />
+						</Row>
+					</Rows>
+				</ConfigurationTable>
+			</ConfigurationTables>
+			<PropertyBindings />
+			<RemotePropertyBindings />
+			<RemoteServiceBindings />
+			<RemoteEventBindings />
+			<AlertConfigurations />
+			<InstanceRunTimePermissions />
+		</ThingShape>
+	</ThingShapes>
+</Entities>

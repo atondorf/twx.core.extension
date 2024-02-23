@@ -49,8 +49,12 @@ public class App {
         Connection con = null;
         try {
             app.openDBConnection();
-            app.handlerTest();
-            app.queryModel();
+            logger.info("---------- Running Tests ----------");
+            // app.handlerTest();
+            // app.queryModel();
+            // app.modelTest();
+            app.statementTest();
+            // app.datashapeTest();
 
         } catch (SQLException e) {
             printSQLException(e);
@@ -62,23 +66,38 @@ public class App {
         logger.info("---------- Exit-App ----------");
     }
 
+    private void statementTest() throws Exception {
+        logger.info("---------- statementTest ----------");
+        var test = new StatementTest(handler);
+        test.runTests();
+    }
+
     private void handlerTest() throws Exception {
+        logger.info("---------- handlerTest ----------");        
         var test = new DbHandlerTest(this.handler);
         test.runTests();
     }
 
     private void modelTest()  throws Exception {
+        logger.info("---------- handlerTest ----------");                
         var test = new DbModelTests(this.handler);
         test.runTests();
     }
 
-    private void queryModel() throws SQLException {
+    private void datashapeTest()  throws Exception {
+        logger.info("---------- datashapeTest ----------");                
+        var test = new DatashapeTests(this.handler);
+        test.runTests();
+    }
+
+    private void queryModel() throws Exception {
         logger.info("---------- queryModel ----------");
-        var model = handler.getModelManager().updateModel();
+        var model = handler.getModelManager().updateModel(null);
         model.setNote("This is a note at the model");
         
-        // logger.info( handler.getModelManager().getModelTables().toString() );
+        logger.info( handler.getModelManager().getModel().toString() );
     }
+
     protected void openDBConnection() throws Exception {
         logger.info("---------- openDBConnection ----------");
         DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
@@ -98,9 +117,8 @@ public class App {
 
         this.lb = new LiquibaseRunner( this.handler );
         lb.setChangelog(PATH, FILE);
-        lb.rollback(10);
+        // lb.rollback(10);
         lb.update("","");
-        logger.info( lb.history() );
     }
 
     private void closeDBConnection() {

@@ -50,10 +50,6 @@ public interface DbHandler {
 
     public DbModel getDbModel();
 
-    public DbModel queryDbModel() throws SQLException;
-
-    public DbModel updateDbModel() throws SQLException;
-
     // endregion
     // region DSL Handler ...
     // --------------------------------------------------------------------------------
@@ -62,13 +58,21 @@ public interface DbHandler {
     // endregion
     // region Transactions Handlers ...
     // --------------------------------------------------------------------------------
-    public <T> T execute(ConnectionCallback<T> callback) throws SQLException;
+    public <T> T execute(ConnectionCallback<T> callback) throws Exception;
 
-    public int executeUpdate(String sql) throws SQLException;
+    public int executeUpdate(String sql) throws Exception;
 
-    public InfoTable executeBatchUpdate(InfoTable sqlTable) throws SQLException;
+    public InfoTable executeQuery(String sql) throws Exception;
 
-    public InfoTable executeQuery(String sql) throws SQLException;
+    public InfoTable executeUpdateBatch(InfoTable sqlTable) throws Exception;
+
+    public InfoTable executeQueryBatch(InfoTable sqlTable) throws Exception;
+
+    public InfoTable executeUpdatePrepared(String sql, InfoTable values) throws Exception;
+
+    public InfoTable executeQueryPrepared(String sql, InfoTable values) throws Exception;
+
+    public InfoTable executeQueryPrepared(String sql, InfoTable values, Integer rowIdx) throws Exception;
     // endregion 
     // region Exception & Logging Handler ...
     // --------------------------------------------------------------------------------

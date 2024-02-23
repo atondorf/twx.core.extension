@@ -3,11 +3,17 @@ package twx.core.db.handler.impl;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.JDBCType;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.thingworx.metadata.FieldDefinition;
 import com.thingworx.types.BaseTypes;
+import com.thingworx.types.InfoTable;
+import com.thingworx.types.collections.ValueCollection;
+import com.thingworx.types.primitives.IntegerPrimitive;
+import com.thingworx.types.primitives.StringPrimitive;
 
 import twx.core.db.handler.ModelManager;
 import twx.core.db.handler.DbHandler;
@@ -20,12 +26,13 @@ import twx.core.db.model.DbIndexColumn;
 import twx.core.db.model.DbModel;
 import twx.core.db.model.DbSchema;
 import twx.core.db.model.DbTable;
+import twx.core.db.util.DatabaseUtil;
 
 public class AbstractModelManager implements ModelManager {
-    private DbHandler   dbHandler = null;
-    private DbInfo      dbInfo = null;
-    private DbModel     dbModel = null;
-    
+    private DbHandler dbHandler = null;
+    private DbInfo dbInfo = null;
+    private DbModel dbModel = null;
+
     public AbstractModelManager(DbHandler dbHandler) {
         this.dbHandler = dbHandler;
         this.dbInfo = dbHandler.getDbInfo();
@@ -35,48 +42,99 @@ public class AbstractModelManager implements ModelManager {
     // --------------------------------------------------------------------------------
     @Override
     public DbModel getModel() {
-       return this.dbModel;
+        return this.dbModel;
     }
-    
+
     @Override
     public void clearModel() {
         this.dbModel = null;
     };
 
     @Override
-    public DbModel updateModel() throws SQLException {
+    public DbModel updateModel(InfoTable tableDesc) throws Exception {
         this.dbModel = dbHandler.execute(connection -> {
             return queryModel(connection);
         });
+        if (tableDesc != null) {
+
+        }
         return this.dbModel;
     }
 
     @Override
-    public DbModel queryModel() throws SQLException {
+    public DbModel queryModel() throws Exception {
         return dbHandler.execute(connection -> {
             return queryModel(connection);
         });
     }
 
     @Override
-    public JSONArray getModelTables() {
-        JSONArray resArray = new JSONArray();
+    public InfoTable getTablesDesc() {
+        var dbModel = dbHandler.getDbModel();
+
+        InfoTable table = new InfoTable();
+        table.addField(new FieldDefinition("schema", BaseTypes.STRING));
+        table.addField(new FieldDefinition("table", BaseTypes.STRING));
+        table.addField(new FieldDefinition("dataShape", BaseTypes.STRING));
+
         for (var dbSchema : dbModel.getSchemas()) {
             for (var dbTable : dbSchema.getTables()) {
-                JSONObject tableDesc = new JSONObject();
-                tableDesc.put("schema", dbSchema.getName());
-                tableDesc.put("table", dbTable.getName());
-                tableDesc.put("dataShape", dbTable.getDataShapeName());
-                resArray.put(tableDesc);
+                ValueCollection values = new ValueCollection();
+                values.put("schema", new StringPrimitive(dbSchema.getName()));
+                values.put("table", new StringPrimitive(dbTable.getName()));
+                values.put("dataShape", new StringPrimitive(dbTable.getDataShapeName()));
+                table.addRow(values);
             }
         }
-        return resArray;
+        return table;
+    }
+
+    public InfoTable getTableColumnsDesc(String fullTableName) {
+        var dbModel = dbHandler.getDbModel();
+
+        InfoTable table = new InfoTable();
+        table.addField(new FieldDefinition("schema", BaseTypes.STRING));
+        table.addField(new FieldDefinition("table", BaseTypes.STRING));
+        table.addField(new FieldDefinition("column", BaseTypes.STRING));
+        table.addField(new FieldDefinition("sqlType", BaseTypes.STRING));
+        table.addField(new FieldDefinition("sqlSize", BaseTypes.INTEGER));
+        table.addField(new FieldDefinition("twxType", BaseTypes.STRING));
+
+        return table;
+    }
+
+    @Override
+    public InfoTable getTableColumnsDesc(String schemaName, String tableName) {
+        var dbModel = dbHandler.getDbModel();
+
+        InfoTable table = new InfoTable();
+        table.addField(new FieldDefinition("schema", BaseTypes.STRING));
+        table.addField(new FieldDefinition("table", BaseTypes.STRING));
+        table.addField(new FieldDefinition("column", BaseTypes.STRING));
+        table.addField(new FieldDefinition("sqlType", BaseTypes.STRING));
+        table.addField(new FieldDefinition("sqlSize", BaseTypes.INTEGER));
+        table.addField(new FieldDefinition("twxType", BaseTypes.STRING));
+
+        var dbSchema = dbModel.getSchema(schemaName);
+        var dbTable = dbSchema.getTable(tableName);
+        for (var dbColumn : dbTable.getColumns()) {
+            ValueCollection values = new ValueCollection();
+            values.put("schema", new StringPrimitive(dbSchema.getName()));
+            values.put("table", new StringPrimitive(dbTable.getName()));
+            values.put("column", new StringPrimitive(dbColumn.getName()));
+            values.put("sqlType", new StringPrimitive(dbColumn.getTypeName()));
+            values.put("sqlSize", new IntegerPrimitive(dbColumn.getSize()));
+            values.put("twxType", new StringPrimitive(dbColumn.getTwxType().toString()));
+
+            table.addRow(values);
+        }
+        return table;
     }
 
     // endregion
     // region DDLReader Helpers ...
     // --------------------------------------------------------------------------------
-    protected DbModel queryModel(Connection con) throws SQLException {
+    protected DbModel queryModel(Connection con) throws Exception {
         String catalog = con.getCatalog();
         DbModel dbModel = new DbModel(catalog);
         // 1. Iteration, get schemas, tables, columns, indexes ...
@@ -86,7 +144,7 @@ public class AbstractModelManager implements ModelManager {
         return dbModel;
     }
 
-    protected DbModel queryModelSchemas(DbModel dbModel, Connection con) throws SQLException {
+    protected DbModel queryModelSchemas(DbModel dbModel, Connection con) throws Exception {
         ResultSet rs = con.getMetaData().getSchemas();
         while (rs.next()) {
             String schemaName = rs.getString("TABLE_SCHEM");
@@ -126,20 +184,23 @@ public class AbstractModelManager implements ModelManager {
             DbColumn col = dbTable.createColumn(rs.getString("COLUMN_NAME"));
             // type Name ...
             String typename = rs.getString("TYPE_NAME");
-            if (typename.equals("varchar") || typename.equals("varbinary")) {
-                typename += "(" + rs.getString("CHAR_OCTET_LENGTH") + ")";
-            }
             col.setTypeName(typename);
-            // integer jdbcType and Thingworx Basetype ... 
-            Integer jdbcType = rs.getInt("DATA_TYPE");
+            // integer jdbcType and Thingworx Basetype ...
+            int type = rs.getInt("DATA_TYPE");
+            JDBCType jdbcType = JDBCType.valueOf(type);
             col.setType(jdbcType);
-            col.setTwxType(this.dbInfo.jdbc2Base(jdbcType));
+            BaseTypes twxType = this.dbInfo.jdbc2baseDefault(jdbcType);
+            col.setTwxType(twxType);
 
-            col.setSize(rs.getInt("COLUMN_SIZE"));
-            col.setOrdinal(rs.getInt("ORDINAL_POSITION"));            
-            col.setNullable( rs.getString("IS_NULLABLE").equals("YES") );
-            col.setAutoIncrement( rs.getString("IS_AUTOINCREMENT").equals("YES") );
-            col.setDefaultValue( rs.getString("COLUMN_DEF") );
+            Integer colSize = rs.getInt("COLUMN_SIZE");
+            if (colSize == 2147483647)
+                colSize = -1;
+            col.setSize(colSize);
+
+            col.setOrdinal(rs.getInt("ORDINAL_POSITION"));
+            col.setNullable(rs.getString("IS_NULLABLE").equals("YES"));
+            col.setAutoIncrement(rs.getString("IS_AUTOINCREMENT").equals("YES"));
+            col.setDefaultValue(rs.getString("COLUMN_DEF"));
         }
         return dbTable;
     }
@@ -182,10 +243,10 @@ public class AbstractModelManager implements ModelManager {
 
     protected DbModel queryModelForeignKeys(DbModel dbModel, Connection con) throws SQLException {
         var schemas = dbModel.getSchemas();
-        for( var schema : schemas ) {
-            var tables = schema.getTables();  
-            for( var table : tables ) {
-                queryTableForeignKeys(table, con);    
+        for (var schema : schemas) {
+            var tables = schema.getTables();
+            for (var table : tables) {
+                queryTableForeignKeys(table, con);
             }
         }
         return dbModel;

@@ -4,5 +4,5 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public interface ConnectionCallback<T> {
-    public T execute(Connection con) throws SQLException;
+    public T execute(Connection con) throws Exception;
 }

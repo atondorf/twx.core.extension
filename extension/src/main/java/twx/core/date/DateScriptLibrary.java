@@ -17,6 +17,7 @@ import com.thingworx.types.primitives.DatetimePrimitive;
 import com.thingworx.types.primitives.StringPrimitive;
 
 import twx.core.date.scriptable.TimeZone;
+import twx.core.imp.JSArgUtils;
 
 public class DateScriptLibrary {
 	
@@ -46,13 +47,13 @@ public class DateScriptLibrary {
 
     public static Object core_getAvailableTimeZones(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
         AuthenticationUtilities.validateUserSecurityContext();
-        InfoTable it = InfoTableInstanceFactory.createInfoTableFromDataShape("GenericStringList");
+        InfoTable inftab = InfoTableInstanceFactory.createInfoTableFromDataShape("GenericStringList");
         for (var id : DateTimeZone.getAvailableIDs()) {
             ValueCollection row = new ValueCollection();
             row.put("item", new StringPrimitive(id));
-            it.addRow(row);
+            inftab.addRow(row);
         }
-        return it;
+        return inftab;
     }
 
     public static Object core_getDefaultTimeZone(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
@@ -131,7 +132,7 @@ public class DateScriptLibrary {
             current = dtVal.getValue().getMillis();
         }
         DateTime result = new DateTime( tz.nextTransition(current) );
-        return convertDate(cx, me, result);
+        return JSArgUtils.passDateTime(result, cx, me);
     }
 
     public static Object core_getTimeZonePrevTransition(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
@@ -148,7 +149,7 @@ public class DateScriptLibrary {
             current = dtVal.getValue().getMillis();
         }
         DateTime result = new DateTime( tz.previousTransition(current) );
-        return convertDate(cx, me, result);
+        return JSArgUtils.passDateTime(result, cx, me);
     }
 
     public static Object core_formatTimeZoneISO(Context cx, Scriptable me, Object[] args, Function func) throws Exception {
@@ -178,18 +179,5 @@ public class DateScriptLibrary {
             tz = DateTimeZone.forID( stringVal.getValue() );
         }
         return dtVal.getValue().withZone(tz).toString(dtFormat.getValue());
-    }
-
-
-    protected static Object convertDate(Context cx, Scriptable scope, DateTime date) {
-        try {
-          AuthenticationUtilities.validateUserSecurityContext();
-        } catch (Exception e) {
-          throw new RuntimeException(e);
-        } 
-        if (date == null)
-          return null; 
-        Object[] args = { date.getMillis() };
-        return cx.newObject(scope, "Date", args);
     }
 }

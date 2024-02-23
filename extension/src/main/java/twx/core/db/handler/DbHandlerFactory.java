@@ -22,7 +22,8 @@ public class DbHandlerFactory {
     }
 
     public DbHandler getDbHandler(AbstractDatabase abstractDatabase) throws Exception {
-        // TODO ... clearyfy if one Handler per SQLTHing or per DatabaseThing ... 
+        // TODO ... clearify if one Handler per SQLTHing or per DatabaseThing ... 
+        // String thingName = DatabaseUtil.getDatabaseThingName(abstractDatabase);
         String thingName = abstractDatabase.getName();
         DbHandler dbHandler = this.handlerMap.get(thingName);
         if( dbHandler == null ) {

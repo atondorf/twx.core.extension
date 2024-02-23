@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Entities
     majorVersion="9"
-    minorVersion="3"
+    minorVersion="5"
     universal="password">
     <DataShapes>
         <DataShape
             baseDataShape=""
-            description="Datashape to store liquibase changelog information"
+            description=""
             documentationContent=""
             homeMashup=""
-            name="TWX.Core.LiquibaseConfgig_DS"
+            name="TWX.Core.SQLTableRegistry_DS"
             projectName="TWX.Core"
             tags="">
             <avatar></avatar>
@@ -28,33 +28,29 @@
             <ConfigurationTables></ConfigurationTables>
             <FieldDefinitions>
                 <FieldDefinition
-                    aspect.defaultValue="changelog.master.xml"
-                    aspect.friendlyName=""
                     aspect.isPrimaryKey="false"
-                    baseType="STRING"
+                    baseType="DATASHAPENAME"
                     description=""
-                    name="ChangelogFile"
-                    ordinal="3"></FieldDefinition>
+                    name="DatashapeName"
+                    ordinal="4"></FieldDefinition>
                 <FieldDefinition
                     aspect.isPrimaryKey="false"
                     baseType="STRING"
                     description=""
-                    name="ChangelogPath"
+                    name="SchemaName"
                     ordinal="2"></FieldDefinition>
                 <FieldDefinition
-                    aspect.defaultValue="SystemRepository"
-                    aspect.isPrimaryKey="true"
-                    aspect.thingTemplate="FileRepository"
-                    baseType="THINGNAME"
-                    description=""
-                    name="ChangelogRepository"
-                    ordinal="1"></FieldDefinition>
-                <FieldDefinition
                     aspect.isPrimaryKey="false"
                     baseType="STRING"
                     description=""
-                    name="DefaultContexts"
-                    ordinal="4"></FieldDefinition>
+                    name="TableName"
+                    ordinal="3"></FieldDefinition>
+                <FieldDefinition
+                    aspect.isPrimaryKey="true"
+                    baseType="INTEGER"
+                    description=""
+                    name="UID"
+                    ordinal="1"></FieldDefinition>
             </FieldDefinitions>
         </DataShape>
     </DataShapes>
