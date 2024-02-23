@@ -1,5 +1,6 @@
 package twx.core.db;
 
+import org.apache.commons.math3.exception.OutOfRangeException;
 import org.joda.time.DateTime;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -186,8 +187,11 @@ public class DatabaseTS implements IThingInitializeHandler, IThingUpdateHandler,
         Integer rowCount = values.getRowCount();
         if( rowCount == 1 )
             rowIdx = 0;
-        if( rowIdx != null && rowIdx >= 0 )
+        if( rowIdx != null && rowIdx >= 0 ) {
+            if( rowIdx >= rowCount )
+                throw new OutOfRangeException(rowIdx, 0, rowCount - 1);
             return DatabaseUtil.getHandler().executeQueryPrepared(sql, values, rowIdx );
+        }            
         return DatabaseUtil.getHandler().executeQueryPrepared(sql, values);
                 
     }
