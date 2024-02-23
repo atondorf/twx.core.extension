@@ -23,8 +23,11 @@ public class StatementTest {
         this.dsDef = InfotableIOUtil.getTestShape();            
     }
 
-    public void runTests() {
-        
+    public void runTests() throws Exception {
+        test_2();
+    }
+
+    public void test_1() throws Exception {
         String sql = "INSERT INTO dbo.tab_1 (valBool, valTinyInt, valSmallInt, valInt, valBigInt, valReal, valFloat, valDecimal, valDateTime, valFixStr, valStr, valFixBinary, valBinary, valImage, valJSON, valXML)";
         sql += "VALUES (@valBool, @valTinyInt, @valSmallInt, @valInt, @valBigInt, @valReal, @valFloat, @valDecimal, @valDateTime, @valFixStr, @valStr, @valFixBinary, @valBinary, @valImage, @valJSON, @valXML)";
 
@@ -40,9 +43,21 @@ public class StatementTest {
             prepStmt.executUpdate();
             conn.commit();
         } 
-        catch( Exception ex ) {
-            logger.error( "Caught Exception: {}", ex.getMessage() );
-        }
+    }
 
+    public void test_2() throws Exception {
+
+        String sql = "INSERT INTO dbo.tab_1 (valBool, valTinyInt, valSmallInt, valInt, valBigInt, valReal, valFloat, valDecimal )";
+        sql += "VALUES (@valBool, @valTinyInt, @valTinyInt,  @valSmallInt, @valSmallInt, @valReal, @valReal, @valReal)";
+
+        try ( 
+            var conn = db.getConnection();
+            var prepStmt = new PreparedStatementHandler( conn, sql, this.dsDef ); 
+        ) {
+            logger.info(prepStmt.toJSON().toString(3));
+            prepStmt.set( InfotableIOUtil.getTestCollection_1() );
+            prepStmt.executUpdate();
+            conn.commit();
+        }
     }
 }

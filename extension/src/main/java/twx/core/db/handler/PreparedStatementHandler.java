@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,40 +28,49 @@ import com.thingworx.types.collections.ValueCollection;
 import com.thingworx.types.primitives.BlobPrimitive;
 import com.thingworx.types.primitives.IPrimitiveType;
 
-
 public class PreparedStatementHandler implements AutoCloseable {
     // shared by all instances ...
     final static Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
     final static Logger logger = LoggerFactory.getLogger(PreparedStatementHandler.class);
     final static String REGEX = "(@\\w*)";
     final static Pattern PATTERN = Pattern.compile(REGEX, Pattern.MULTILINE);
+
     //
-    protected class TypeMapEntry {
+    protected class FieldMapEntry {
         public String fieldName = "";
-        public int idx = 0;
+        public final List<Integer> idxList = new ArrayList();
+
         public JDBCType jdbcType = JDBCType.CHAR;
-        public TypeMapEntry(String fieldName, int idx, JDBCType jdbcType ) {
+
+        public FieldMapEntry(String fieldName, int idx, JDBCType jdbcType) {
             this.fieldName = fieldName;
-            this.idx = idx;
             this.jdbcType = jdbcType;
+            this.idxList.add(idx);
         }
+
+        // for development and debugging, mainly
         public JSONObject toJSON() {
             JSONObject json = new JSONObject();
-            json.put("name", fieldName );
-            json.put("idx", idx);
-            json.put("jdbcType", jdbcType);
-            return json;            
+            json.put("name", this.fieldName);
+            json.put("jdbcType", this.jdbcType);
+            json.put("occ", idxList.size());
+            JSONArray arr = new JSONArray();
+            for (Integer idx : idxList) {
+                arr.put(idx);
+            }
+            json.put("idxes", arr);
+            return json;
         }
     }
-    
+
     protected final PreparedStatement prepStmt;
-    protected final Map<String,TypeMapEntry> keyMap = new HashMap();
+    protected final Map<String, FieldMapEntry> fieldMap = new HashMap();
     protected final String parsedSQL;
 
     // region Construction & Close
     // --------------------------------------------------------------------------------
     public PreparedStatementHandler(Connection conn, String sql, DataShapeDefinition dsDef) throws SQLException {
-        this.parsedSQL = this.parseSQL(sql, dsDef);
+        this.parsedSQL = this.parsePreparedSQL(sql, dsDef);
         this.prepStmt = conn.prepareStatement(this.parsedSQL);
     }
 
@@ -68,23 +79,28 @@ public class PreparedStatementHandler implements AutoCloseable {
         this.prepStmt.close();
     }
 
-    /* 
-     *  analyses the sql-string and extracts the named fields
+    /*
+     * analyses the sql-string and extracts the named fields
      */
-    protected String parseSQL(String sql, DataShapeDefinition dsDef ) throws SQLException {
+    protected String parsePreparedSQL(String sql, DataShapeDefinition dsDef) throws SQLException {
         final Matcher m = PATTERN.matcher(sql);
         int idx = 1;
         while (m.find()) {
             String fieldName = m.group().substring(1);
             var dsField = dsDef.getFieldDefinition(fieldName);
-            if( dsField == null )
+            if (dsField == null)
                 throw new SQLException("DataShape " + dsDef.getName() + " does not contain field " + fieldName + ".");
             var baseType = dsField.getBaseType();
-            JDBCType jdbcType = DbInfo.base2JdbcDefault( baseType );
-            if( jdbcType == JDBCType.NULL )
+            JDBCType jdbcType = DbInfo.base2JdbcDefault(baseType);
+            if (jdbcType == JDBCType.NULL)
                 throw new SQLException("DataShape " + dsDef.getName() + " contains " + fieldName + " of type " + dsField.getBaseType() + ". This is not supported, yet.");
 
-            keyMap.putIfAbsent(fieldName, new TypeMapEntry(fieldName,idx, jdbcType) );
+            // check if the name is already used ...
+            if (!fieldMap.containsKey(fieldName)) {
+                fieldMap.put(fieldName, new FieldMapEntry(fieldName, idx, jdbcType));
+            } else {
+                fieldMap.get(fieldName).idxList.add(idx);
+            }
             idx++;
         }
         return m.replaceAll("?");
@@ -121,44 +137,45 @@ public class PreparedStatementHandler implements AutoCloseable {
     // region Named Parameters mapping ...
     // --------------------------------------------------------------------------------
     public void set(ValueCollection collection) throws SQLException {
-        for( var entry : keyMap.values() ) {
+        for (var entry : fieldMap.values()) {
             String fieldName = entry.fieldName;
-            int idx = entry.idx;
             JDBCType jdbcType = entry.jdbcType;
             var value = collection.getPrimitive(fieldName);
-            this.set(idx, value, jdbcType);
+            for (int idx : entry.idxList) {
+                this.set(idx, value, jdbcType);
+            }
         }
     }
 
     public void set(String fieldName, IPrimitiveType value) throws SQLException {
-        if( !keyMap.containsKey( fieldName )) 
+        if (!fieldMap.containsKey(fieldName))
             throw new SQLException("Unknown Fieldname: " + fieldName);
-        var entry = keyMap.get(fieldName);
-        int idx = entry.idx;
+        var entry = fieldMap.get(fieldName);
         JDBCType jdbcType = entry.jdbcType;
-
-        this.set(idx, value, jdbcType);
+        for (int idx : entry.idxList) {
+            this.set(idx, value, jdbcType);
+        }
     }
 
     protected void setNull(int idx, JDBCType jdbcType) throws SQLException {
-        prepStmt.setNull(idx, jdbcType.getVendorTypeNumber() ); 
+        prepStmt.setNull(idx, jdbcType.getVendorTypeNumber());
     }
 
     protected void set(int idx, IPrimitiveType value, JDBCType jdbcType) throws SQLException {
-        // first check IPrimitive for null or contained null 
-        if( value == null || value.getValue() == null ) {
-            this.setNull(idx,jdbcType); 
+        // first check IPrimitive for null or contained null
+        if (value == null || value.getValue() == null) {
+            this.setNull(idx, jdbcType);
             return;
         }
-        var twxType = value.getBaseType();        
-        // finally sort by type ... 
+        var twxType = value.getBaseType();
+        // finally sort by type ...
         switch (twxType) {
             case DATETIME:
-                var ts = new Timestamp( ((DateTime)value.getValue()).getMillis() );
-                prepStmt.setTimestamp(idx, ts, calendar );
+                var ts = new Timestamp(((DateTime) value.getValue()).getMillis());
+                prepStmt.setTimestamp(idx, ts, calendar);
                 break;
             case BLOB:
-                BlobPrimitive blob = (BlobPrimitive)value;
+                BlobPrimitive blob = (BlobPrimitive) value;
                 prepStmt.setObject(idx, value.getValue(), java.sql.Types.VARBINARY);
                 break;
             default:
@@ -171,14 +188,7 @@ public class PreparedStatementHandler implements AutoCloseable {
     // region Internal Helpers and Debug ...
     // --------------------------------------------------------------------------------
     public boolean hasField(final String fieldName) {
-        return this.keyMap.containsKey(fieldName);
-    }
-
-    public int getFieldIdx(final String fieldName) {
-        int idx = -1;
-        if( this.keyMap.containsKey(fieldName) )
-            idx = this.keyMap.get(fieldName).idx;
-        return idx;
+        return this.fieldMap.containsKey(fieldName);
     }
 
     public JSONObject toJSON() {
@@ -187,7 +197,7 @@ public class PreparedStatementHandler implements AutoCloseable {
         json.put("parsedSQL", this.parsedSQL);
         // write Fields ...
         var array = new JSONArray();
-        for (var elem : this.keyMap.values() ) {
+        for (var elem : this.fieldMap.values()) {
             array.put(elem.toJSON());
         }
         json.put("Fields", array);

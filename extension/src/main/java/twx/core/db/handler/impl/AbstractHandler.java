@@ -20,6 +20,7 @@ import ch.qos.logback.classic.Logger;
 import twx.core.db.handler.ConnectionCallback;
 import twx.core.db.handler.ConnectionManager;
 import twx.core.db.handler.ModelManager;
+import twx.core.db.handler.PreparedStatementHandler;
 import twx.core.db.handler.DbHandler;
 import twx.core.db.handler.DbInfo;
 import twx.core.db.handler.ModelManager;
@@ -110,78 +111,113 @@ public abstract class AbstractHandler implements DbHandler {
     // region DSL Handler ...
     // --------------------------------------------------------------------------------
     public int executeUpdate(String sql) throws Exception {
+        // Execute SQL Callable
         return this.execute((Connection con) -> {
-            var stm = con.createStatement();
-            return stm.executeUpdate(sql);
+            try ( var stm = con.createStatement(); ) {
+                return stm.executeUpdate(sql);
+            }
         });
     }
 
     public InfoTable executeQuery(String sql) throws Exception {
+        // Execute SQL Callable
         return this.execute((Connection con) -> {
-            var stm = con.createStatement();
-            var rs = stm.executeQuery(sql);
-            var table = InfoTableUtil.createInfoTableFromResultset(rs);
-            rs.close();
-            return table;
+            try ( var stm = con.createStatement(); ) {
+                var rs = stm.executeQuery(sql);
+                // directly return the resultset as inforable 
+                return InfoTableUtil.createInfoTableFromResultset(rs);
+            }
         });
     }
 
     public InfoTable executeUpdateBatch(InfoTable sqlTable) throws Exception {
-        // create column for result ... 
-        var table = sqlTable.clone();
-        table.addField(new FieldDefinition("result", BaseTypes.INTEGER));
-
+        // create infotable of result.INTEGER ... 
+        var resultTable = createUpdateResult();
+        // Execute SQL Callable
         return this.execute((Connection con) -> {
-            var stm = con.createStatement();
-            for (ValueCollection val : table.getRows()) {
-                String sql = val.getStringValue("sql");
-                stm.addBatch(sql);
+            try ( var stm = con.createStatement(); ) {
+                for (ValueCollection val : resultTable.getRows()) {
+                    String sql = val.getStringValue("sql");
+                    stm.addBatch(sql);
+                }
+                // get resultset of batch and add them to result table
+                int[] result = stm.executeBatch();
+                addUpdateResult(resultTable, result);
+                return resultTable;
             }
-            // real batch, so two step processing ... 
-            int[] result = stm.executeBatch();
-            for (int i = 0; i < result.length; i++) {
-                var row = table.getRow(i);
-                row.SetIntegerValue("result", new IntegerPrimitive(result[i]));
-            }
-            return table;
         });
     }
 
     public InfoTable executeQueryBatch(InfoTable sqlTable) throws Exception {
-        // create column for result ... 
-        var table = sqlTable.clone();
-        table.addField( new FieldDefinition("result", BaseTypes.INFOTABLE) );
-        
+        // create infotable of result.INFOTABLE ...         
+        var resultTable = createQueryResult();
+        // Execute SQL Callable        
         return this.execute((Connection con) -> {
-            var stm = con.createStatement();
-            // no real batch for query, so in loop ... 
-            for (ValueCollection val : table.getRows()) {
-                String sql = val.getStringValue("sql");
-                // assign the result to the table 
-                var rs = stm.executeQuery(sql);
-                val.SetInfoTableValue("result", InfoTableUtil.createInfoTableFromResultset(rs) );
+            try ( var stm = con.createStatement(); ) {
+                // no real batch for query, so in loop ... 
+                for (ValueCollection val : sqlTable.getRows()) {
+                    String sql = val.getStringValue("sql");
+                    // get resultset of query and add them to result table
+                    var rs = stm.executeQuery(sql);
+                    addQueryResult(resultTable, rs );
+                }
+                return resultTable;
             }
-            return table;
         });
     }
 
     public InfoTable executeUpdatePrepared(String sql, InfoTable values) throws Exception {
-        InfoTable resTable = new InfoTable();
-        resTable.addField(new FieldDefinition("sql", BaseTypes.STRING));
-        resTable.addField(new FieldDefinition("result", BaseTypes.INTEGER));
-
-        return resTable;
+        // create infotable of result.INTEGER ...          
+        InfoTable resultTable = createUpdateResult(); 
+        var dsDef = values.getDataShape();
+        // Execute SQL Callable
+        return this.execute((Connection con) -> {
+            try ( var prepStmt = new PreparedStatementHandler( con, sql, dsDef );  ) {
+                for (ValueCollection val : values.getRows()) {
+                    prepStmt.set(val);
+                    prepStmt.addBatch();
+                }
+                // get resultset of batch and add them to result table
+                int[] rs = prepStmt.executeBatch();
+                addUpdateResult(resultTable, rs);
+            }
+            return resultTable;
+        });
     }
 
     public InfoTable executeQueryPrepared(String sql, InfoTable values) throws Exception {
-
-        var dsdef = values.getDataShape();
-
-        InfoTable resTable = new InfoTable();
-        resTable.addField(new FieldDefinition("sql", BaseTypes.STRING));
-        resTable.addField(new FieldDefinition("result", BaseTypes.INFOTABLE));
-
-        return resTable;
+        // create infotable of result.INTEGER ... 
+        var resultTable = createQueryResult();
+        var dsDef = values.getDataShape();
+        // Execute SQL Callable
+        return this.execute((Connection con) -> {
+            try ( var prepStmt = new PreparedStatementHandler( con, sql, dsDef );  ) {
+                for (ValueCollection val : values.getRows()) {
+                    prepStmt.set(val);
+                    // assign the result to the table 
+                    var rs = prepStmt.executeQuery();
+                    // get resultset of query and add it to result table
+                    addQueryResult(resultTable, rs);
+                }
+            }
+            return resultTable;
+        });
+    }
+    
+    public InfoTable executeQueryPrepared(String sql, InfoTable values, Integer rowIdx) throws Exception {
+        // definition of Datashape needed .
+        var dsDef = values.getDataShape();
+        // Execute SQL Callable
+        return this.execute((Connection con) -> {
+            try ( var prepStmt = new PreparedStatementHandler( con, sql, dsDef );  ) {
+                ValueCollection val = values.getRow(rowIdx);
+                prepStmt.set(val);
+                // assign the result to the table 
+                var rs = prepStmt.executeQuery();
+                // only one resultset, return it directly ... 
+                return InfoTableUtil.createInfoTableFromResultset(rs);
+            }
+        });
     }
 
     public <T> T execute(ConnectionCallback<T> callback) throws Exception {
@@ -202,6 +238,53 @@ public abstract class AbstractHandler implements DbHandler {
         } finally {
             this.conncetionManager.close(connection);
         }
+    }
+
+    // endregion
+    // region Result helpers ...
+    // --------------------------------------------------------------------------------
+    
+    protected static InfoTable createUpdateResult() {
+        InfoTable table = new InfoTable();
+        table.addField(new FieldDefinition("result", BaseTypes.INTEGER));
+        return table;
+    }
+
+    protected static InfoTable addIntResult(InfoTable table, Integer value ) throws Exception {
+        var col = new ValueCollection();
+        col.SetIntegerValue("result", value );
+        table.addRow(col);
+        return table;
+    }   
+
+    protected static InfoTable addUpdateResult(InfoTable table, int[] values ) throws Exception {
+        for (int i = 0; i < values.length; i++) {
+            var col = new ValueCollection();
+            col.SetIntegerValue("result", values[i] );
+            table.addRow(col);
+        }
+        return table;
+    } 
+
+    protected static InfoTable createQueryResult() {
+        InfoTable table = new InfoTable();
+        table.addField(new FieldDefinition("result", BaseTypes.INFOTABLE));
+        return table;
+    }
+
+    protected static InfoTable addTableResult(InfoTable table, InfoTable row) throws Exception {
+        var col = new ValueCollection();
+        col.SetInfoTableValue("result", row );
+        table.addRow(col);
+        return table;
+    }
+
+    protected static InfoTable addQueryResult(InfoTable table, ResultSet rs) throws Exception {
+        var row = InfoTableUtil.createInfoTableFromResultset(rs);
+        var col = new ValueCollection();
+        col.SetInfoTableValue("result", row );
+        table.addRow(col);
+        return table;
     }
 
     // endregion

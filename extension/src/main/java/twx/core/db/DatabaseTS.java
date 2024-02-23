@@ -166,25 +166,33 @@ public class DatabaseTS implements IThingInitializeHandler, IThingUpdateHandler,
             @ThingworxServiceParameter(name = "sqlQueries", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true", "dataShape:TWX.Core.SQLBatch_DS" }) InfoTable sqlQueries) throws Exception {
         return DatabaseUtil.getHandler().executeQueryBatch(sqlQueries);
     }
-/*
-    @ThingworxServiceDefinition(name = "ExecuteUpdatePrepared", description = "", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
-    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
+
+    @ThingworxServiceDefinition(name = "ExecuteUpdatePrepared", description = "Calls a prepared statement with @[name] fields", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
+    @ThingworxServiceResult(name = "Result", description = "Infotable with results of int", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
     public InfoTable ExecuteUpdatePrepared(
             @ThingworxServiceParameter(name = "sql", description = "SQL to execute", baseType = "STRING", aspects = { "isRequired:false" }) String sql,
-            @ThingworxServiceParameter(name = "sqlQueries", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" }) InfoTable values 
+            @ThingworxServiceParameter(name = "values", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" }) InfoTable values 
             ) throws Exception {
         return DatabaseUtil.getHandler().executeUpdatePrepared(sql, values);
     }
 
     @ThingworxServiceDefinition(name = "ExecuteQueryPrepared", description = "", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })
-    @ThingworxServiceResult(name = "Result", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
+    @ThingworxServiceResult(name = "Result", description = "Infotable with results sets, if only one row in values, it's the resultset.", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" })
     public InfoTable ExecuteQueryPrepared(
             @ThingworxServiceParameter(name = "sql", description = "SQL to execute", baseType = "STRING", aspects = { "isRequired:false" }) String sql,
-            @ThingworxServiceParameter(name = "sqlQueries", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" }) InfoTable values 
+            @ThingworxServiceParameter(name = "values", description = "", baseType = "INFOTABLE", aspects = { "isEntityDataShape:true" }) InfoTable values,
+            @ThingworxServiceParameter(name = "rowIdx", description = "", baseType = "INTEGER", aspects = { "isEntityDataShape:true" }) Integer rowIdx 
             ) throws Exception {
+        Integer rowCount = values.getRowCount();
+        if( rowCount == 1 )
+            rowIdx = 0;
+        if( rowIdx != null && rowIdx >= 0 )
+            return DatabaseUtil.getHandler().executeQueryPrepared(sql, values, rowIdx );
         return DatabaseUtil.getHandler().executeQueryPrepared(sql, values);
+                
     }
     // endregion
+/*
     // region TWX-Services Basic DB Operations With Tables and Datashapes ...
     // --------------------------------------------------------------------------------
     @ThingworxServiceDefinition(name = "Insert", description = "", category = "SQL", isAllowOverride = false, aspects = { "isAsync:false" })

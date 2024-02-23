@@ -71,6 +71,8 @@ public interface DbHandler {
     public InfoTable executeUpdatePrepared(String sql, InfoTable values) throws Exception;
 
     public InfoTable executeQueryPrepared(String sql, InfoTable values) throws Exception;
+
+    public InfoTable executeQueryPrepared(String sql, InfoTable values, Integer rowIdx) throws Exception;
     // endregion 
     // region Exception & Logging Handler ...
     // --------------------------------------------------------------------------------
