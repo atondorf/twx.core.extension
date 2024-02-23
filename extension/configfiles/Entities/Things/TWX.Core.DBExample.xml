@@ -414,7 +414,23 @@
                         isLocalOnly="false"
                         isOpen="false"
                         isPrivate="false"
-                        name="Test_Argument">
+                     name="Test_B_DBConnection">
+                        <ResultType
+                         baseType="INFOTABLE"
+                            description=""
+                            name="result"
+                            ordinal="0"></ResultType>
+                        <ParameterDefinitions></ParameterDefinitions>
+                    </ServiceDefinition>
+                    <ServiceDefinition
+                        aspect.isAsync="false"
+                        category=""
+                        description=""
+                        isAllowOverride="false"
+                        isLocalOnly="false"
+                        isOpen="false"
+                        isPrivate="false"
+                     name="Test_DBInfo">
                         <ResultType
                             baseType="JSON"
                             description=""
@@ -430,9 +446,9 @@
                         isLocalOnly="false"
                         isOpen="false"
                         isPrivate="false"
-                        name="Test_Argument_Table">
+                     name="Test_DBInsert">
                         <ResultType
-                            baseType="JSON"
+                         baseType="INTEGER"
                             description=""
                             name="result"
                             ordinal="0"></ResultType>
@@ -446,9 +462,9 @@
                         isLocalOnly="false"
                         isOpen="false"
                         isPrivate="false"
-                        name="Test_AutoCommit">
+                     name="Test_DBInsert_AutoCommit">
                         <ResultType
-                            baseType="JSON"
+                         baseType="INTEGER"
                             description=""
                             name="result"
                             ordinal="0"></ResultType>
@@ -462,7 +478,7 @@
                         isLocalOnly="false"
                         isOpen="false"
                         isPrivate="false"
-                        name="Test_Batch">
+                     name="Test_DBPrepared">
                         <ResultType
                             baseType="INFOTABLE"
                             description=""
@@ -478,73 +494,9 @@
                         isLocalOnly="false"
                         isOpen="false"
                         isPrivate="false"
-                        name="Test_DBConnection">
-                        <ResultType
-                            baseType="INFOTABLE"
-                            description=""
-                            name="result"
-                            ordinal="0"></ResultType>
-                        <ParameterDefinitions></ParameterDefinitions>
-                    </ServiceDefinition>
-                    <ServiceDefinition
-                        aspect.isAsync="false"
-                        category=""
-                        description=""
-                        isAllowOverride="false"
-                        isLocalOnly="false"
-                        isOpen="false"
-                        isPrivate="false"
-                        name="Test_DBInfo">
+                     name="Test_Z_Argument">
                         <ResultType
                             baseType="JSON"
-                            description=""
-                            name="result"
-                            ordinal="0"></ResultType>
-                        <ParameterDefinitions></ParameterDefinitions>
-                    </ServiceDefinition>
-                    <ServiceDefinition
-                        aspect.isAsync="false"
-                        category=""
-                        description=""
-                        isAllowOverride="false"
-                        isLocalOnly="false"
-                        isOpen="false"
-                        isPrivate="false"
-                        name="Test_DBInsert">
-                        <ResultType
-                            baseType="INTEGER"
-                            description=""
-                            name="result"
-                            ordinal="0"></ResultType>
-                        <ParameterDefinitions></ParameterDefinitions>
-                    </ServiceDefinition>
-                    <ServiceDefinition
-                        aspect.isAsync="false"
-                        category=""
-                        description=""
-                        isAllowOverride="false"
-                        isLocalOnly="false"
-                        isOpen="false"
-                        isPrivate="false"
-                        name="Test_DBInsert_AutoCommit">
-                        <ResultType
-                            baseType="INTEGER"
-                            description=""
-                            name="result"
-                            ordinal="0"></ResultType>
-                        <ParameterDefinitions></ParameterDefinitions>
-                    </ServiceDefinition>
-                    <ServiceDefinition
-                        aspect.isAsync="false"
-                        category=""
-                        description=""
-                        isAllowOverride="false"
-                        isLocalOnly="false"
-                        isOpen="false"
-                        isPrivate="false"
-                        name="Test_DBPrepared">
-                        <ResultType
-                            baseType="INFOTABLE"
                             description=""
                             name="result"
                             ordinal="0"></ResultType>
@@ -636,7 +588,9 @@
                                         sqlBatch.AddRow({ sql: "INSERT INTO core.tab1 (valTinyInt) OUTPUT INSERTED.id AS 'NEW_PK' VALUES(4)" });
                                         sqlBatch.AddRow({ sql: "INSERT INTO core.tab1 (valTinyInt) OUTPUT INSERTED.id AS 'NEW_PK' VALUES(5)" });
                                         sqlBatch.AddRow({ sql: "INSERT INTO core.tab1 (valTinyInt) OUTPUT INSERTED.id AS 'NEW_PK' VALUES(6)" });
-                                        //
+                                        /*
+                                         * execute them all at once, (no real batch as this in not possible for queries ...
+                                         */
                                         result = me.ExecuteQueryBatch({ sqlQueries: sqlBatch });
                                         ]]>
                                         </code>
@@ -673,8 +627,8 @@
                                          * Create a Table of sql commands ... 
                                          */
                                         let sqlBatch = DataShapes["TWX.Core.SQLBatch_DS"].CreateValues();
-                                        sqlBatch.AddRow({ sql: "INSERT INTO core.tab1 (valTinyInt) OUTPUT INSERTED.id AS 'NEW_PK' VALUES(3)" });
-                                        sqlBatch.AddRow({ sql: "INSERT INTO core.tab1 (valTinyInt) OUTPUT INSERTED.id AS 'NEW_PK' VALUES(4)" });
+                                        sqlBatch.AddRow({ sql: "INSERT INTO core.tab1 (valTinyInt) VALUES(3)" });
+                                        sqlBatch.AddRow({ sql: "INSERT INTO core.tab1 (valTinyInt) VALUES(4)" });
                                         //
                                         result = me.ExecuteUpdateBatch({ sqlQueries: sqlBatch });
                                         ]]>
@@ -710,10 +664,9 @@
                                         <![CDATA[
                                         //	Create a Table with data 
                                         let values = DataShapes["TWX.Core.Test_DS"].CreateValues();
-                                        values.AddRow( { valTinyInt: 1 } );
-                                        values.AddRow( { valTinyInt: 2 } );
                                         values.AddRow( { valTinyInt: 3 } );
                                         values.AddRow( { valTinyInt: 4 } );
+                                        values.AddRow( { valTinyInt: 5 } );
                                         /*
                                          * create a prepared statement string with fields @[name] matching fields in datashape ... 
                                          * a field can be used several times in a statement!
@@ -809,7 +762,7 @@
                                          * a field can be used several times in a statement!
                                          * so WHERE @valInt > 0 AND @valInt < 2 is valid!
                                          */
-                                        let sql = "INSERT INTO core.tab1 (valTinyInt) VALUES (@valTinyInt)";
+                                        let sql = "INSERT INTO core.tab1 (valTinyInt, valSmallInt ) VALUES (@valTinyInt,@valTinyInt)";
                                         // execute prepared statement in a batch ... 
                                         result = me.ExecuteUpdatePrepared({ sql: sql, values: values });
                                         ]]>
@@ -965,7 +918,7 @@
                     <ServiceImplementation
                         description=""
                         handlerName="Script"
-                        name="Test_Argument">
+                     name="Test_B_DBConnection">
                         <ConfigurationTables>
                             <ConfigurationTable
                                 dataShapeName=""
@@ -986,254 +939,23 @@
                                     <Row>
                                         <code>
                                         <![CDATA[
-                                        require_core_db();
-                                        let con = null;
-                                        result = { Hallo: "Welt" };
-                                        // DBConnection with AutoCommit ... 
-                                        try {
-                                        	con = new DBConnection( me.name, true );
-                                            result = con.argTest( {
-                                            	numeric: 1,
-                                                string: "Welt",
-                                                date_js: new Date(),
-                                                date_twx: me.date,
-                                                blob: me.blob,
-                                                guid: me.guid,
-                                                image: me.image,
-                                                int: me.int,
-                                                long: me.long,
-                                                num: me.number,
-                                                table: me.table,
-                                                valCol: me.table[0],
-                                                json: me.json,
-                                                xml: me.xml,
-                                                vec2: me.vec2,
-                                            } );
-                                        }
-                                        catch(ex) {
-                                            if( con != null ) 
-                                                con.rollback();
-                                            logger.error("Thing [{}] Service [{}] error at line [{}] : {}", me.name, ex.fileName, ex.lineNumber, ex);
-                                            result.error = true;
-                                        }
-                                        finally {
-                                            if ( con != null ) 
-                                                con.close();
-                                        }
-                                        ]]>
-                                        </code>
-                                    </Row>
-                                </Rows>
-                            </ConfigurationTable>
-                        </ConfigurationTables>
-                    </ServiceImplementation>
-                    <ServiceImplementation
-                        description=""
-                        handlerName="Script"
-                        name="Test_Argument_Table">
-                        <ConfigurationTables>
-                            <ConfigurationTable
-                                dataShapeName=""
-                                description=""
-                                isMultiRow="false"
-                                name="Script"
-                                ordinal="0">
-                                <DataShape>
-                                    <FieldDefinitions>
-                                        <FieldDefinition
-                                            baseType="STRING"
-                                            description="code"
-                                            name="code"
-                                            ordinal="0"></FieldDefinition>
-                                    </FieldDefinitions>
-                                </DataShape>
-                                <Rows>
-                                    <Row>
-                                        <code>
-                                        <![CDATA[
-                                        require_core_db();
-                                        let con = null;
-                                        result = { Hallo: "Welt" };
-                                        // DBConnection with AutoCommit ... 
-                                        try {
-                                            let table = DataShapes["ActiveDirectoryDomainGroups"].CreateValues();
-                                            result = con.argTest( table );
-                                        }
-                                        catch(ex) {
-                                            if( con != null ) 
-                                                con.rollback();
-                                            logger.error("Thing [{}] Service [{}] error at line [{}] : {}", me.name, ex.fileName, ex.lineNumber, ex);
-                                            result.error = true;
-                                        }
-                                        finally {
-                                            if ( con != null ) 
-                                                con.close();
-                                        }
-                                        ]]>
-                                        </code>
-                                    </Row>
-                                </Rows>
-                            </ConfigurationTable>
-                        </ConfigurationTables>
-                    </ServiceImplementation>
-                    <ServiceImplementation
-                        description=""
-                        handlerName="Script"
-                        name="Test_AutoCommit">
-                        <ConfigurationTables>
-                            <ConfigurationTable
-                                dataShapeName=""
-                                description=""
-                                isMultiRow="false"
-                                name="Script"
-                                ordinal="0">
-                                <DataShape>
-                                    <FieldDefinitions>
-                                        <FieldDefinition
-                                            baseType="STRING"
-                                            description="code"
-                                            name="code"
-                                            ordinal="0"></FieldDefinition>
-                                    </FieldDefinitions>
-                                </DataShape>
-                                <Rows>
-                                    <Row>
-                                        <code>
-                                        <![CDATA[
-                                        require_core_db();
-                                        
-                                        let con = null;
-                                        let stm = null;
-                                        result = {};
-                                        // DBConnection with AutoCommit ... 
-                                        try {
-                                        	conn = new DBConnection( me.name, true );
-                                           
-                                            result.name = me.name;
-                                            result.autoCommit1 = con.isAutoCommit();
-                                            
-                                            stm = con.createStatement();
-                                        
-                                        	result.autoCommit2 = con.isAutoCommit();
-                                        	
-                                            let tab = stm.executeUpdate("INSERT INTO data.test (val) VALUES('Auto-Commited');");
-                                        
-                                            result.autoCommit3 = con.isAutoCommit();
-                                            con.close();
-                                        }
-                                        catch(ex) {
-                                            if( con != null ) 
-                                                con.rollback();
-                                            logger.error("Thing [{}] Service [{}] error at line [{}] : {}", me.name, ex.fileName, ex.lineNumber, ex);
-                                            result.error = true;
-                                        }
-                                        finally {
-                                            if ( con != null ) 
-                                                con.close();
-                                        }
-                                        ]]>
-                                        </code>
-                                    </Row>
-                                </Rows>
-                            </ConfigurationTable>
-                        </ConfigurationTables>
-                    </ServiceImplementation>
-                    <ServiceImplementation
-                        description=""
-                        handlerName="Script"
-                        name="Test_Batch">
-                        <ConfigurationTables>
-                            <ConfigurationTable
-                                dataShapeName=""
-                                description=""
-                                isMultiRow="false"
-                                name="Script"
-                                ordinal="0">
-                                <DataShape>
-                                    <FieldDefinitions>
-                                        <FieldDefinition
-                                            baseType="STRING"
-                                            description="code"
-                                            name="code"
-                                            ordinal="0"></FieldDefinition>
-                                    </FieldDefinitions>
-                                </DataShape>
-                                <Rows>
-                                    <Row>
-                                        <code>
-                                        <![CDATA[
-                                        let table = DataShapes["TWX.Core.SQLBatch_DS"].CreateValues();
-                                        
-                                        table.AddRow({ sql: "INSERT INTO tab1 (valTinyInt) OUTPUT INSERTED.id AS 'NEW_PK' VALUES(3)" });
-                                        table.AddRow({ sql: "INSERT INTO tab1 (valTinyInt) OUTPUT INSERTED.id AS 'NEW_PK' VALUES(4)" });
-                                        table.AddRow({ sql: "INSERT INTO tab1 (valTinyInt) OUTPUT INSERTED.id AS 'NEW_PK' VALUES(5)" });
-                                        table.AddRow({ sql: "INSERT INTO tab1 (valTinyInt) OUTPUT INSERTED.id AS 'NEW_PK' VALUES(6)" });
-                                        
-                                        /*
-                                        table.AddRow({ sql: "INSERT INTO tab_1 (valTinyInt) VALUES(3)" });
-                                        table.AddRow({ sql: "INSERT INTO tab_1 (valTinyInt) VALUES(4)" });
-                                        */
-                                        let sql = "select * from tab_1";
-                                        
-                                        table.AddRow({ sql: sql });
-                                        result = me.ExecuteQueryBatch({ sqlQueries: table });
-                                        result = me.ExecuteQuery({ sql: sql });
-                                        /*
-                                        result = me.ExecuteQuery({
-                                        	sql: "INSERT INTO tab_1 (valTinyInt) OUTPUT INSERTED.id AS 'PK' VALUES(3)" 
-                                        }); */
-                                        ]]>
-                                        </code>
-                                    </Row>
-                                </Rows>
-                            </ConfigurationTable>
-                        </ConfigurationTables>
-                    </ServiceImplementation>
-                    <ServiceImplementation
-                        description=""
-                        handlerName="Script"
-                        name="Test_DBConnection">
-                        <ConfigurationTables>
-                            <ConfigurationTable
-                                dataShapeName=""
-                                description=""
-                                isMultiRow="false"
-                                name="Script"
-                                ordinal="0">
-                                <DataShape>
-                                    <FieldDefinitions>
-                                        <FieldDefinition
-                                            baseType="STRING"
-                                            description="code"
-                                            name="code"
-                                            ordinal="0"></FieldDefinition>
-                                    </FieldDefinitions>
-                                </DataShape>
-                                <Rows>
-                                    <Row>
-                                        <code>
-                                        <![CDATA[
+                                        // make scriptable objects of twx.core.db available ... 
                                         require_core_db();
                                         
                                         let con = null;
                                         let stm = null;
                                         try {
+                                            // new dbconnection without autocommit ... 
                                         	con = new DBConnection( me.name, false );
                                             stm = con.createStatement();
                                             
-                                            let sql = "";
-                                            sql  = "IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'data') ";
-                                        	sql += "EXEC('CREATE SCHEMA data')";
+                                            sql = "INSERT INTO core.tab1 (valTinyInt) VALUES(11)";
                                             stm.executeUpdate(sql);
                                             
-                                            sql  = "IF NOT EXISTS ( SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'data' AND TABLE_NAME = 'test' ) ";
-                                            sql += "CREATE TABLE data.test ( id int IDENTITY(0,1) NOT NULL, val VARCHAR(255), ts DATETIME2 NULL, PRIMARY KEY (id) );"; 
+                                        	sql = "INSERT INTO core.tab1 (valTinyInt) VALUES(13)";
                                         	stm.executeUpdate(sql);
                                             
-                                            sql = "INSERT INTO data.test (val) VALUES('hallo');";
-                                            stm.executeUpdate(sql);
-                                            
-                                            sql = "SELECT * FROM data.test";
+                                            sql = "SELECT * FROM  [core].[tab1]";
                                             result = stm.executeQuery(sql);
                                             
                                             con.commit();
@@ -1456,6 +1178,71 @@
                                         }
                                         finally {
                                             if ( con != null ) con.close();
+                                        }
+                                        ]]>
+                                        </code>
+                                    </Row>
+                                </Rows>
+                            </ConfigurationTable>
+                        </ConfigurationTables>
+                    </ServiceImplementation>
+                    <ServiceImplementation
+                     description=""
+                     handlerName="Script"
+                     name="Test_Z_Argument">
+                        <ConfigurationTables>
+                            <ConfigurationTable
+                             dataShapeName=""
+                             description=""
+                             isMultiRow="false"
+                             name="Script"
+                             ordinal="0">
+                                <DataShape>
+                                    <FieldDefinitions>
+                                        <FieldDefinition
+                                         baseType="STRING"
+                                         description="code"
+                                         name="code"
+                                         ordinal="0"></FieldDefinition>
+                                    </FieldDefinitions>
+                                </DataShape>
+                                <Rows>
+                                    <Row>
+                                        <code>
+                                        <![CDATA[
+                                        require_core_db();
+                                        let con = null;
+                                        result = { Hallo: "Welt" };
+                                        // DBConnection with AutoCommit ... 
+                                        try {
+                                        	con = new DBConnection( me.name, true );
+                                            result = con.argTest( {
+                                            	numeric: 1,
+                                                string: "Welt",
+                                                date_js: new Date(),
+                                                date_twx: me.date,
+                                                blob: me.blob,
+                                                guid: me.guid,
+                                                image: me.image,
+                                                int: me.int,
+                                                long: me.long,
+                                                num: me.number,
+                                                table: me.table,
+                                                valCol: me.table[0],
+                                                json: me.json,
+                                                xml: me.xml,
+                                                vec2: me.vec2,
+                                            } );
+                                        }
+                                        catch(ex) {
+                                            if( con != null ) 
+                                                con.rollback();
+                                            logger.error("Thing [{}] Service [{}] error at line [{}] : {}", me.name, ex.fileName, ex.lineNumber, ex);
+                                            result.error = true;
+                                        }
+                                        finally {
+                                            if ( con != null ) 
+                                                con.close();
                                         }
                                         ]]>
                                         </code>
